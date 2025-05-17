@@ -59,7 +59,7 @@ export default function Salesdashboard() {
             </div>
           </div>
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
-            <div className="card color-info bg-primary flex-fill mb-4">
+            <div className="card color-info bg-skyblue flex-fill mb-4">
               <div className="mb-2">
                 <img src="assets/img/icons/total-sales.svg" alt="img" />
               </div>

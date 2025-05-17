@@ -193,7 +193,7 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link href={route.newdashboard}>Admin Dashboard 2</Link>
+                                            {/* <Link href={route.newdashboard}>Admin Dashboard 2</Link> */}
                                         </li>
                                         <li>
                                             <Link href={route.salesdashboard}>Sales Dashboard</Link>
@@ -308,31 +308,31 @@ const TwoColumnSidebar = () => {
                                 <div className="tab-pane fade" id="layout">
                                     <ul>
                                         <li className="menu-title">
-                                            <span>LAYOUT</span>
+                                            {/* <span>LAYOUT</span> */}
                                         </li>
                                         <li>
-                                            <Link href={all_routes.layoutHorizontal}>Horizontal</Link>
+                                            {/* <Link href={all_routes.layoutHorizontal}>Horizontal</Link> */}
                                         </li>
                                         <li>
-                                            <Link href={all_routes.layoutDetached}>Detached</Link>
+                                            {/* <Link href={all_routes.layoutDetached}>Detached</Link> */}
                                         </li>
                                         {/* <li>
                                             <Link href="layout-modern.html">Modern</Link>
                                         </li> */}
                                         <li>
-                                            <Link href={all_routes.layoutTwoColumn}>Two Column</Link>
+                                            {/* <Link href={all_routes.layoutTwoColumn}>Two Column</Link> */}
                                         </li>
                                         <li>
-                                            <Link href={all_routes.layoutHovered}>Hovered</Link>
+                                            {/* <Link href={all_routes.layoutHovered}>Hovered</Link> */}
                                         </li>
                                         <li>
-                                            <Link href={all_routes.layoutBoxed}>Boxed</Link>
+                                            {/* <Link href={all_routes.layoutBoxed}>Boxed</Link> */}
                                         </li>
                                         <li>
-                                            <Link href={all_routes.layoutRtl}>RTL</Link>
+                                            {/* <Link href={all_routes.layoutRtl}>RTL</Link> */}
                                         </li>
                                         <li>
-                                            <Link href={all_routes.layoutDark}>Dark</Link>
+                                            {/* <Link href={all_routes.layoutDark}>Dark</Link> */}
                                         </li>
                                     </ul>
                                 </div>
@@ -1469,10 +1469,10 @@ const TwoColumnSidebar = () => {
                                                     </ul>
                                                 </li>
                                                 <li className="submenu submenu-two">
-                                                    <Link href="#">
+                                                    {/* <Link href="#">
                                                         Layouts
                                                         <span className="menu-arrow inside-submenu" />
-                                                    </Link>
+                                                    </Link> */}
                                                     <ul>
                                                         <li>
                                                             <Link href={route.formhorizontal}>Horizontal Form</Link>

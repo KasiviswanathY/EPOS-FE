@@ -20,7 +20,7 @@ const ApexSalesAnalysisChartWrapper: React.FC = () => {
           type: "area",
           zoom: { enabled: false },
         },
-        colors: ["#FF9F43"],
+        colors: ["#87CEEB"],
         dataLabels: { enabled: false },
         stroke: { curve: "straight" },
         title: { text: "", align: "left" },

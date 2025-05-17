@@ -62,7 +62,7 @@ export default function NewDashboard() {
         </div>
         <div className="row">
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
-            <div className="card bg-primary sale-widget flex-fill">
+            <div className="card bg-skyblue sale-widget flex-fill">
               <div className="card-body d-flex align-items-center">
                 <span className="sale-icon bg-white text-primary">
                   <i className="ti ti-file-text fs-24" />
@@ -284,7 +284,7 @@ export default function NewDashboard() {
                     <Link className="btn btn-outline-light" href="#">
                       6M
                     </Link>
-                    <Link className="btn btn-outline-light active" href="#">
+                    <Link className="btn btn-outline-light" href="#">
                       1Y
                     </Link>
                   </ul>

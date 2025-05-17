@@ -23,13 +23,13 @@ export const SidebarData1 = [
             route: "/index",
             subRoutes: [],
           },
-          {
-            tittle: 'Admin Dashboard 2',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/admin-dashboard",
-            subRoutes: [],
-          },
+          // {
+          //   tittle: 'Admin Dashboard 2',
+          //   hasSubRoute: false,
+          //   showSubRoute: false,
+          //   route: "/admin-dashboard",
+          //   subRoutes: [],
+          // },
           {
             tittle: 'Sales Dashboard',
             hasSubRoute: false,
