@@ -15,7 +15,7 @@ const RevenueIncomeChart: React.FC = () => {
       stacked: true,
       toolbar: { show: false },
     },
-    colors: ["#FF6F28", "#F8F9FA"], // Colors for Income and Expenses
+    colors: ["skyblue", "#F8F9FA"], // Colors for Income and Expenses
     responsive: [
       {
         breakpoint: 480,

@@ -571,7 +571,7 @@ const CollapsedSidebar = () => {
                   <span>Delete Account Request</span>
                 </Link>
               </li>
-              <li className="submenu">
+              {/* <li className="submenu">
                 <Link href="#">
                   <span>Base UI</span>
                   <span className="menu-arrow" />
@@ -668,8 +668,8 @@ const CollapsedSidebar = () => {
                     <Link href="ui-video">Video</Link>
                   </li>
                 </ul>
-              </li>
-              <li className="submenu">
+              </li> */}
+              {/* <li className="submenu">
                 <Link href="#">
                   <span>Advanced UI</span>
                   <span className="menu-arrow" />
@@ -706,8 +706,8 @@ const CollapsedSidebar = () => {
                     <Link href="ui-timeline">Timeline</Link>
                   </li>
                 </ul>
-              </li>
-              <li className="submenu">
+              </li> */}
+              {/* <li className="submenu">
                 <Link href="#">
                   <span>Charts</span>
                   <span className="menu-arrow" />
@@ -732,8 +732,8 @@ const CollapsedSidebar = () => {
                     <Link href="chart-peity">Peity Charts</Link>
                   </li>
                 </ul>
-              </li>
-              <li className="submenu">
+              </li> */}
+              {/* <li className="submenu">
                 <Link href="#">
                   <span>Icons</span>
                   <span className="menu-arrow" />
@@ -770,8 +770,8 @@ const CollapsedSidebar = () => {
                     <Link href="icon-flag">Flag Icons</Link>
                   </li>
                 </ul>
-              </li>
-              <li className="submenu">
+              </li> */}
+              {/* <li className="submenu">
                 <Link href="#">
                   <span>Forms</span>
                   <span className="menu-arrow" />
@@ -835,8 +835,8 @@ const CollapsedSidebar = () => {
                     <Link href="form-wizard">Form Wizard</Link>
                   </li>
                 </ul>
-              </li>
-              <li className="submenu">
+              </li> */}
+              {/* <li className="submenu">
                 <Link href="#">
                   <span>Tables</span>
                   <span className="menu-arrow" />
@@ -849,7 +849,7 @@ const CollapsedSidebar = () => {
                     <Link href="data-tables">Data Table </Link>
                   </li>
                 </ul>
-              </li>
+              </li> */}
             </ul>
             <ul className="tab-pane" id="document" aria-labelledby="set-tab5">
               <li>

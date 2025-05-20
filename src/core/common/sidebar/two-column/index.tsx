@@ -1223,11 +1223,11 @@ const TwoColumnSidebar = () => {
                                 </div>
                                 <div className="tab-pane fade" id="ui-elements">
                                     <ul>
-                                        <li className="menu-title">
+                                        {/* <li className="menu-title">
                                             <span>Ui Interface</span>
-                                        </li>
-                                        <li className="submenu">
-                                            <Link href="#">
+                                        </li> */}
+                                        {/* <li className="submenu"> */}
+                                            {/* <Link href="#">
                                                 <span>Base UI</span>
                                                 <span className="menu-arrow" />
                                             </Link>
@@ -1328,9 +1328,9 @@ const TwoColumnSidebar = () => {
                                                 <li>
                                                     <Link href={route.SwiperJs}>Swiperjs</Link>
                                                 </li>
-                                            </ul>
-                                        </li>
-                                        <li className="submenu">
+                                            </ul> */}
+                                        {/* </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Advanced UI</span>
                                                 <span className="menu-arrow" />
@@ -1367,8 +1367,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.timeline}>Timeline</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Charts</span>
                                                 <span className="menu-arrow" />
@@ -1381,8 +1381,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.chartjs}>Chart Js</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Icons</span>
                                                 <span className="menu-arrow" />
@@ -1428,8 +1428,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.remixIcon}>Remix Icons</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Forms</span>
                                                 <span className="menu-arrow" />
@@ -1473,7 +1473,7 @@ const TwoColumnSidebar = () => {
                                                         Layouts
                                                         <span className="menu-arrow inside-submenu" />
                                                     </Link> */}
-                                                    <ul>
+                                                    {/* <ul>
                                                         <li>
                                                             <Link href={route.formhorizontal}>Horizontal Form</Link>
                                                         </li>
@@ -1486,8 +1486,8 @@ const TwoColumnSidebar = () => {
                                                             </Link>
                                                         </li>
                                                     </ul>
-                                                </li>
-                                                <li>
+                                                </li> */}
+                                                {/* <li>
                                                     <Link href={route.formvalidation}>Form Validation</Link>
                                                 </li>
                                                 <li>
@@ -1500,8 +1500,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.FormPicker}>Form Picker</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */} */
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Tables</span>
                                                 <span className="menu-arrow" />
@@ -1514,8 +1514,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.datatable}>Data Table </Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Maps</span>
                                                 <span className="menu-arrow" />
@@ -1525,7 +1525,7 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.Leaflets}>Leaflet</Link>
                                                 </li>
                                             </ul>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                                 <div className="tab-pane fade" id="extras">
