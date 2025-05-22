@@ -1463,107 +1463,107 @@ export const SidebarData1 = [
         route: "/under-maintenance",
         subRoutes: [],
       },
-      {
-        tittle: 'Content',
-        hasSubRoute: true,
-        showSubRoute: false,
-        //   route: routes.purchaseReport,
-        subRoutes: [
-          {
-            tittle: 'Pages',
-            hasSubRoute: true,
-            showSubRoute: true,
-            // route:"/employees-grid",
-            subRoutes: [
-              {
-                tittle: 'Pages',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/pages",
-                subRoutes: [],
-              }
-            ],
-          },
-          {
-            tittle: 'Blog',
-            hasSubRoute: true,
-            showSubRoute: true,
-            subRoutes: [
-              {
-                tittle: 'All Blog',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/all-blog",
-                subRoutes: [],
-              },
-              {
-                tittle: 'Blog Tags',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/blog-tag",
-                subRoutes: [],
-              },
-              {
-                tittle: 'Categories',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/blog-categories",
-                subRoutes: [],
-              },
-              {
-                tittle: 'Blog Comments',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/blog-comments",
-                subRoutes: [],
-              },
-            ],
-          },
-          {
-            tittle: 'Location',
-            hasSubRoute: true,
-            showSubRoute: true,
-            subRoutes: [
-              {
-                tittle: 'Countries',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/countries",
-                subRoutes: [],
-              },
-              {
-                tittle: 'States',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/states",
-                subRoutes: [],
-              },
-              {
-                tittle: 'Cities',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/cities",
-                subRoutes: [],
-              },
-              {
-                tittle: 'Testimonials',
-                hasSubRoute: true,
-                showSubRoute: true,
-                route: "/testimonials",
-                subRoutes: [],
-              },
-            ],
-          },
-          {
-            tittle: 'FAQ',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/faq",
-            subRoutes: [],
-          },
+      // {
+      //   tittle: 'Content',
+      //   hasSubRoute: true,
+      //   showSubRoute: false,
+      //   //   route: routes.purchaseReport,
+      //   subRoutes: [
+      //     {
+      //       tittle: 'Pages',
+      //       hasSubRoute: true,
+      //       showSubRoute: true,
+      //       // route:"/employees-grid",
+      //       subRoutes: [
+      //         {
+      //           tittle: 'Pages',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/pages",
+      //           subRoutes: [],
+      //         }
+      //       ],
+      //     },
+      //     {
+      //       tittle: 'Blog',
+      //       hasSubRoute: true,
+      //       showSubRoute: true,
+      //       subRoutes: [
+      //         {
+      //           tittle: 'All Blog',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/all-blog",
+      //           subRoutes: [],
+      //         },
+      //         {
+      //           tittle: 'Blog Tags',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/blog-tag",
+      //           subRoutes: [],
+      //         },
+      //         {
+      //           tittle: 'Categories',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/blog-categories",
+      //           subRoutes: [],
+      //         },
+      //         {
+      //           tittle: 'Blog Comments',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/blog-comments",
+      //           subRoutes: [],
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       tittle: 'Location',
+      //       hasSubRoute: true,
+      //       showSubRoute: true,
+      //       subRoutes: [
+      //         {
+      //           tittle: 'Countries',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/countries",
+      //           subRoutes: [],
+      //         },
+      //         {
+      //           tittle: 'States',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/states",
+      //           subRoutes: [],
+      //         },
+      //         {
+      //           tittle: 'Cities',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/cities",
+      //           subRoutes: [],
+      //         },
+      //         {
+      //           tittle: 'Testimonials',
+      //           hasSubRoute: true,
+      //           showSubRoute: true,
+      //           route: "/testimonials",
+      //           subRoutes: [],
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       tittle: 'FAQ',
+      //       hasSubRoute: false,
+      //       showSubRoute: false,
+      //       route: "/faq",
+      //       subRoutes: [],
+      //     },
 
-        ],
-      },
+      //   ],
+      // },
       {
         tittle: 'Employees',
         hasSubRoute: true,

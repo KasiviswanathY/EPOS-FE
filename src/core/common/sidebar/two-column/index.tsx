@@ -814,10 +814,10 @@ const TwoColumnSidebar = () => {
                                 </div>
                                 <div className="tab-pane fade" id="pages">
                                     <ul>
-                                        <li className="menu-title">
+                                        {/* <li className="menu-title">
                                             <span>Pages</span>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Pages</span>
                                                 <span className="menu-arrow" />
@@ -827,8 +827,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.pagesList}>Pages</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Blog</span>
                                                 <span className="menu-arrow" />
@@ -847,8 +847,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.blogComments}>Blog Comments</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Location</span>
                                                 <span className="menu-arrow" />
@@ -864,17 +864,17 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.cities}>Cities</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.testimonial}>
                                                 <span>Testimonials</span>
                                             </Link>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.faq}>
                                                 <span>FAQ</span>
                                             </Link>
-                                        </li>
+                                        </li> */}
                                         <li>
                                             <Link href={route.users}>
                                                 <span>Users</span>
