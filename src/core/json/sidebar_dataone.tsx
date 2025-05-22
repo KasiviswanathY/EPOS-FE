@@ -1683,183 +1683,183 @@ export const SidebarData1 = [
       },
     ],
   },
-  {
-    tittle: 'Reports',
-    hasSubRoute: true,
-    icon: 'chart-bar',
-    showSubRoute: false,
-    activeRoute: 'users',
-    subRoutes: [
-      {
-        tittle: 'Sales Report',
-        hasSubRoute: true,
-        showSubRoute: true,
-        subRoutes: [
-          {
-            tittle: 'Sales Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/sales-report",
-          },
-          {
-            tittle: 'Best Seller',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/best-seller",
-          },
-        ],
-      },
-      {
-        tittle: 'Purchase Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/purchase-report",
-        subRoutes: [],
-      },
-      {
-        tittle: 'Inventory Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/inventory-report",
-        subRoutes: [
-          {
-            tittle: 'Inventory Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/inventory-report",
-            subRoutes: []
-          },
-          {
-            tittle: 'Stock History',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/stock-history",
-            subRoutes: []
-          },
-          {
-            tittle: 'Sold Stock',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/sold-stock",
-            subRoutes: []
-          },
-        ],
-      },
-      {
-        tittle: 'Invoice Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/invoice-report",
-        subRoutes: [],
-      },
-      {
-        tittle: 'Supplier Report',
-        hasSubRoute: true,
-        showSubRoute: true,
-        subRoutes: [
-          {
-            tittle: 'Supplier Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/supplier-report",
-            subRoutes: []
-          },
-          {
-            tittle: 'Supplier Due Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/supplier-due-report",
-            subRoutes: []
-          },
-        ],
-      },
+  // {
+  //   tittle: 'Reports',
+  //   hasSubRoute: true,
+  //   icon: 'chart-bar',
+  //   showSubRoute: false,
+  //   activeRoute: 'users',
+  //   subRoutes: [
+  //     {
+  //       tittle: 'Sales Report',
+  //       hasSubRoute: true,
+  //       showSubRoute: true,
+  //       subRoutes: [
+  //         {
+  //           tittle: 'Sales Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/sales-report",
+  //         },
+  //         {
+  //           tittle: 'Best Seller',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/best-seller",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       tittle: 'Purchase Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/purchase-report",
+  //       subRoutes: [],
+  //     },
+  //     {
+  //       tittle: 'Inventory Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/inventory-report",
+  //       subRoutes: [
+  //         {
+  //           tittle: 'Inventory Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/inventory-report",
+  //           subRoutes: []
+  //         },
+  //         {
+  //           tittle: 'Stock History',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/stock-history",
+  //           subRoutes: []
+  //         },
+  //         {
+  //           tittle: 'Sold Stock',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/sold-stock",
+  //           subRoutes: []
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       tittle: 'Invoice Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/invoice-report",
+  //       subRoutes: [],
+  //     },
+  //     {
+  //       tittle: 'Supplier Report',
+  //       hasSubRoute: true,
+  //       showSubRoute: true,
+  //       subRoutes: [
+  //         {
+  //           tittle: 'Supplier Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/supplier-report",
+  //           subRoutes: []
+  //         },
+  //         {
+  //           tittle: 'Supplier Due Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/supplier-due-report",
+  //           subRoutes: []
+  //         },
+  //       ],
+  //     },
 
-      {
-        tittle: 'Customer Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        subRoutes: [
-          {
-            tittle: 'Customer Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/customer-report",
-            subRoutes: []
-          },
-          {
-            tittle: 'Customer Due Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/customer-due-report",
-            subRoutes: []
-          },
-        ],
-      },
-      {
-        tittle: 'Product Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        subRoutes: [
-          {
-            tittle: 'Product Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/product-report",
-            subRoutes: []
-          },
-          {
-            tittle: 'Product Expiry Report',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/product-expiry-report",
-            subRoutes: []
-          },
-          {
-            tittle: 'Product Quantity Alert',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/product-quantity-alert",
-            subRoutes: []
-          },
-        ],
-      },
-      {
-        tittle: 'Expense Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/expense-report",
-        subRoutes: [],
-      },
-      {
-        tittle: 'Income Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/income-report",
-        subRoutes: [],
-      },
-      {
-        tittle: 'Tax Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/tax-report",
-        subRoutes: [],
-      },
-      {
-        tittle: 'Profit & Loss',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/profit-and-loss",
-        subRoutes: [],
-      },
-      {
-        tittle: 'Annual Report',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/annual-report",
-        subRoutes: [],
-      },
-    ],
-  },
+  //     {
+  //       tittle: 'Customer Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       subRoutes: [
+  //         {
+  //           tittle: 'Customer Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/customer-report",
+  //           subRoutes: []
+  //         },
+  //         {
+  //           tittle: 'Customer Due Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/customer-due-report",
+  //           subRoutes: []
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       tittle: 'Product Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       subRoutes: [
+  //         {
+  //           tittle: 'Product Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/product-report",
+  //           subRoutes: []
+  //         },
+  //         {
+  //           tittle: 'Product Expiry Report',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/product-expiry-report",
+  //           subRoutes: []
+  //         },
+  //         {
+  //           tittle: 'Product Quantity Alert',
+  //           hasSubRoute: false,
+  //           showSubRoute: false,
+  //           route: "/product-quantity-alert",
+  //           subRoutes: []
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       tittle: 'Expense Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/expense-report",
+  //       subRoutes: [],
+  //     },
+  //     {
+  //       tittle: 'Income Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/income-report",
+  //       subRoutes: [],
+  //     },
+  //     {
+  //       tittle: 'Tax Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/tax-report",
+  //       subRoutes: [],
+  //     },
+  //     {
+  //       tittle: 'Profit & Loss',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/profit-and-loss",
+  //       subRoutes: [],
+  //     },
+  //     {
+  //       tittle: 'Annual Report',
+  //       hasSubRoute: false,
+  //       showSubRoute: false,
+  //       route: "/annual-report",
+  //       subRoutes: [],
+  //     },
+  //   ],
+  // },
   {
     tittle: 'Settings',
     hasSubRoute: true,

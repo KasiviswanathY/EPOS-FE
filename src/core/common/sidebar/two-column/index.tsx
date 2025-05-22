@@ -690,7 +690,7 @@ const TwoColumnSidebar = () => {
                                         </li>
                                     </ul>
                                 </div>
-                                <div className="tab-pane fade" id="reports">
+                                {/* <div className="tab-pane fade" id="reports">
                                     <ul>
                                         <li className="menu-title">
                                             <span>Reports</span>
@@ -811,7 +811,7 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> */}
                                 <div className="tab-pane fade" id="pages">
                                     <ul>
                                         <li className="menu-title">
