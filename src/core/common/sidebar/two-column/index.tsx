@@ -890,12 +890,12 @@ const TwoColumnSidebar = () => {
                                                 <span>Delete Account Request</span>
                                             </Link>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <Link href={route.profile}>
                                                 <span>Profile</span>
                                             </Link>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Authentication</span>
                                                 <span className="menu-arrow" />
@@ -1009,8 +1009,8 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.lockscreen}>Lock Screen</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li className="submenu">
+                                        </li> */}
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>Error Pages</span>
                                                 <span className="menu-arrow" />
@@ -1023,27 +1023,27 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.error500}>500 Error </Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.blankpage}>
                                                 <span>Blank Page</span>{" "}
                                             </Link>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.pricing}>
                                                 <span>Pricing</span>{" "}
                                             </Link>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.comingsoon}>
                                                 <span>Coming Soon</span>{" "}
                                             </Link>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.undermaintenance}>
                                                 <span>Under Maintenance</span>{" "}
                                             </Link>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                                 <div className="tab-pane fade" id="settings">
