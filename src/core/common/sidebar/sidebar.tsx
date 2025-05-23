@@ -69,7 +69,7 @@ export default function Sidebar() {
           {/* Logo */}
           <div className="sidebar-logo">
             <Link href={route.newdashboard} className="logo logo-normal">
-              <img src="assets/img/logo.svg" alt="Img" />
+              <img src="assets/img/cloud-pos.png" alt="Img" />
             </Link>
             <Link href={route.newdashboard} className="logo logo-white">
               <img src="assets/img/logo-white.svg" alt="Img" />
