@@ -14,7 +14,7 @@ const PlanOverviewChart: React.FC = () => {
       type: "donut",
       toolbar: { show: false },
     },
-    colors: ["#FFC107", "#1B84FF", "#F26522"],
+    colors: ["skyblue", "#1B84FF", "pink"],
     series: [20, 60, 20],
     labels: ["Enterprise", "Premium", "Basic"],
     plotOptions: {
