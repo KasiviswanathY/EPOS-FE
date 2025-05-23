@@ -444,21 +444,21 @@ const TwoColumnSidebar = () => {
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <Link href={route.invoice}>
                                                 <span>Invoices</span>
                                             </Link>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.salesreturn}>
                                                 <span>Sales Return</span>
                                             </Link>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.quotationlist}>
                                                 <span>Quotation</span>
                                             </Link>
-                                        </li>
+                                        </li> */}
                                         <li className="submenu">
                                             <Link href="#">
                                                 <span>POS</span>
