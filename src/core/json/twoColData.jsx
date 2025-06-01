@@ -160,47 +160,47 @@ export const TowColData = [
               },
             ],
           },
-          {
-            menuValue: 'Super Admin',
-            route: routes.superAdminDashboard,
-            hasSubRoute: true,
-            showSubRoute: false,
-            icon: 'user-star',
-            base: 'super-admin',
-            materialicons: 'home',
-            subMenus: [
-              {
-                menuValue: 'Dashboard',
-                route: routes.superAdminDashboard,
-                base: 'super-admin-dashboard',
-              },
-              {
-                menuValue: 'Companies',
-                route: routes.superAdminCompanies,
-                base: 'companies',
-              },
-              {
-                menuValue: 'Subscriptions',
-                route: routes.superAdminSubscriptions,
-                base: 'deals',
-              },
-              {
-                menuValue: 'Packages',
-                route: routes.superAdminPackages,
-                base: 'leads',
-              },
-              {
-                menuValue: 'Domain',
-                route: routes.superAdminDomain,
-                base: 'leads',
-              },
-              {
-                menuValue: 'Purchase Transaction',
-                route: routes.superAdminPurchaseTransaction,
-                base: 'leads',
-              },
-            ],
-          },
+          // {
+          //   menuValue: 'Super Admin',
+          //   route: routes.superAdminDashboard,
+          //   hasSubRoute: true,
+          //   showSubRoute: false,
+          //   icon: 'user-star',
+          //   base: 'super-admin',
+          //   materialicons: 'home',
+          //   subMenus: [
+          //     {
+          //       menuValue: 'Dashboard',
+          //       route: routes.superAdminDashboard,
+          //       base: 'super-admin-dashboard',
+          //     },
+          //     {
+          //       menuValue: 'Companies',
+          //       route: routes.superAdminCompanies,
+          //       base: 'companies',
+          //     },
+          //     {
+          //       menuValue: 'Subscriptions',
+          //       route: routes.superAdminSubscriptions,
+          //       base: 'deals',
+          //     },
+          //     {
+          //       menuValue: 'Packages',
+          //       route: routes.superAdminPackages,
+          //       base: 'leads',
+          //     },
+          //     {
+          //       menuValue: 'Domain',
+          //       route: routes.superAdminDomain,
+          //       base: 'leads',
+          //     },
+          //     {
+          //       menuValue: 'Purchase Transaction',
+          //       route: routes.superAdminPurchaseTransaction,
+          //       base: 'leads',
+          //     },
+          //   ],
+          // },
         ],
       },
       {

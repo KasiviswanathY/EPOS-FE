@@ -32,7 +32,7 @@ const TwoColumnSidebar = () => {
                                 >
                                     <i className="ti ti-smart-home" />
                                 </Link>
-                                <Link
+                                {/* <Link
                                     href="#"
                                     className="nav-link "
                                     title="Super Admin"
@@ -40,7 +40,7 @@ const TwoColumnSidebar = () => {
                                     data-bs-target="#super-admin"
                                 >
                                     <i className="ti ti-user-star" />
-                                </Link>
+                                </Link> */}
                                 <Link
                                     href="#"
                                     className="nav-link "
@@ -201,15 +201,15 @@ const TwoColumnSidebar = () => {
                                     </ul>
                                 </div>
                                 <div className="tab-pane fade" id="super-admin">
-                                    <ul>
-                                        <li className="menu-title">
+                                    {/* <ul> */}
+                                        {/* <li className="menu-title">
                                             <span>SUPER ADMIN</span>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.superadmindashboard}>Dashboard</Link>
                                         </li>
-                                        <li>
-                                            <Link href={route.companies}>Companies</Link>
+                                        <li> */}
+                                            {/* <Link href={route.companies}>Companies</Link>
                                         </li>
                                         <li>
                                             <Link href={route.subscription}>Subscriptions</Link>
@@ -223,7 +223,7 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.purchasetransaction}>Purchase Transaction</Link>
                                         </li>
-                                    </ul>
+                                    </ul> */}
                                 </div>
                                 <div className="tab-pane fade" id="application">
                                     <ul>
