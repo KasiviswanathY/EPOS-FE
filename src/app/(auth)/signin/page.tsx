@@ -3,15 +3,32 @@
 import Link from "next/link";
 import { useState } from "react";
 import { all_routes } from "../../../data/all_routes";
-
+import { useRouter } from "next/navigation";
 export default function Login() {
-  const route = all_routes;
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
+const router = useRouter();
+const route = all_routes;
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [isPasswordVisible, setPasswordVisible] = useState(false);
+const togglePasswordVisibility = () => {
+setPasswordVisible((prevState) => !prevState);
+};
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prevState) => !prevState);
+ const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Hardcoded credentials
+    const adminCreds = { email: "admin@example.com", password: "admin123" };
+    const userCreds = { email: "user@example.com", password: "user123" };
+
+    if (email === adminCreds.email && password === adminCreds.password) {
+      router.push(route.newdashboard); 
+    } else if (email === userCreds.email && password === userCreds.password) {
+      router.push(route.pos2); 
+    } else {  
+      alert("Invalid credentials");
+    }
   };
-
   return (
     <>
       {/* Main Wrapper */}
@@ -19,7 +36,7 @@ export default function Login() {
         <div className="account-content">
           <div className="login-wrapper bg-img">
             <div className="login-content authent-content">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="login-userset">
                   <div className="login-logo logo-normal">
                     <img src="assets/img/logo.png" alt="img" />
@@ -43,6 +60,8 @@ export default function Login() {
                     <div className="input-group">
                       <input
                         type="text"
+                          value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         defaultValue=""
                         className="form-control border-end-0"
                       />
@@ -58,6 +77,8 @@ export default function Login() {
                     <div className="pass-group">
                       <input
                         type={isPasswordVisible ? "text" : "password"}
+                        value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         className="pass-input form-control"
                       />
                       <span
@@ -90,12 +111,9 @@ export default function Login() {
                     </div>
                   </div>
                   <div className="form-login">
-                    <Link
-                      href={route.newdashboard}
-                      className="btn btn-primary w-100"
-                    >
+                  <button type="submit" className="btn btn-login">
                       Sign In
-                    </Link>
+                  </button>
                   </div>
                   <div className="signinform">
                     <h4>
