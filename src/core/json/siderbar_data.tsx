@@ -21,21 +21,21 @@ export const SidebarData = [
           { label: "Sales Dashboard", link: "/sales-dashboard" },
         ],
       },
-      {
-        label: "Super Admin",
-        icon: "user-edit",
-        submenu: true,
-        showSubRoute: false,
+      // {
+      //   label: "Super Admin",
+      //   icon: "user-edit",
+      //   submenu: true,
+      //   showSubRoute: false,
 
-        submenuItems: [
-          { label: "Dashboard", link: "/dashboard" },
-          { label: "Companies", link: "/companies" },
-          { label: "Subscriptions", link: "/subscription" },
-          { label: "Packages", link: "/packages" },
-          { label: "Domain", link: "/domain" },
-          { label: "Purchase Transaction", link: route.purchasetransaction },
-        ],
-      },
+      //   submenuItems: [
+      //     { label: "Dashboard", link: "/dashboard" },
+      //     { label: "Companies", link: "/companies" },
+      //     { label: "Subscriptions", link: "/subscription" },
+      //     { label: "Packages", link: "/packages" },
+      //     { label: "Domain", link: "/domain" },
+      //     { label: "Purchase Transaction", link: route.purchasetransaction },
+      //   ],
+      // },
       {
         label: "Application",
         icon: "brand-apple-arcade",
