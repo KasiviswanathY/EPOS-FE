@@ -67,7 +67,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="header">
+      <div className="header"style={{backgroundColor: 'skyblue'}}>
         {/* Logo */}
         <div className="main-header">
           <div
