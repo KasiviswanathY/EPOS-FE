@@ -225,12 +225,12 @@ const TwoColumnSidebar = () => {
                                         </li>
                                     </ul> */}
                                 </div>
-                                <div className="tab-pane fade" id="application">
-                                    <ul>
-                                        <li>
+                                {/* <div className="tab-pane fade" id="application">
+                                    <ul> */}
+                                        {/* <li>
                                             <Link href={all_routes.chat}>Chat</Link>
-                                        </li>
-                                        <li className="submenu submenu-two">
+                                        </li> */}
+                                        {/* <li className="submenu submenu-two">
                                             <Link href="#">
                                                 Call
                                                 <span className="menu-arrow inside-submenu" />
@@ -246,14 +246,14 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.callhistory}>Call History</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.calendars}>Calendar</Link>
-                                        </li>
+                                        </li> */}
                                         {/* <li>
                                             <Link href="contacts.html">Contacts</Link>
                                         </li> */}
-                                        <li>
+                                        {/* <li>
                                             <Link href={route.email}>Email</Link>
                                         </li>
                                         <li>
@@ -267,8 +267,8 @@ const TwoColumnSidebar = () => {
                                         </li>
                                         <li>
                                             <Link href={route.projects}>Projects</Link>
-                                        </li>
-                                        <li className="submenu submenu-two">
+                                        </li> */}
+                                        {/* <li className="submenu submenu-two">
                                             <Link href="#">
                                                 Ecommerce
                                                 <span className="menu-arrow inside-submenu" />
@@ -296,15 +296,15 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.reviews}>Reviews</Link>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <Link href={route.SocialFeed}>Social Feed</Link>
                                         </li>
                                         <li>
                                             <Link href={route.searchlist}>Search List</Link>
-                                        </li>
-                                    </ul>
-                                </div>
+                                        </li> */}
+                                    {/* </ul>
+                                </div> */}
                                 <div className="tab-pane fade" id="layout">
                                     <ul>
                                         <li className="menu-title">
