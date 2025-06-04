@@ -16,8 +16,8 @@ const ApexHeartChartWrapper = () => {
         enableShades: false,
         colorScale: {
           ranges: [
-            { from: 0, to: 99, color: "#FFE3CB" },
-            { from: 100, to: 200, color: "skyblue" },
+            { from: 0, to: 99, color: "skyblue " },
+            { from: 100, to: 200, color: "#52796F " },
           ],
         },
       },

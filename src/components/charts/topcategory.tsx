@@ -12,7 +12,7 @@ const data = {
     datasets: [
         {
             data: [16, 24, 50],
-            backgroundColor: ['#092C4C', 'pink', 'skyblue'],
+            backgroundColor: ['#092C4C', '#E63946', 'skyblue'],
             borderWidth: 5,
             borderRadius: 10,
             hoverBorderWidth: 0,  // Border radius for curved edges

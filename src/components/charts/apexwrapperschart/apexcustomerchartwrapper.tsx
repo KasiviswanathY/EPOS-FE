@@ -54,7 +54,7 @@ const ApexCUstomerChartWrapper: React.FC = () => {
         stroke: {
           lineCap: "round",
         },
-        colors: ["#E04F16", "#0E9384"],
+        colors: ["#1D3557", "#5BC0EB"],
         series: [70, 70],
         labels: ["First Time", "Return"],
       };

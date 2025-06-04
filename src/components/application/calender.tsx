@@ -90,7 +90,7 @@ export default function CalenderComponent(){
     
     return(
         <>
-        <div className="page-wrapper">
+        <div className="page-wrapper"style={{backgroundColor: 'skyblue'}}>
           <div className="content">
             <div className="page-header">
               <div className="add-item d-flex">
@@ -129,7 +129,7 @@ export default function CalenderComponent(){
               </div>
             </div>
   
-            <div className="row">
+            <div className="row"style={{backgroundColor: 'skyblue'}}>
               {/* Calendar Sidebar */}
               <div className="col-xxl-3 col-xl-4 theiaStickySidebar">
                 <div className="stickybar">
