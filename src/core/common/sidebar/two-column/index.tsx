@@ -459,7 +459,7 @@ const TwoColumnSidebar = () => {
                                                 <span>Quotation</span>
                                             </Link>
                                         </li> */}
-                                        <li className="submenu">
+                                        {/* <li className="submenu">
                                             <Link href="#">
                                                 <span>POS</span>
                                                 <span className="menu-arrow" />
@@ -481,7 +481,7 @@ const TwoColumnSidebar = () => {
                                                     <Link href={route.pos5}>POS 5</Link>
                                                 </li>
                                             </ul>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                                 <div className="tab-pane fade" id="finance">
