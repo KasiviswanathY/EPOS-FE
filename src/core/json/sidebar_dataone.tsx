@@ -323,6 +323,13 @@ export const SidebarData1 = [
     activeRoute: 'product',
     subRoutes: [
       {
+        tittle: 'Product-view',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/product-view",
+        subRoutes: [],
+      },
+      {
         tittle: 'Products',
         hasSubRoute: false,
         showSubRoute: true,
