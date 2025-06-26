@@ -1,6 +1,4 @@
-"use client";
-/* eslint-disable @next/next/no-img-element */
-
+"use client"
 import CommonFooter from "@/core/common/footer/commonFooter";
 import CollapesIcon from "@/core/common/tooltip-content/collapes";
 import RefreshIcon from "@/core/common/tooltip-content/refresh";
@@ -13,39 +11,60 @@ import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
 
 export default function CategoryListComponent() {
   const data = categorylist;
+
   const columns = [
+    { title: "Name", dataIndex: "category" },
+    { title: "Description", dataIndex: "description" },
+    { title: "Parent Category", dataIndex: "parentCategory" },
+    { title: "Report Category", dataIndex: "reportCategory" },
+    { title: "Order Printer", dataIndex: "orderPrinter" },
+    { title: "Course", dataIndex: "course" },
+    { title: "Wet/Dry", dataIndex: "wetDry" },
     {
-      title: "Category",
-      dataIndex: "category",
-      sorter: (a: any, b: any) => a.category.length - b.category.length,
-    },
-    {
-      title: "Category Slug",
-      dataIndex: "categoryslug",
-      sorter: (a: any, b: any) => a.categoryslug.length - b.categoryslug.length,
-    },
-    {
-      title: "Created On",
-      dataIndex: "createdon",
-      sorter: (a: any, b: any) => a.createdon.length - b.createdon.length,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text: any) => (
-        <span className="badge bg-success fw-medium fs-10">{text}</span>
+      title: "Button colour",
+      dataIndex: "buttonColour",
+      render: (color: string) => (
+        <span className="d-inline-flex align-items-center gap-1">
+          <span
+            className="rounded-circle d-inline-block"
+            style={{
+              width: 10,
+              height: 10,
+              backgroundColor: color?.toLowerCase().replace(" ", "") || "#ccc",
+            }}
+          ></span>
+          {color}
+        </span>
       ),
-      sorter: (a: any, b: any) => a.status.length - b.status.length,
+    },
+    { title: "Popup Note", dataIndex: "popupNote" },
+    { title: "Till order", dataIndex: "tillOrder" },
+    {
+      title: "Show On Till",
+      dataIndex: "showOnTill",
+      render: (val: boolean) => (
+        <input type="checkbox" checked={val} disabled />
+      ),
+    },
+    { title: "Nominal Code", dataIndex: "nominalCode" },
+    {
+      title: "Image",
+      dataIndex: "image",
+      render: (src: string) =>
+        src ? (
+          <img src={src} alt="category" style={{ width: 24, height: 24 }} />
+        ) : (
+          "-"
+        ),
     },
     {
       title: "",
       dataIndex: "actions",
-      key: "actions",
       render: () => (
         <div className="action-table-data">
-          <div className="edit-delete-action">
+          <div className="edit-delete-action d-flex align-items-center gap-2">
             <Link
-              className="me-2 p-2"
+              className="p-2"
               href="#"
               data-bs-toggle="modal"
               data-bs-target="#edit-category"
@@ -53,34 +72,28 @@ export default function CategoryListComponent() {
               <i data-feather="edit" className="feather-edit"></i>
             </Link>
             <Link
+              href="#"
               data-bs-toggle="modal"
               data-bs-target="#delete-modal"
               className="p-2"
-              href="#"
             >
-              <i data-feather="trash-2" className="feather-trash-2"></i>
+              <i data-feather="trash-2" className="feather-trash-2 text-danger"></i>
             </Link>
           </div>
         </div>
       ),
     },
   ];
+
   return (
     <div>
       <div className="page-wrapper">
         <div className="content">
-          <div className="page-header">
-            <div className="add-item d-flex">
-              <div className="page-title">
-                <h4 className="fw-bold">Category</h4>
-                <h6>Manage your categories</h6>
-              </div>
+          <div className="page-header d-flex justify-content-between align-items-center">
+            <div className="page-title">
+              <h4 className="fw-bold">Categories</h4>
+              
             </div>
-            <ul className="table-top-head">
-              <TooltipIcons />
-              <RefreshIcon />
-              <CollapesIcon />
-            </ul>
             <div className="page-btn">
               <Link
                 href="#"
@@ -93,68 +106,20 @@ export default function CategoryListComponent() {
               </Link>
             </div>
           </div>
-          {/* /product list */}
           <div className="card table-list-card">
-            <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-              <div className="search-set"></div>
-              <div className="d-flex table-dropdown my-xl-auto right-content align-items-center flex-wrap row-gap-3">
-                <div className="dropdown me-2">
-                  <Link
-                    href="#"
-                    className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
-                    data-bs-toggle="dropdown"
-                  >
-                    Status
-                  </Link>
-                  <ul className="dropdown-menu  dropdown-menu-end p-3">
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Active
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Inactive
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                <div className="dropdown">
-                  <Link
-                    href="#"
-                    className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
-                    data-bs-toggle="dropdown"
-                  >
-                    Sort By : Last 7 Days
-                  </Link>
-                  <ul className="dropdown-menu  dropdown-menu-end p-3">
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Recently Added
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Ascending
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Desending
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Last Month
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Last 7 Days
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+            <div className="card-header d-flex justify-content-between align-items-center flex-wrap">
+              <div className="input-group" style={{ maxWidth: "300px" }}>
+                <span className="input-group-text bg-white">
+                  <i className="ti ti-search text-muted"></i>
+                </span>
+              </div>
+              <div className="d-flex align-items-center gap-2 mt-2 mt-md-0">
+                <button className="btn btn-outline-dark d-flex align-items-center">
+                  <i className="ti ti-layout-grid me-1"></i> Columns
+                </button>
+                <button className="btn btn-outline-dark d-flex align-items-center">
+                  <i className="ti ti-filter me-1"></i> Filter
+                </button>
               </div>
             </div>
             <div className="card-body">
@@ -163,85 +128,75 @@ export default function CategoryListComponent() {
               </div>
             </div>
           </div>
-          {/* /product list */}
+          <CommonFooter />
         </div>
-        <CommonFooter />
-      </div>
-
-      {/* Add Category */}
-      <div className="modal fade" id="add-category">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="page-wrapper-new p-0">
-              <div className="content">
-                <div className="modal-header">
-                  <div className="page-title">
-                    <h4>Add Category</h4>
+        <div className="modal fade" id="add-category">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="page-wrapper-new p-0">
+                <div className="content">
+                  <div className="modal-header">
+                    <div className="page-title">
+                      <h4>Add Category</h4>
+                    </div>
+                    <button
+                      type="button"
+                      className="close bg-danger text-white fs-16"
+                      data-bs-dismiss="modal"
+                    >
+                      <span>×</span>
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    className="close bg-danger text-white fs-16"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <form>
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Category<span className="text-danger ms-1">*</span>
-                      </label>
-                      <input type="text" className="form-control" />
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Category Slug<span className="text-danger ms-1">*</span>
-                      </label>
-                      <input type="text" className="form-control" />
-                    </div>
-                    <div className="mb-0">
-                      <div className="status-toggle modal-status d-flex justify-content-between align-items-center">
-                        <span className="status-label">
-                          Status<span className="text-danger ms-1">*</span>
-                        </span>
+                  <div className="modal-body">
+                    <form>
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Category<span className="text-danger">*</span>
+                        </label>
+                        <input type="text" className="form-control" />
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Category Slug<span className="text-danger">*</span>
+                        </label>
+                        <input type="text" className="form-control" />
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <label className="form-label mb-0">
+                          Status<span className="text-danger">*</span>
+                        </label>
                         <input
                           type="checkbox"
-                          id="user2"
-                          className="check"
+                          className="form-check-input"
                           defaultChecked
                         />
-                        <label htmlFor="user2" className="checktoggle" />
                       </div>
-                    </div>
-                  </form>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn me-2 btn-secondary fs-13 fw-medium p-2 px-3 shadow-none"
-                    data-bs-dismiss="modal"
-                  >
-                    Cancel
-                  </button>
-                  <Link
-                    href="#"
-                    data-bs-dismiss="modal"
-                    className="btn btn-primary fs-13 fw-medium p-2 px-3"
-                  >
-                    Add Category
-                  </Link>
+                    </form>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Cancel
+                    </button>
+                    <Link
+                      href="#"
+                      data-bs-dismiss="modal"
+                      className="btn btn-primary"
+                    >
+                      Add Category
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <EditCategoryList />
+        <CommonDeleteModal />
       </div>
-      {/* /Add Category */}
-
-      <EditCategoryList />
-      <CommonDeleteModal />
     </div>
   );
 }
