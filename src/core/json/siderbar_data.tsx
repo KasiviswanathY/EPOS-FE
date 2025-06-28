@@ -101,6 +101,13 @@ export const SidebarData = [
     submenuHdr: "Inventory",
     submenuItems: [
       {
+        label: "Product-view",
+        link: "/product-view",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Products",
         link: "/product-list",
         icon: "box",

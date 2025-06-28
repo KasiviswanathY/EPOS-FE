@@ -342,6 +342,11 @@ const TwoColumnSidebar = () => {
                                             <span>Inventory</span>
                                         </li>
                                         <li>
+                                            <Link href={route.productview}>
+                                                <span>Product view</span>
+                                            </Link>
+                                        </li>
+                                        <li>
                                             <Link href={route.productlist}>
                                                 <span>Products</span>
                                             </Link>
