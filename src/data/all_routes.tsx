@@ -153,6 +153,7 @@ export const all_routes = {
   managestock: "/manage-stocks",
   stockadjustment: "/stock-adjustment",
   stocktransfer: "/stock-transfer",
+  stocklevel: "/stock-level",
   salesreport: "/sales-report",
   purchasereport: "/purchase-report",
   inventoryreport: "/inventory-report",
