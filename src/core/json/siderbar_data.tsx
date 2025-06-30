@@ -207,16 +207,23 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-      {
-        label: "Stock Adjustment",
-        link: "/stock-adjustment",
-        icon: "stairs-up",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Stock Transfer",
-        link: "/stock-transfer",
+      // {
+      //   label: "Stock Adjustment",
+      //   link: "/stock-adjustment",
+      //   icon: "stairs-up",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Stock Transfer",
+      //   link: "/stock-transfer",
+      //   icon: "stack-pop",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+    {
+        label: "Stock Audit History",
+        link: "/stock-audit-history",
         icon: "stack-pop",
         showSubRoute: false,
         submenu: false,
