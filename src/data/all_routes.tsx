@@ -154,6 +154,7 @@ export const all_routes = {
   stockadjustment: "/stock-adjustment",
   stocktransfer: "/stock-transfer",
   salesreport: "/sales-report",
+  stockwarnings: "/stock-warnings",
   purchasereport: "/purchase-report",
   inventoryreport: "/inventory-report",
   supplierreport: "/supplier-report",
