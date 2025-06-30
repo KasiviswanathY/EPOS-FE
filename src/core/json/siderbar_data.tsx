@@ -235,6 +235,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Stock Warnings",
+        link: "/stock-warnings",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {

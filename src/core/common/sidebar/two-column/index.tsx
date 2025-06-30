@@ -427,6 +427,13 @@ const TwoColumnSidebar = () => {
                                             <Link href={route.stocktransfer}>
                                                 <span>Stock Transfer</span>
                                             </Link>
+
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.stockwarnings}>
+                                                <span>Stock Warnings</span>
+
                                         </li> */}
                                         <li>
                                             <Link href={route.stockaudithistory}>
@@ -436,6 +443,7 @@ const TwoColumnSidebar = () => {
                                          <li>
                                             <Link href={route.stocklevel}>
                                                 <span>Stock Level</span>
+
                                             </Link>
                                         </li>
                                     </ul>

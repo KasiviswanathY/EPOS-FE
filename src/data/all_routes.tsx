@@ -157,6 +157,7 @@ export const all_routes = {
   stockaudithistory: "/stock-audit-history",
   stocklevel: "/stock-level",
   salesreport: "/sales-report",
+  stockwarnings: "/stock-warnings",
   purchasereport: "/purchase-report",
   inventoryreport: "/inventory-report",
   supplierreport: "/supplier-report",
