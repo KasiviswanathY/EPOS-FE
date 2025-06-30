@@ -465,6 +465,15 @@ export const SidebarData1 = [
             route: "/stock-level",
             subRoutes: [],
           },
+
+          {
+            tittle: 'Non-Selling Stocks',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/non-selling-stocks",
+            subRoutes: [],
+          },
+
             {
              tittle: 'Stock Warnings',
              hasSubRoute: false,
