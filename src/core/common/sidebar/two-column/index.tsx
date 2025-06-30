@@ -428,7 +428,7 @@ const TwoColumnSidebar = () => {
                                                 <span>Stock Transfer</span>
                                             </Link>
                                         </li>
-                                          <li>
+                                        <li>
                                             <Link href={route.stockaudithistory}>
                                                 <span>Stock Audit History</span>
                                             </Link>
