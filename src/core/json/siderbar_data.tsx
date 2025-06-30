@@ -221,6 +221,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Non-Selling Stocks",
+        link: "/non-selling-stocks",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
