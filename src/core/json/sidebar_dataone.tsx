@@ -454,7 +454,17 @@ export const SidebarData1 = [
             showSubRoute: false,
             route: "/stock-audit-history",
             subRoutes: [],
+ 
          },
+
+          },
+          {
+            tittle: 'Stock Level',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/stock-level",
+            subRoutes: [],
+          },
         ],
       },
       {

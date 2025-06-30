@@ -228,6 +228,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Stock Level",
+        link: "/stock-level",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
