@@ -457,7 +457,7 @@ export const SidebarData1 = [
  
          },
 
-          },
+        
           {
             tittle: 'Stock Level',
             hasSubRoute: false,
