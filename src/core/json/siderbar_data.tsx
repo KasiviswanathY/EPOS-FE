@@ -221,6 +221,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Stock Audit History",
+        link: "/stock-audit-history",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
