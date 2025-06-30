@@ -418,7 +418,7 @@ const TwoColumnSidebar = () => {
                                                 <span>Manage Stock</span>
                                             </Link>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <Link href={route.stockadjustment}>
                                                 <span>Stock Adjustment</span>
                                             </Link>
@@ -426,6 +426,24 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.stocktransfer}>
                                                 <span>Stock Transfer</span>
+                                            </Link>
+
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.stockwarnings}>
+                                                <span>Stock Warnings</span>
+
+                                        </li> */}
+                                        <li>
+                                            <Link href={route.stockaudithistory}>
+                                                <span>Stock Audit History</span>
+                                            </Link>
+                                        </li>
+                                         <li>
+                                            <Link href={route.stocklevel}>
+                                                <span>Stock Level</span>
+
                                             </Link>
                                         </li>
                                          <li>
