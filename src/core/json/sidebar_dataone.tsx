@@ -449,12 +449,13 @@ export const SidebarData1 = [
             subRoutes: [],
           },
             {
-            tittle: 'Stock Warnings',
-            hasSubRoute: false,
-            showSubRoute: false,
-            route: "/stock-warnings",
-            subRoutes: [],
+             tittle: 'Stock Warnings',
+             hasSubRoute: false,
+             showSubRoute: false,
+             route: "/stock-warnings",
+             subRoutes: [],
           },
+
         ],
       },
       {
