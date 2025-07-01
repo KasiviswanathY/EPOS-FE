@@ -5,19 +5,19 @@
 export const SidebarData1 = [
 
   {
-    tittle: 'Main Menu',
+    title: 'Main Menu',
     hasSubRoute: true,
     icon: 'layout-grid',
     showSubRoute: false,
     route: "/index",
     subRoutes: [
       {
-        tittle: 'Dashboard',
+        title: 'Dashboard',
         hasSubRoute: true,
         showSubRoute: true,
         subRoutes: [
-          {
-            tittle: 'Admin Dashboard',
+      {
+            title: 'Admin Dashboard',
             hasSubRoute: false,
             showSubRoute: false,
             route: "/index",
@@ -31,7 +31,7 @@ export const SidebarData1 = [
           //   subRoutes: [],
           // },
           {
-            tittle: 'Sales Dashboard',
+            title: 'Sales Dashboard',
             hasSubRoute: false,
             showSubRoute: false,
             route: "/sales-dashboard",
@@ -457,7 +457,11 @@ export const SidebarData1 = [
  
          },
 
+        Non-Selling-Stocks
         
+
+       
+]
           {
             tittle: 'Stock Level',
             hasSubRoute: false,
