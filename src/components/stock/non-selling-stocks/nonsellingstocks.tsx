@@ -4,7 +4,7 @@ import { useState } from "react";
 import Table from "@/core/common/pagination/datatable";
 import CommonFooter from "@/core/common/footer/commonFooter";
 
-export default function NonSellingStocks() {
+export default function NonSellingStocksComponent() {
   const [selectedPeriod, setSelectedPeriod] = useState("Last 7 days");
   const [customDateRange] = useState("22 Jun 2025 - 28 Jun 2025");
 
