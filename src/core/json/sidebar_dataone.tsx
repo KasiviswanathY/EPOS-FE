@@ -434,20 +434,20 @@ export const SidebarData1 = [
             route: "/manage-stocks",
             subRoutes: [],
           },
-          // {
-          //   tittle: 'Stock Adjustment',
-          //   hasSubRoute: false,
-          //   showSubRoute: false,
-          //   route: "/stock-adjustment",
-          //   subRoutes: [],
-          // },
-          // {
-          //   tittle: 'Stock Transfer',
-          //   hasSubRoute: false,
-          //   showSubRoute: false,
-          //   route: "/stock-transfer",
-          //   subRoutes: [],
-          // },
+          {
+            tittle: 'Stock Adjustment',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/stock-adjustment",
+            subRoutes: [],
+          },
+          {
+            tittle: 'Stock Transfer',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/stock-transfer",
+            subRoutes: [],
+          },
          {
             tittle: 'Stock Audit History',
             hasSubRoute: false,
@@ -457,7 +457,11 @@ export const SidebarData1 = [
  
          },
 
+        Non-Selling-Stocks
+        
+
        
+]
           {
             tittle: 'Stock Level',
             hasSubRoute: false,
