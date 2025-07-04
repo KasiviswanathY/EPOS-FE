@@ -213,6 +213,13 @@ export const SidebarData1 = [
             subRoutes: [],
           },
           {
+            title: 'Stock Takes',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/stock-takes",
+            subRoutes: [],
+          },
+          {
             title: 'Stock Adjustment',
             hasSubRoute: false,
             showSubRoute: false,
