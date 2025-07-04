@@ -157,6 +157,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Promotion List",
+        link: "/promotion-list",
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Units",
         link: "/units",
         icon: "brand-unity",

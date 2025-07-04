@@ -1,7 +1,3 @@
-
-
-
-
 export const SidebarData1 = [
 
   {
@@ -379,6 +375,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        tittle: 'Promotion List',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/promotion-list",
+        subRoutes: [],
+      },
+      {
         tittle: 'Units',
         hasSubRoute: false,
         showSubRoute: false,
@@ -448,20 +451,13 @@ export const SidebarData1 = [
             route: "/stock-transfer",
             subRoutes: [],
           },
-         {
+          {
             tittle: 'Stock Audit History',
             hasSubRoute: false,
             showSubRoute: false,
             route: "/stock-audit-history",
             subRoutes: [],
- 
-         },
-
-        Non-Selling-Stocks
-        
-
-       
-]
+          },
           {
             tittle: 'Stock Level',
             hasSubRoute: false,
@@ -469,7 +465,6 @@ export const SidebarData1 = [
             route: "/stock-level",
             subRoutes: [],
           },
-
           {
             tittle: 'Non-Selling Stocks',
             hasSubRoute: false,
@@ -477,15 +472,13 @@ export const SidebarData1 = [
             route: "/non-selling-stocks",
             subRoutes: [],
           },
-
-            {
-             tittle: 'Stock Warnings',
-             hasSubRoute: false,
-             showSubRoute: false,
-             route: "/stock-warnings",
-             subRoutes: [],
+          {
+            tittle: 'Stock Warnings',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/stock-warnings",
+            subRoutes: [],
           },
-
         ],
       },
       {
@@ -657,17 +650,17 @@ export const SidebarData1 = [
             showSubRoute: true,
             subRoutes: [
               {
-                tittle: 'Expenses',
+                title: 'Expenses',
+                route: "/expense-list",
                 hasSubRoute: false,
                 showSubRoute: false,
-                route: "/expense-list",
                 subRoutes: [],
               },
               {
-                tittle: 'Expense Category',
+                title: 'Expense Category',
+                route: "/expense-category",
                 hasSubRoute: false,
                 showSubRoute: false,
-                route: "/expense-category",
                 subRoutes: [],
               },
             ],
@@ -692,20 +685,20 @@ export const SidebarData1 = [
         ],
       },
       {
-        tittle: 'Income',
+        title: 'Income',
         hasSubRoute: true,
         showSubRoute: false,
         route: "/purchase-returns",
         subRoutes: [
           {
-            tittle: 'Income',
+            title: 'Income',
             hasSubRoute: false,
             showSubRoute: false,
             route: "/income",
             subRoutes: [],
           },
           {
-            tittle: 'Income Category',
+            title: 'Income Category',
             hasSubRoute: false,
             showSubRoute: false,
             route: "/income-category",
