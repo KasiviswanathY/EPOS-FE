@@ -207,6 +207,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Stock Movements",
+        link: "/stock-movements",
+        icon: "stack-3",
+        showSubRoute: false,
+        submenu: false,
+      },
       // {
       //   label: "Stock Adjustment",
       //   link: "/stock-adjustment",
