@@ -379,6 +379,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        tittle: 'Promotions',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/promotions",
+        subRoutes: [],
+      },
+      {
         tittle: 'Units',
         hasSubRoute: false,
         showSubRoute: false,
@@ -456,13 +463,9 @@ export const SidebarData1 = [
             subRoutes: [],
  
          },
-
-        Non-Selling-Stocks
         
 
-       
-]
-          {
+  {
             tittle: 'Stock Level',
             hasSubRoute: false,
             showSubRoute: false,
