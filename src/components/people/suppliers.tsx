@@ -129,7 +129,7 @@ export default function SupplierListComponent() {
       <div className="content">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="mb-0">Suppliers List</h4>
-                     <Link href="/addsuppliers" className="btn btn-sm btn-primary">ADD SUPPLIERS LIST</Link>
+          <Link href="/addsuppliers" className="btn btn-sm btn-primary">ADD SUPPLIERS LIST</Link>
 
         </div>
         <div className="card mb-4">

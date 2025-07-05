@@ -50,7 +50,7 @@ export default function AddSupplierPage() {
     <div className="page-wrapper">
       <div className="content">
         <div className="page-header d-flex justify-content-between align-items-center">
-          <h4> Add Stock Movement </h4>
+          <h4> Add a Supplier </h4>
         </div>
       <div className="card">
         <div className="card-body">
