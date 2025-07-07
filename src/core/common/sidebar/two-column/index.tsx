@@ -382,6 +382,18 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
+                                            <Link href={route.promotionlist}>
+                                                <span>Promotion list</span>
+                                            </Link>
+                                        </li>
+                                            <Link href={route.promotions}>
+                                                <span>Promotions</span>
+                                            </Link>
+                                        </li>
+
+
+                                        <li>
                                             <Link href={route.units}>
                                                 <span>Units</span>
                                             </Link>
@@ -419,8 +431,13 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
                                             <Link href={route.stocktakes}>
                                                 <span>Stock Takes</span>
+
+                                            <Link href={route.stockmovements}>
+                                                <span>Stock Movements</span>
+
                                             </Link>
                                         </li>
                                         <li>

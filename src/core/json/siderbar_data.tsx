@@ -157,6 +157,22 @@ export const SidebarData = [
         submenu: false,
       },
       {
+
+        label: "Promotion List",
+        link: "/promotion-list",
+
+        label: "Promotions",
+        link: "/promotions",
+
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+
+    
+
+      {
         label: "Units",
         link: "/units",
         icon: "brand-unity",
@@ -208,8 +224,16 @@ export const SidebarData = [
         submenu: false,
       },
       {
+
         label: "Stock Takes",
         link: "/stock-takes",
+        icon: "stack-3",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Stock Movements",
+        link: "/stock-movements",
         icon: "stack-3",
         showSubRoute: false,
         submenu: false,
