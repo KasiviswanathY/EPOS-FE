@@ -156,6 +156,7 @@ export const all_routes = {
   suppliers: "/suppliers",
   storelist: "/store-list",
   managestock: "/manage-stocks",
+  stocktakes: "/stock-takes",
   stockmovements: "/stock-movements",
   stockadjustment: "/stock-adjustment",
   stocktransfer: "/stock-transfer",

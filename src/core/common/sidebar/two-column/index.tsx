@@ -431,8 +431,13 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
+                                            <Link href={route.stocktakes}>
+                                                <span>Stock Takes</span>
+
                                             <Link href={route.stockmovements}>
                                                 <span>Stock Movements</span>
+
                                             </Link>
                                         </li>
                                         <li>
