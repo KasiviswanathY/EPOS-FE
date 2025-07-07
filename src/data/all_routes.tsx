@@ -229,6 +229,7 @@ export const all_routes = {
   discount: "/discount",
   discountPlan: "/discount-plan",
   accountlist: "/account-list",
+  tenders: "/tenders",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",
