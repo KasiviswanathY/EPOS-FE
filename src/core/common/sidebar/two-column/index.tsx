@@ -342,6 +342,11 @@ const TwoColumnSidebar = () => {
                                             <span>Inventory</span>
                                         </li>
                                         <li>
+                                            <Link href={route.productview}>
+                                                <span>Product view</span>
+                                            </Link>
+                                        </li>
+                                        <li>
                                             <Link href={route.productlist}>
                                                 <span>Products</span>
                                             </Link>
@@ -376,6 +381,19 @@ const TwoColumnSidebar = () => {
                                                 <span>Brands</span>
                                             </Link>
                                         </li>
+                                        <li>
+
+                                            <Link href={route.promotionlist}>
+                                                <span>Promotion list</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link href={route.promotions}>
+                                                <span>Promotions</span>
+                                            </Link>
+                                        </li>
+
+
                                         <li>
                                             <Link href={route.units}>
                                                 <span>Units</span>
@@ -414,6 +432,17 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
+                                            <Link href={route.stocktakes}>
+                                                <span>Stock Takes</span>
+                                            </Link>
+
+                                            <Link href={route.stockmovements}>
+                                                <span>Stock Movements</span>
+
+                                            </Link>
+                                        </li>
+                                        <li>
                                             <Link href={route.stockadjustment}>
                                                 <span>Stock Adjustment</span>
                                             </Link>
@@ -421,6 +450,31 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.stocktransfer}>
                                                 <span>Stock Transfer</span>
+                                            </Link>
+
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.stockwarnings}>
+                                                <span>Stock Warnings</span>
+                                                
+                                            </Link>
+
+                                        </li>
+                                        <li>
+                                            <Link href={route.stockaudithistory}>
+                                                <span>Stock Audit History</span>
+                                            </Link>
+                                        </li>
+                                         <li>
+                                            <Link href={route.stocklevel}>
+                                                <span>Stock Level</span>
+
+                                            </Link>
+                                        </li>
+                                         <li>
+                                            <Link href={route.nonsellingstocks}>
+                                                <span>Non-SellingStocks</span>
                                             </Link>
                                         </li>
                                     </ul>
@@ -559,6 +613,18 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.accountlist}>
                                                 <span>Bank Accounts</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.tenders}>
+                                                <span>Tenders</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.alltransactions}>
+                                                <span>All Transactions</span>
                                             </Link>
                                         </li>
                                         <li>

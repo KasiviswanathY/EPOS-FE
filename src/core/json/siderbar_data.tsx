@@ -101,6 +101,13 @@ export const SidebarData = [
     submenuHdr: "Inventory",
     submenuItems: [
       {
+        label: "Product-view",
+        link: "/product-view",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Products",
         link: "/product-list",
         icon: "box",
@@ -149,6 +156,25 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+
+        label: "Promotion List",
+        link: "/promotion-list",
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+    { 
+        label: "Promotions",
+        link: "/promotions",
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+
+    
+
       {
         label: "Units",
         link: "/units",
@@ -201,15 +227,58 @@ export const SidebarData = [
         submenu: false,
       },
       {
-        label: "Stock Adjustment",
-        link: "/stock-adjustment",
-        icon: "stairs-up",
+
+        label: "Stock Takes",
+        link: "/stock-takes",
+        icon: "stack-3",
         showSubRoute: false,
         submenu: false,
       },
       {
-        label: "Stock Transfer",
-        link: "/stock-transfer",
+        label: "Stock Movements",
+        link: "/stock-movements",
+        icon: "stack-3",
+        showSubRoute: false,
+        submenu: false,
+      },
+      // {
+      //   label: "Stock Adjustment",
+      //   link: "/stock-adjustment",
+      //   icon: "stairs-up",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Stock Transfer",
+      //   link: "/stock-transfer",
+      //   icon: "stack-pop",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+    {
+        label: "Stock Audit History",
+        link: "/stock-audit-history",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Stock Level",
+        link: "/stock-level",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Stock Warnings",
+        link: "/stock-warnings",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
+       {
+        label: "Non-Selling Stocks",
+        link: "/non-selling-stocks",
         icon: "stack-pop",
         showSubRoute: false,
         submenu: false,
@@ -377,6 +446,20 @@ export const SidebarData = [
         label: "Bank Accounts",
         link: route.accountlist,
         icon: "building-bank",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Tenders",
+        link: route.tenders,
+        icon: "report-money",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "All Transactions",
+        link: "/all-transactions",
+        icon: "moneybag",
         showSubRoute: false,
         submenu: false,
       },
