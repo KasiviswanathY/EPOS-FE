@@ -157,16 +157,22 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
-        tittle: 'Promotions',
+
+        title: 'Promotion List',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/promotion-list",
+        subRoutes: [],
+      },
+      {
+        title: 'Promotions',
         hasSubRoute: false,
         showSubRoute: false,
         route: "/promotions",
         subRoutes: [],
       },
       {
-      
-
-        title: 'Units',
+        title: 'Units'
         hasSubRoute: false,
         showSubRoute: false,
         route: "/units",
@@ -236,13 +242,20 @@ export const SidebarData1 = [
             subRoutes: [],
           },
           {
+
+            
+
             title: 'Stock Audit History',
             hasSubRoute: false,
             showSubRoute: false,
             route: "/stock-audit-history",
             subRoutes: [],
+
+          },
+
  
          },
+
           {
             title: 'Stock Level',
             hasSubRoute: false,
@@ -258,7 +271,9 @@ export const SidebarData1 = [
             subRoutes: [],
           },
           {
+
             title: 'Stock Warnings',
+
             hasSubRoute: false,
             showSubRoute: false,
             route: "/stock-warnings",
@@ -371,17 +386,17 @@ export const SidebarData1 = [
             showSubRoute: true,
             subRoutes: [
               {
-                title: 'Expenses',
+                title: 'Expenses'
+                route: "/expense-list"
                 hasSubRoute: false,
                 showSubRoute: false,
-                route: "/expense-list",
                 subRoutes: [],
               },
               {
                 title: 'Expense Category',
+                route: "/expense-category",
                 hasSubRoute: false,
                 showSubRoute: false,
-                route: "/expense-category",
                 subRoutes: [],
               },
             ],
