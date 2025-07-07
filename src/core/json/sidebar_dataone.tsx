@@ -468,6 +468,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'All Transactions',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/all-transactions",
+        subRoutes: [],
+      },
+      {
         title: 'Money Transfer',
         hasSubRoute: false,
         showSubRoute: false,

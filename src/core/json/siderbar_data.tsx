@@ -447,6 +447,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "All Transactions",
+        link: "/all-transactions",
+        icon: "moneybag",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Money Transfer",
         link: "/money-transfer",
         icon: "moneybag",
