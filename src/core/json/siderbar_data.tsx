@@ -160,10 +160,13 @@ export const SidebarData = [
 
         label: "Promotion List",
         link: "/promotion-list",
-
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+    { 
         label: "Promotions",
         link: "/promotions",
-
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
@@ -443,6 +446,13 @@ export const SidebarData = [
         label: "Bank Accounts",
         link: route.accountlist,
         icon: "building-bank",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Tenders",
+        link: route.tenders,
+        icon: "report-money",
         showSubRoute: false,
         submenu: false,
       },
