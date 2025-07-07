@@ -5,18 +5,12 @@ import CommonFooter from "@/core/common/footer/commonFooter";
 
 import EditCategoryList from "@/core/modals/inventory/editcategorylist";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
-
-type Category = {
-
 import CollapesIcon from "@/core/common/tooltip-content/collapes";
 import RefreshIcon from "@/core/common/tooltip-content/refresh";
 import TooltipIcons from "@/core/common/tooltip-content/tooltipIcons";
 import Link from "next/link";
-import EditCategoryList from "@/core/modals/inventory/editcategorylist";
-import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
 
-interface CategoryItem {
-
+type Category = {
   category: string;
   description: string;
   parentCategory: string;
@@ -29,31 +23,30 @@ interface CategoryItem {
   tillOrder: string;
   showOnTill: boolean;
   nominalCode: string;
-
   image?: string;
 };
 
-type Column = {
-  title: string;
-  dataIndex: keyof Category;
-  render?: (value: any) => React.ReactNode;
-};
-
-const categorylist: Category[] = [
-  {
-    category: "Glass & Accessories",
-    description: "-",
-    parentCategory: "Tobacco Accessories",
-    reportCategory: "Tobacco Accessories",
-
-  image: string;
+interface CategoryItem {
+  category: string;
+  description: string;
+  parentCategory: string;
+  reportCategory: string;
+  orderPrinter: string;
+  course: string;
+  wetDry: string;
+  buttonColour: string;
+  popupNote: string;
+  tillOrder: string;
+  showOnTill: boolean;
+  nominalCode: string;
+  image?: string;
 }
 
-interface ColumnType {
+type ColumnType = {
   title: string;
   dataIndex: keyof CategoryItem;
   render?: (value: any, record: CategoryItem, rowIndex: number) => React.ReactNode;
-}
+};
 
 const categorylist: CategoryItem[] = [
   {
@@ -99,6 +92,10 @@ const categorylist: CategoryItem[] = [
     showOnTill: true,
     nominalCode: "-",
     image: "",
+    orderPrinter: "",
+    course: "",
+    wetDry: "",
+    buttonColour: ""
   },
   {
     category: "Electronics",
@@ -160,6 +157,8 @@ const categorylist: CategoryItem[] = [
     showOnTill: true,
     nominalCode: "-",
     image: "",
+    popupNote: "",
+    tillOrder: ""
   },
   {
     category: "Shoe",
@@ -230,6 +229,14 @@ const categorylist: CategoryItem[] = [
     reportCategory: "Snacks",
 
     image: "",
+    orderPrinter: "",
+    course: "",
+    wetDry: "",
+    buttonColour: "",
+    popupNote: "",
+    tillOrder: "",
+    showOnTill: false,
+    nominalCode: ""
   },
   {
     category: "Bags",
@@ -258,6 +265,11 @@ const categorylist: CategoryItem[] = [
     showOnTill: true,
     nominalCode: "-",
     image: "",
+    orderPrinter: "",
+    course: "",
+    wetDry: "",
+    buttonColour: "",
+    popupNote: ""
   },
   {
     category: "Phone",
@@ -291,7 +303,7 @@ const categorylist: CategoryItem[] = [
     nominalCode: "5678",
     image: undefined,
   },
-   {
+  {
     category: "Glass & Accessories",
     description: "-",
     parentCategory: "Tobacco Accessories",
@@ -302,6 +314,10 @@ const categorylist: CategoryItem[] = [
     showOnTill: true,
     nominalCode: "-",
     image: "",
+    orderPrinter: "",
+    course: "",
+    wetDry: "",
+    buttonColour: ""
   },
   {
     category: "Chairs",
@@ -361,6 +377,10 @@ const categorylist: CategoryItem[] = [
     showOnTill: true,
     nominalCode: "-",
     image: "",
+    orderPrinter: "",
+    course: "",
+    wetDry: "",
+    buttonColour: ""
   },
   {
     category: "Chairs",
@@ -409,10 +429,9 @@ const categorylist: CategoryItem[] = [
     nominalCode: "5678",
     image: undefined,
   },
-
 ];
 
-const columns: Column[] = [
+const columns: ColumnType[] = [
   { title: "Name", dataIndex: "category" },
   { title: "Description", dataIndex: "description" },
   { title: "Parent Category", dataIndex: "parentCategory" },
@@ -441,73 +460,19 @@ const columns: Column[] = [
   {
     title: "Show On Till",
     dataIndex: "showOnTill",
-    render: (val: boolean | undefined) => <input type="checkbox" checked={val} disabled />,
+    render: (val: boolean) => <input type="checkbox" checked={val} disabled />,
   },
   { title: "Nominal Code", dataIndex: "nominalCode" },
   {
     title: "Image",
     dataIndex: "image",
-    render: (src: string | undefined) =>
+    render: (src: string) =>
       src ? <img src={src} alt="category" style={{ width: 24, height: 24 }} /> : "-",
-
-    tillOrder: "-",
-    showOnTill: true,
-    nominalCode: "-",
-    image: "",
-
   },
 ];
 
 export default function CategoryListComponent() {
-
   const [showPopup, setShowPopup] = useState(false);
-
-  const columns: ColumnType[] = [
-    { title: "Name", dataIndex: "category" },
-    { title: "Description", dataIndex: "description" },
-    { title: "Parent Category", dataIndex: "parentCategory" },
-    { title: "Report Category", dataIndex: "reportCategory" },
-    { title: "Order Printer", dataIndex: "orderPrinter" },
-    { title: "Course", dataIndex: "course" },
-    { title: "Wet/Dry", dataIndex: "wetDry" },
-    {
-      title: "Button colour",
-      dataIndex: "buttonColour",
-      render: (color: string) => (
-        <span className="d-inline-flex align-items-center gap-1">
-          <span
-            className="rounded-circle d-inline-block"
-            style={{
-              width: 10,
-              height: 10,
-              backgroundColor: color?.toLowerCase().replace(" ", "") || "#ccc",
-            }}
-          ></span>
-        </span>
-      ),
-    },
-    { title: "Popup Note", dataIndex: "popupNote" },
-    { title: "Till order", dataIndex: "tillOrder" },
-    {
-      title: "Show On Till",
-      dataIndex: "showOnTill",
-      render: (val: boolean) => (
-        <input type="checkbox" checked={val} disabled />
-      ),
-    },
-    { title: "Nominal Code", dataIndex: "nominalCode" },
-    {
-      title: "Image",
-      dataIndex: "image",
-      render: (src: string) =>
-        src ? (
-          <img src={src} alt="category" style={{ width: 24, height: 24 }} />
-        ) : (
-          "-"
-        ),
-    },
-  ];
-
 
   return (
     <div className="page-wrapper">
@@ -515,7 +480,6 @@ export default function CategoryListComponent() {
         <div className="page-header d-flex justify-content-between align-items-center">
           <div className="page-title">
             <h4 className="fw-bold">Categories</h4>
-
           </div>
           <div className="page-btn">
             <button onClick={() => setShowPopup(true)} className="btn btn-primary">
@@ -525,30 +489,12 @@ export default function CategoryListComponent() {
         </div>
 
         <div className="card table-list-card">
-
-          </div>
-          <div className="page-btn">
-            <Link
-              href="#"
-              className="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#add-category"
-            >
-              <i className="ti ti-circle-plus me-1"></i>Add Category
-            </Link>
-          </div>
-        </div>
-        <div className="card table-list-card">
           <div className="card-header d-flex justify-content-between align-items-center flex-wrap">
             <div className="input-group" style={{ maxWidth: "300px" }}>
               <span className="input-group-text bg-white">
                 <i className="ti ti-search text-muted"></i>
               </span>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search"
-              />
+              <input type="text" className="form-control" placeholder="Search" />
             </div>
             <div className="d-flex align-items-center gap-2 mt-2 mt-md-0">
               <button className="btn btn-outline-dark d-flex align-items-center">
@@ -565,13 +511,8 @@ export default function CategoryListComponent() {
               <table className="table table-bordered table-striped">
                 <thead>
                   <tr>
-
                     {columns.map((col, i) => (
                       <th key={i}>{col.title}</th>
-
-                    {columns.map((col, index) => (
-                      <th key={index}>{col.title}</th>
-
                     ))}
                   </tr>
                 </thead>
@@ -579,19 +520,10 @@ export default function CategoryListComponent() {
                   {categorylist.map((item, rowIndex) => (
                     <tr key={rowIndex}>
                       {columns.map((col, colIndex) => {
-
                         const data = item[col.dataIndex];
                         return (
                           <td key={colIndex}>
-                            {typeof col.render === "function" ? col.render(data) : data ?? "-"}
-
-                        const data = item[col.dataIndex as keyof typeof item];
-                        return (
-                          <td key={colIndex}>
-                            {col.render
-                              ? col.render(data, item, rowIndex)
-                              : data ?? "-"}
-
+                            {col.render ? col.render(data, item, rowIndex) : data ?? "-"}
                           </td>
                         );
                       })}
@@ -600,7 +532,6 @@ export default function CategoryListComponent() {
                 </tbody>
               </table>
             </div>
-
           </div>
         </div>
         {showPopup && (
@@ -693,58 +624,53 @@ export default function CategoryListComponent() {
           </div>
         )}
 
-            <div className="d-flex justify-content-between align-items-center flex-wrap mt-3 px-2">
-              <div className="d-flex align-items-center gap-2">
-                <span className="text-muted">Row Per Page</span>
-                <select className="form-select form-select-sm w-auto">
-                  <option>10</option>
-                  <option>25</option>
-                  <option>50</option>
-                </select>
-                <span className="text-muted">Entries</span>
-              </div>
-              <div className="ms-auto">
-                <ul className="pagination mb-0">
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      &lt;
-                    </a>
-                  </li>
-                  <li className="page-item active">
-                    <a
-                      className="page-link"
-                      style={{backgroundColor: "#FFA500", color: "#fff",
-                        borderRadius: "50%",
-                        width: "32px",
-                        height: "32px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        border: "none",
-                       
-                      }}
-                      href="#"
-                    >
-                      1
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      &gt;
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+        <div className="d-flex justify-content-between align-items-center flex-wrap mt-3 px-2">
+          <div className="d-flex align-items-center gap-2">
+            <span className="text-muted">Row Per Page</span>
+            <select className="form-select form-select-sm w-auto">
+              <option>10</option>
+              <option>25</option>
+              <option>50</option>
+            </select>
+            <span className="text-muted">Entries</span>
+          </div>
+          <div className="ms-auto">
+            <ul className="pagination mb-0">
+              <li className="page-item">
+                <a className="page-link" href="#">
+                  &lt;
+                </a>
+              </li>
+              <li className="page-item active">
+                <a
+                  className="page-link"
+                  style={{
+                    backgroundColor: "#FFA500",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    width: "32px",
+                    height: "32px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "none",
+                  }}
+                  href="#"
+                >
+                  1
+                </a>
+              </li>
+              <li className="page-item">
+                <a className="page-link" href="#">
+                  &gt;
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-
-
-        <CommonFooter />
       </div>
 
-      <EditCategoryList />
-      <CommonDeleteModal />
+      <CommonFooter />
     </div>
   );
 }
