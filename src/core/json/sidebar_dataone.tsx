@@ -156,6 +156,13 @@ export const SidebarData1 = [
         route: "/brand-list",
         subRoutes: [],
       },
+            {
+        title: 'popup alert',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/pop-up-alert",
+        subRoutes: [],
+      },
       {
         title: 'Buying Review',
         hasSubRoute: false,
@@ -332,6 +339,13 @@ export const SidebarData1 = [
         showSubRoute: false,
         activeRoute: 'promo',
         subRoutes: [
+          {
+            title: 'Generate Labels',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/generate-labels",
+            subRoutes: [],
+          },
           {
             title: 'Coupons',
             hasSubRoute: false,

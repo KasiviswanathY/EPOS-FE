@@ -164,14 +164,39 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Pop Up Alert",
+        link: "/pop-up-alert",
+        icon: "alert-triangle",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
 
         label: "Promotion List",
         link: "/promotion-list",
+
+
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
       },
+
 {
+
+    { 
+        label: "Promotions",
+        link: "/promotions",
+
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+
+    
+
+      {
+
         label: "Units",
         link: "/units",
         icon: "brand-unity",
@@ -344,6 +369,13 @@ export const SidebarData = [
     submenuHdr: "Promo",
     showSubRoute: false,
     submenuItems: [
+      {
+        label: "Generate Labels",
+        link: "/generate-labels",
+        icon: "cards",
+        showSubRoute: false,
+        submenu: false,
+      },
       {
         label: "Coupons",
         link: "/coupons",

@@ -1,3 +1,4 @@
+import { popup } from "leaflet";
 
 export const all_routes = {
   newdashboard: "/index",
@@ -8,6 +9,7 @@ export const all_routes = {
   salesdashboard: "/sales-dashboard",
   brandlist: "/brand-list",
   buyingreview: "/buying-review",
+  popupalert: "/pop-up-alert",
   promotionlist: "/promotion-list",
   units: "/units",
   variantyattributes: "/variant-attributes",
@@ -209,6 +211,7 @@ export const all_routes = {
   leavestype: "/leave-types",
   warehouses: "/warehouse",
   coupons: "/coupons",
+  generateLabels: "/generate-labels",
   payrollList: "/employee-salary",
 
 

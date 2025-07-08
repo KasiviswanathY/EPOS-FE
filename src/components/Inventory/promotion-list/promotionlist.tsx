@@ -9,11 +9,8 @@ export default function PromotionListComponent() {
       <div className="content">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="fw-bold mb-0">Promotions </h5>
-         <button
-            className="btn btn-sm"style={{ backgroundColor: "#FE9F43", color: "#fff", fontWeight: 600 }}>
-            ADD PROMOTION
-          </button>
-        </div>
+         <Link href="/addpromotion" className="btn text-white" style={{ background: "#fd7e14", fontWeight: 600 }}>ADD PROMOTION</Link>
+         </div>
         <div className="card mb-3">
           <div className="card-body">
             <div className="row g-2 align-items-end">
