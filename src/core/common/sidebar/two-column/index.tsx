@@ -389,6 +389,7 @@ const TwoColumnSidebar = () => {
 
                                             <Link href={route.promotionlist}>
                                                 <span>Promotion list</span>
+                                            </Link>
 
                                             <Link href={route.popupalert}>
                                                 <span>Pop Up Alert</span>
@@ -402,17 +403,7 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
 
-                                         <li>
-                                            <Link href={route.promotions}>
-                                                <span>Promotions</span>
-
-                                            </Link>
-                                        </li>
-                                       
-
-
-
-                                        <li>
+                                       <li>
                                             <Link href={route.units}>
                                                 <span>Units</span>
                                             </Link>

@@ -2,34 +2,12 @@
 
 import React, { useState } from "react";
 import CommonFooter from "@/core/common/footer/commonFooter";
-
 import EditCategoryList from "@/core/modals/inventory/editcategorylist";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
 import CollapesIcon from "@/core/common/tooltip-content/collapes";
 import RefreshIcon from "@/core/common/tooltip-content/refresh";
 import TooltipIcons from "@/core/common/tooltip-content/tooltipIcons";
 import Link from "next/link";
-
-import EditCategoryList from "@/core/modals/inventory/editcategorylist";
-import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
-import { useState } from "react";
-
-type Category = {
-  category: string;
-  description: string;
-  parentCategory: string;
-  reportCategory: string;
-  orderPrinter: string;
-  course: string;
-  wetDry: string;
-  buttonColour: string;
-  popupNote: string;
-  tillOrder: string;
-  showOnTill: boolean;
-  nominalCode: string;
-  image?: string;
-};
-
 
 interface CategoryItem {
   category: string;
@@ -47,15 +25,11 @@ interface CategoryItem {
   image?: string;
 }
 
-
-
 interface ColumnType {
-type ColumnType = {
-
   title: string;
   dataIndex: keyof CategoryItem;
   render?: (value: any, record: CategoryItem, rowIndex: number) => React.ReactNode;
-};
+}
 
 const categorylist: CategoryItem[] = [
   {
@@ -482,7 +456,6 @@ const columns: ColumnType[] = [
 
 export default function CategoryListComponent() {
   const [showPopup, setShowPopup] = useState(false);
-
   const [showFilter, setShowFilter] = useState(false);
   const [parentCategory, setParentCategory] = useState("All Categories");
   const [reportCategory, setReportCategory] = useState("All Categories");
@@ -503,6 +476,9 @@ export default function CategoryListComponent() {
     "Image",
   ]);
 
+  // Helper: get all possible column titles
+  const allColumnTitles = columns.map(col => col.title);
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -511,14 +487,10 @@ export default function CategoryListComponent() {
             <h4 className="fw-bold">Categories</h4>
           </div>
           <div className="page-btn">
-
             <button
               className="btn btn-primary"
               onClick={() => setShowAddCategory(true)}
             >
-
-            <button onClick={() => setShowPopup(true)} className="btn btn-primary">
-
               <i className="ti ti-circle-plus me-1"></i>Add Category
             </button>
           </div>
@@ -547,7 +519,7 @@ export default function CategoryListComponent() {
               <table className="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    {columns.map((col, i) => (
+                    {columns.filter(col => selectedColumns.includes(col.title)).map((col, i) => (
                       <th key={i}>{col.title}</th>
                     ))}
                   </tr>
@@ -555,7 +527,7 @@ export default function CategoryListComponent() {
                 <tbody>
                   {categorylist.map((item, rowIndex) => (
                     <tr key={rowIndex}>
-                      {columns.map((col, colIndex) => {
+                      {columns.filter(col => selectedColumns.includes(col.title)).map((col, colIndex) => {
                         const data = item[col.dataIndex];
                         return (
                           <td key={colIndex}>
@@ -570,95 +542,6 @@ export default function CategoryListComponent() {
             </div>
           </div>
         </div>
-        {showPopup && (
-          <div className="modal d-block" tabIndex={-1} role="dialog" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-            <div className="modal-dialog modal-lg" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Add Category</h5>
-                  <button type="button" className="btn-close" onClick={() => setShowPopup(false)}></button>
-                </div>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">Category Name *</label>
-                    <input type="text" className="form-control" required />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Parent Category</label>
-                    <select className="form-select">
-                      <option>Top Level</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Report Category</label>
-                    <select className="form-select">
-                      <option>Top Level</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Description</label>
-                    <textarea className="form-control" rows={2}></textarea>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Order Printer</label>
-                    <select className="form-select">
-                      <option>No Order Printer</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Course</label>
-                    <select className="form-select">
-                      <option>No Course</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Wet / Dry</label>
-                    <select className="form-select">
-                      <option>Dry</option>
-                      <option>Wet</option>
-                    </select>
-                  </div>
-                  <div className="form-check mb-3">
-                    <input type="checkbox" className="form-check-input" id="showOnTill" defaultChecked />
-                    <label htmlFor="showOnTill" className="form-check-label">Show on Till</label>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Button Colour</label>
-                    <select className="form-select">
-                      <option>None</option>
-                      <option>Light Orange</option>
-                      <option>Grey Yellow</option>
-                      <option>Light Red</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Till Order</label>
-                    <input type="text" className="form-control" />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Popup Note</label>
-                    <select className="form-select">
-                      <option>None</option>
-                      <option>Age 21 verification</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Nominal Code</label>
-                    <input type="text" className="form-control" />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Image</label>
-                    <input type="file" className="form-control" />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowPopup(false)}>Close</button>
-                  <button type="submit" className="btn btn-primary">Save</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="d-flex justify-content-between align-items-center flex-wrap mt-3 px-2">
           <div className="d-flex align-items-center gap-2">
@@ -705,7 +588,6 @@ export default function CategoryListComponent() {
           </div>
         </div>
       </div>
-
 
       <EditCategoryList />
       <CommonDeleteModal />
@@ -784,7 +666,7 @@ export default function CategoryListComponent() {
             <button className="btn btn-sm btn-light" style={{ borderRadius: 6, color: '#FF3B3B', fontWeight: 700, fontSize: 20, lineHeight: 1, width: 32, height: 32 }} onClick={() => setShowColumns(false)}>&times;</button>
           </div>
           <div style={{ flex: 1, overflowY: 'auto', padding: 24, paddingTop: 16 }}>
-            {selectedColumns.map((col, idx) => (
+            {allColumnTitles.map((col, idx) => (
               <div key={col} className="form-check d-flex align-items-center mb-2" style={{paddingLeft: 0}}>
                 <input
                   className="form-check-input me-2"
@@ -803,18 +685,9 @@ export default function CategoryListComponent() {
             ))}
           </div>
           <div className="d-flex justify-content-end align-items-center gap-2 p-3 border-top" style={{ minHeight: 64, background: '#f8fafc' }}>
-            <button className="btn btn-outline-secondary" style={{ minWidth: 120, borderRadius: 6, fontWeight: 600 }} onClick={() => setSelectedColumns([
-              "Name",
-              "Parent Category",
-              "Report Category",
-              "Order Printer",
-              "Button colour",
-              "Popup Note",
-              "Till order",
-              "Show On Till",
-              "Nominal Code",
-              "Image",
-            ])}>Reset Columns</button>
+            <button className="btn btn-outline-secondary" style={{ minWidth: 120, borderRadius: 6, fontWeight: 600 }} onClick={() => setSelectedColumns(allColumnTitles)}>
+              Reset Columns
+            </button>
           </div>
         </div>
       )}
