@@ -156,6 +156,13 @@ export const SidebarData1 = [
         route: "/brand-list",
         subRoutes: [],
       },
+            {
+        title: 'popup alert',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/pop-up-alert",
+        subRoutes: [],
+      },
       {
 
         title: 'Promotion List',

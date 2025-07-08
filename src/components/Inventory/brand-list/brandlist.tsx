@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
+
 
 import CommonFooter from "@/core/common/footer/commonFooter";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
@@ -22,15 +22,9 @@ export default function BrandListComponent() {
               <h4 className="fw-bold">Brands</h4>
             </div>
             <div className="page-btn">
-              <Link
-                href="#"
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#add-brand"
-              >
-                <i className="ti ti-circle-plus me-1"></i>
-                Add Brand
-              </Link>
+              <Link href="/addbrand" className="btn btn-primary">
+              <i className="ti ti-circle-plus me-1"></i> Add Brand
+            </Link>
             </div>
           </div>
           <div className="mb-3">

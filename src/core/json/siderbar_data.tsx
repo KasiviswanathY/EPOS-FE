@@ -157,9 +157,18 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Pop Up Alert",
+        link: "/pop-up-alert",
+        icon: "alert-triangle",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
 
         label: "Promotion List",
         link: "/promotion-list",
+
+
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
@@ -167,6 +176,7 @@ export const SidebarData = [
     { 
         label: "Promotions",
         link: "/promotions",
+
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
