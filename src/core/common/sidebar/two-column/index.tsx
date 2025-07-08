@@ -387,10 +387,6 @@ const TwoColumnSidebar = () => {
                                                 <span>Promotion list</span>
                                             </Link>
                                         </li>
-                                            <Link href={route.promotions}>
-                                                <span>Promotions</span>
-                                            </Link>
-                                        </li>
 
 
                                         <li>

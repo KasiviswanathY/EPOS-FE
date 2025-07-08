@@ -160,10 +160,6 @@ export const SidebarData = [
 
         label: "Promotion List",
         link: "/promotion-list",
-
-        label: "Promotions",
-        link: "/promotions",
-
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
