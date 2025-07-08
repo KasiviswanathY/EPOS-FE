@@ -167,6 +167,8 @@ export const SidebarData = [
 
         label: "Promotion List",
         link: "/promotion-list",
+
+
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
@@ -174,6 +176,7 @@ export const SidebarData = [
     { 
         label: "Promotions",
         link: "/promotions",
+
         icon: "triangles",
         showSubRoute: false,
         submenu: false,

@@ -1,8 +1,9 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function PromotionsComponent() {
+      const router = useRouter();
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -201,8 +202,8 @@ export default function PromotionsComponent() {
               </table>
             </div>
             <div className="d-flex justify-content-between mt-3">
-              <button className="btn btn-danger btn-sm">Cancel</button>
-              <button className="btn btn-success btn-sm">Save</button>
+            <button className="btn btn-danger" onClick={() => router.back()}>CANCEL</button>
+            <button className="btn btn-success btn-sm">Save</button>
             </div>
           </div>
         </div>

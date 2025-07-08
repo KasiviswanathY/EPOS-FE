@@ -10,9 +10,6 @@ export const all_routes = {
   brandlist: "/brand-list",
   popupalert: "/pop-up-alert",
   promotionlist: "/promotion-list",
-
-  promotions: "/promotions",
-
   units: "/units",
   variantyattributes: "/variant-attributes",
   warranty: "/warranty",
