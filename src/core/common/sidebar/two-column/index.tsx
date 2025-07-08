@@ -382,11 +382,25 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+                                            <Link href={route.popupalert}>
+                                                <span>Pop Up Alert</span>
+                                            </Link>
+                                        </li>
+
+                                        <li>
 
                                             <Link href={route.promotionlist}>
                                                 <span>Promotion list</span>
                                             </Link>
                                         </li>
+
+
+                                        <li>
+                                            <Link href={route.promotions}>
+                                                <span>Promotions</span>
+                                            </Link>
+                                        </li>
+
 
 
                                         <li>
@@ -424,6 +438,17 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.managestock}>
                                                 <span>Manage Stock</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+
+                                            <Link href={route.stocktakes}>
+                                                <span>Stock Takes</span>
+                                            </Link>
+
+                                            <Link href={route.stockmovements}>
+                                                <span>Stock Movements</span>
+
                                             </Link>
                                         </li>
                                         <li>
@@ -597,6 +622,18 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.accountlist}>
                                                 <span>Bank Accounts</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.tenders}>
+                                                <span>Tenders</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.alltransactions}>
+                                                <span>All Transactions</span>
                                             </Link>
                                         </li>
                                         <li>

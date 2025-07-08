@@ -157,9 +157,26 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Pop Up Alert",
+        link: "/pop-up-alert",
+        icon: "alert-triangle",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
 
         label: "Promotion List",
         link: "/promotion-list",
+
+
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+    { 
+        label: "Promotions",
+        link: "/promotions",
+
         icon: "triangles",
         showSubRoute: false,
         submenu: false,
@@ -215,6 +232,21 @@ export const SidebarData = [
       {
         label: "Manage Stock",
         link: "/manage-stocks",
+        icon: "stack-3",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+
+        label: "Stock Takes",
+        link: "/stock-takes",
+        icon: "stack-3",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Stock Movements",
+        link: "/stock-movements",
         icon: "stack-3",
         showSubRoute: false,
         submenu: false,
@@ -424,6 +456,20 @@ export const SidebarData = [
         label: "Bank Accounts",
         link: route.accountlist,
         icon: "building-bank",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Tenders",
+        link: route.tenders,
+        icon: "report-money",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "All Transactions",
+        link: "/all-transactions",
+        icon: "moneybag",
         showSubRoute: false,
         submenu: false,
       },

@@ -1,3 +1,4 @@
+import { popup } from "leaflet";
 
 export const all_routes = {
   newdashboard: "/index",
@@ -7,6 +8,7 @@ export const all_routes = {
   addproduct: "/add-product",
   salesdashboard: "/sales-dashboard",
   brandlist: "/brand-list",
+  popupalert: "/pop-up-alert",
   promotionlist: "/promotion-list",
   units: "/units",
   variantyattributes: "/variant-attributes",
@@ -152,6 +154,8 @@ export const all_routes = {
   suppliers: "/suppliers",
   storelist: "/store-list",
   managestock: "/manage-stocks",
+  stocktakes: "/stock-takes",
+  stockmovements: "/stock-movements",
   stockadjustment: "/stock-adjustment",
   stocktransfer: "/stock-transfer",
   nonsellingstocks: "/non-selling-stocks",
@@ -223,6 +227,8 @@ export const all_routes = {
   discount: "/discount",
   discountPlan: "/discount-plan",
   accountlist: "/account-list",
+  tenders: "/tenders",
+  alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",
   trailbalance: "/trial-balance",
