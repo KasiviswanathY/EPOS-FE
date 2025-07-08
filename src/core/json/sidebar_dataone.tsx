@@ -164,6 +164,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'Buying Review',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/buying-review",
+        subRoutes: [],
+      },
+      {
 
         title: 'Promotion List',
         hasSubRoute: false,
@@ -171,13 +178,7 @@ export const SidebarData1 = [
         route: "/promotion-list",
         subRoutes: [],
       },
-      {
-        title: 'Promotions',
-        hasSubRoute: false,
-        showSubRoute: false,
-        route: "/promotions",
-        subRoutes: [],
-      },
+      
       {
         title: 'Units',
         hasSubRoute: false,

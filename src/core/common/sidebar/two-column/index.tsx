@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
+
 
 import { all_routes } from '@/data/all_routes';
 import Link from 'next/link';
@@ -12,7 +12,6 @@ const TwoColumnSidebar = () => {
 
     return (
         <>
-            {/* Two Col Sidebar */}
             <div className="two-col-sidebar" id="two-col-sidebar">
                 <div className="sidebar sidebar-twocol">
                     <div className="twocol-mini">
@@ -154,7 +153,6 @@ const TwoColumnSidebar = () => {
                     </div>
                     <div className="sidebar-right">
                         <>
-                            {/* Logo */}
                             <div className="sidebar-logo">
                                 <Link href={route.newdashboard} className="logo logo-normal">
                                     <img src="assets/img/logo.svg" alt="Img" />
@@ -166,7 +164,7 @@ const TwoColumnSidebar = () => {
                                     <img src="assets/img/logo-small.png" alt="Img" />
                                 </Link>
                             </div>
-                            {/* /Logo */}
+                            
                         </>
 
                         <div className="sidebar-scroll">
@@ -382,6 +380,16 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
+                                            <Link href={route.buyingreview}>
+                                                <span>Buying Review</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+
+                                            <Link href={route.promotionlist}>
+                                                <span>Promotion list</span>
+
                                             <Link href={route.popupalert}>
                                                 <span>Pop Up Alert</span>
                                             </Link>
@@ -397,8 +405,10 @@ const TwoColumnSidebar = () => {
                                          <li>
                                             <Link href={route.promotions}>
                                                 <span>Promotions</span>
+
                                             </Link>
                                         </li>
+                                       
 
 
 

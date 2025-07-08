@@ -8,6 +8,7 @@ export const all_routes = {
   addproduct: "/add-product",
   salesdashboard: "/sales-dashboard",
   brandlist: "/brand-list",
+  buyingreview: "/buying-review",
   popupalert: "/pop-up-alert",
   promotionlist: "/promotion-list",
   units: "/units",
