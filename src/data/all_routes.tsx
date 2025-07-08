@@ -210,6 +210,7 @@ export const all_routes = {
   leavestype: "/leave-types",
   warehouses: "/warehouse",
   coupons: "/coupons",
+  generateLabels: "/generate-labels",
   payrollList: "/employee-salary",
 
 

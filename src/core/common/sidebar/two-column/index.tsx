@@ -394,8 +394,7 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
 
-
-                                        <li>
+                                         <li>
                                             <Link href={route.promotions}>
                                                 <span>Promotions</span>
                                             </Link>
@@ -551,6 +550,11 @@ const TwoColumnSidebar = () => {
                                     <ul>
                                         <li className="menu-title">
                                             <span>FINANCE &amp; ACCOUNTS</span>
+                                        </li>
+                                         <li>
+                                            <Link href={route.generateLabels}>
+                                                <span>Generate Labels</span>
+                                            </Link>
                                         </li>
                                         <li>
                                             <Link href={route.coupons}>

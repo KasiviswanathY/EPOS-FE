@@ -339,6 +339,13 @@ export const SidebarData1 = [
         activeRoute: 'promo',
         subRoutes: [
           {
+            title: 'Generate Labels',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/generate-labels",
+            subRoutes: [],
+          },
+          {
             title: 'Coupons',
             hasSubRoute: false,
             showSubRoute: false,
