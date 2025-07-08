@@ -349,6 +349,13 @@ export const SidebarData = [
     showSubRoute: false,
     submenuItems: [
       {
+        label: "Generate Labels",
+        link: "/generate-labels",
+        icon: "cards",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Coupons",
         link: "/coupons",
         icon: "ticket",
