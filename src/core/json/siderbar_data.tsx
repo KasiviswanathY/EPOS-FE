@@ -156,6 +156,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Buying Review",
+        link: "/buying-review",
+        icon: "file-search",
+        showSubRoute: false,
+        submenu: false,
+      },
       {
 
         label: "Promotion List",
@@ -164,18 +171,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-    { 
-        label: "Promotions",
-        link: "/promotions",
-        icon: "triangles",
-        showSubRoute: false,
-        submenu: false,
-      },
-
-
-    
-
-      {
+{
         label: "Units",
         link: "/units",
         icon: "brand-unity",
