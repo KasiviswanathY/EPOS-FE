@@ -229,6 +229,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Refund Reasons",
+        link: "/refund-reasons",
+        icon: "	ti ti-rotate-clockwise",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
