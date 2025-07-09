@@ -18,7 +18,7 @@ export default function AddRefundReason() {
       <div className="content">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="fw-bold mb-0">Add a Refund Reason</h5>
-          <span className="text-primary small">HELP</span>
+          
         </div>
 
         <div className="card">
