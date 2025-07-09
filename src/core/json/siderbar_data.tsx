@@ -229,6 +229,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Clocking Types",
+        link: "/clocking-types",
+        icon: "clock",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
