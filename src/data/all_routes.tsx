@@ -166,6 +166,7 @@ export const all_routes = {
   stockwarnings: "/stock-warnings",
   purchasereport: "/purchase-report",
   inventoryreport: "/inventory-report",
+  companydetails: "/company-details",
   supplierreport: "/supplier-report",
   customerreport: "/customer-report",
   expensereport: "/expense-report",

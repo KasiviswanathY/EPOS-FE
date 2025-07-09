@@ -217,6 +217,21 @@ export const SidebarData = [
     ],
   },
   {
+    label: "Company",
+    submenuOpen: true,
+    showSubRoute: false,
+    submenuHdr: "Company",
+    submenuItems: [
+      {
+        label: "Company Details",
+        link: "/company-details",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+    ],
+  },
+  {
     label: "Stock",
     submenuOpen: true,
     submenuHdr: "Stock",
