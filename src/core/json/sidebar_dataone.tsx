@@ -217,6 +217,22 @@ export const SidebarData1 = [
     ],
   },
   {
+    title: 'Company',
+    hasSubRoute: true,
+    icon: 'building',
+    showSubRoute: false,
+    activeRoute: 'companydetails',
+    subRoutes: [
+      {
+        title: 'company details',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/company-details",
+        subRoutes: [],
+      },
+    ],
+  },
+  {
     title: 'Sales & Purchase',
     hasSubRoute: true,
     icon: 'layout-grid',
