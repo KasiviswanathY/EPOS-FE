@@ -229,6 +229,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Stock Movement Reasons",
+        link: "/stock-movement-reasons",
+        icon: "ti ti-box",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
