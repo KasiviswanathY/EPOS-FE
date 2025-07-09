@@ -441,6 +441,11 @@ const TwoColumnSidebar = () => {
                                                 <span>Company Details</span>
                                             </Link>
                                         </li>
+                                        <li>
+                                            <Link href={route.nosalereason}>
+                                                <span>No Sale Reason</span>
+                                            </Link>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div className="tab-pane fade" id="stock">

@@ -229,6 +229,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "No Sale Reason",
+        link: "/no-sale-reason",
+        icon: "ti ti-ban",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
