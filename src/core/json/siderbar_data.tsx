@@ -229,6 +229,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Customer Types",
+        link: "/customer-types",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
   {
