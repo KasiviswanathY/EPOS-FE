@@ -230,6 +230,13 @@ export const SidebarData1 = [
         route: "/company-details",
         subRoutes: [],
       },
+      {
+        title: 'discount reasons',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/discount-reasons",
+        subRoutes: [],
+      },
     ],
   },
   {
