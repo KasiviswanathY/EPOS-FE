@@ -230,6 +230,9 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Clocking Types",
+        link: "/clocking-types",
+        icon: "clock",
         label: "Stock Movement Reasons",
         link: "/stock-movement-reasons",
         icon: "ti ti-box",

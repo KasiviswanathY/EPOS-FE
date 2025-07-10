@@ -443,6 +443,12 @@ const TwoColumnSidebar = () => {
                                         </li>
                                         <li>
 
+                                            <Link href={route.clockingtypes}>
+                                                <span>Clocking Types</span>
+                                            </Link>
+                                        </li>
+
+
                                             <Link href={route.stockmovementreasons}>
                                                 <span>Stock Movement Reasons</span>
                                             </Link>
@@ -467,6 +473,7 @@ const TwoColumnSidebar = () => {
 
                                             </Link>
                                         </li>
+
 
                                     </ul>
                                 </div>

@@ -230,6 +230,11 @@ export const SidebarData1 = [
         route: "/company-details",
         subRoutes: [],
       },
+      {
+        title: 'clocking types',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/clocking-types",
 
       {
         title: 'Stock Movement Reasons',
