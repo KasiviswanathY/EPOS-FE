@@ -230,6 +230,13 @@ export const SidebarData1 = [
         route: "/company-details",
         subRoutes: [],
       },
+
+            {
+        title: 'no sale reason',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/no-sale-reason",
+
       {
 
         title: 'refund reasons',
@@ -247,8 +254,6 @@ export const SidebarData1 = [
         hasSubRoute: false,
         showSubRoute: true,
         route: "/receipts",
-
-
         subRoutes: [],
       },
     ],

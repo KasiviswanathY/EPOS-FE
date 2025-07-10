@@ -230,6 +230,11 @@ export const SidebarData = [
         submenu: false,
       },
 
+      {
+        label: "No Sale Reason",
+        link: "/no-sale-reason",
+        icon: "ti ti-ban",
+
        {
         label: "Refund Reasons",
         link: "/refund-reasons",

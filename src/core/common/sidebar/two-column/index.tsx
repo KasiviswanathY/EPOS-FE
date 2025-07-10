@@ -443,6 +443,10 @@ const TwoColumnSidebar = () => {
                                         </li>
                                         <li>
 
+                                            <Link href={route.nosalereason}>
+                                                <span>No Sale Reason</span>
+
+
                                             <Link href={route.refundreasons}>
                                                 <span>Refund Reasons</span>
 
@@ -452,6 +456,7 @@ const TwoColumnSidebar = () => {
 
                                             <Link href={route.receipts}>
                                                 <span>Receipts</span>
+
 
                                             </Link>
                                         </li>
