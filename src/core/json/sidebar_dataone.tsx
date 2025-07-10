@@ -231,10 +231,17 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+
+        title: 'discount reasons',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/discount-reasons",
+
         title: 'Receipts',
         hasSubRoute: false,
         showSubRoute: true,
         route: "/receipts",
+
         subRoutes: [],
       },
     ],
