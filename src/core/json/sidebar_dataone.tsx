@@ -279,6 +279,30 @@ export const SidebarData1 = [
       },
     ],
   },
+
+  {
+        title: 'Locationslist',
+        hasSubRoute: true,
+        showSubRoute: false,
+        route: "/locations-list",
+        subRoutes: [
+          {
+            title: 'Locationslist',
+            hasSubRoute: true,
+            showSubRoute: true,
+            subRoutes: [
+              {
+                title: 'Locations List',
+                hasSubRoute: false,
+                showSubRoute: false,
+                route: "/locations-list",
+                subRoutes: [],
+              },
+            ],
+          },
+        ],
+      },
+
   {
     title: 'Sales & Purchase',
     hasSubRoute: true,

@@ -174,6 +174,7 @@ export const all_routes = {
   refundreasons: "/refund-reasons",
   discountreasons: "/discount-reasons",
   receipts: "/receipts",
+  locationslist:"/locationslist",
   supplierreport: "/supplier-report",
   customerreport: "/customer-report",
   expensereport: "/expense-report",
