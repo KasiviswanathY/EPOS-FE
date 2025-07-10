@@ -585,6 +585,13 @@ export const SidebarData1 = [
         route: "/tender-types",
         subRoutes: [],
       },
+       {
+        title: 'Tax Rates',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/tax-rates",
+        subRoutes: [],
+      },
       {
         title: 'All Transactions',
         hasSubRoute: false,
