@@ -497,6 +497,9 @@ const TwoColumnSidebar = () => {
                                                 <li>
                                                     <Link href={route.locationslist}>Locationslist</Link>
                                                 </li>
+                                                <li>
+                                            <Link href={route.deviceslist}>Devices List</Link>
+                                        </li>
                                                 
                                             </ul>
                                         </li>
