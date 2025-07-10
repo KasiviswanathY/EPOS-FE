@@ -314,7 +314,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-    
+    {
+        label: "Opening Hours",
+        link: route.openinghours,
+        icon: "fas fa-server",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
  ],
