@@ -442,8 +442,12 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
                                             <Link href={route.discountreasons}>
                                                 <span>Discount Reasons</span>
+
+                                            <Link href={route.receipts}>
+                                                <span>Receipts</span>
                                             </Link>
                                         </li>
                                     </ul>

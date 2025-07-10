@@ -168,6 +168,7 @@ export const all_routes = {
   inventoryreport: "/inventory-report",
   companydetails: "/company-details",
   discountreasons: "/discount-reasons",
+  receipts: "/receipts",
   supplierreport: "/supplier-report",
   customerreport: "/customer-report",
   expensereport: "/expense-report",

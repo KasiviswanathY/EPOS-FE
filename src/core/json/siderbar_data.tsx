@@ -229,10 +229,16 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+
        {
         label: "Discount Reasons",
         link: "/discount-reasons",
         icon: "ti ti-discount-2",
+
+      {
+        label: "Receipts",
+        link: "/receipts",
+        icon: "ti ti-receipt",
         showSubRoute: false,
         submenu: false,
       },
