@@ -231,6 +231,11 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'customer types',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/customer-types",
+        
         title: 'clocking types',
         hasSubRoute: false,
         showSubRoute: true,
@@ -264,6 +269,7 @@ export const SidebarData1 = [
         hasSubRoute: false,
         showSubRoute: true,
         route: "/receipts",
+
         subRoutes: [],
       },
     ],

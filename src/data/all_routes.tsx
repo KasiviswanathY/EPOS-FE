@@ -167,6 +167,7 @@ export const all_routes = {
   purchasereport: "/purchase-report",
   inventoryreport: "/inventory-report",
   companydetails: "/company-details",
+  customertypes: "/customer-types",
   clockingtypes: "/clocking-types",
   stockmovementreasons: "/stock-movement-reasons",
   nosalereason: "/no-sale-reason",

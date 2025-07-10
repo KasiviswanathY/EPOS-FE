@@ -230,6 +230,9 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Customer Types",
+        link: "/customer-types",
+        icon: "box",
         label: "Clocking Types",
         link: "/clocking-types",
         icon: "clock",
