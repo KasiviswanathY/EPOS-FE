@@ -285,6 +285,33 @@ export const SidebarData = [
       },
     ],
   },
+
+  {
+    label: "Locations",
+    submenuOpen: true,
+    submenuHdr: "Locations",
+    submenu: false,
+    showSubRoute: false,
+    submenuItems: [
+      {
+        label: "Locations",
+        icon: "map",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          
+      {
+        label: "Locations",
+        link: route.locationslist,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
+    
+    ],
+  },
+ ],
+  },
   {
     label: "Stock",
     submenuOpen: true,

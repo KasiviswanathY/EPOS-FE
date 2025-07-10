@@ -482,6 +482,26 @@ const TwoColumnSidebar = () => {
 
                                     </ul>
                                 </div>
+
+                                <div className="tab-pane fade" id="locations list">
+                                    <ul>
+                                        <li className="menu-title">
+                                            <span>Locationslist</span>
+                                        </li>
+                                        <li className="submenu">
+                                            <Link href="#">
+                                                <span>LocationsList</span>
+                                                <span className="menu-arrow" />
+                                            </Link>
+                                            <ul>
+                                                <li>
+                                                    <Link href={route.locationslist}>Locationslist</Link>
+                                                </li>
+                                                
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <div className="tab-pane fade" id="stock">
                                     <ul>
                                         <li className="menu-title">
