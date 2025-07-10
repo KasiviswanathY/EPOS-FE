@@ -443,6 +443,13 @@ const TwoColumnSidebar = () => {
                                         </li>
                                         <li>
 
+                                            <Link href={route.stockmovementreasons}>
+                                                <span>Stock Movement Reasons</span>
+                                            </Link>
+                                        </li>
+                                        
+
+
                                             <Link href={route.nosalereason}>
                                                 <span>No Sale Reason</span>
 
@@ -460,6 +467,7 @@ const TwoColumnSidebar = () => {
 
                                             </Link>
                                         </li>
+
                                     </ul>
                                 </div>
                                 <div className="tab-pane fade" id="stock">

@@ -231,7 +231,12 @@ export const SidebarData1 = [
         subRoutes: [],
       },
 
-            {
+      {
+        title: 'Stock Movement Reasons',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/stock-movement-reasons",
+        {
         title: 'no sale reason',
         hasSubRoute: false,
         showSubRoute: true,
