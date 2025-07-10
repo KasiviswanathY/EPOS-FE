@@ -229,10 +229,27 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+
       {
         label: "No Sale Reason",
         link: "/no-sale-reason",
         icon: "ti ti-ban",
+
+       {
+        label: "Refund Reasons",
+        link: "/refund-reasons",
+        icon: "	ti ti-rotate-clockwise",
+
+
+       {
+        label: "Discount Reasons",
+        link: "/discount-reasons",
+        icon: "ti ti-discount-2",
+
+      {
+        label: "Receipts",
+        link: "/receipts",
+        icon: "ti ti-receipt",
         showSubRoute: false,
         submenu: false,
       },
