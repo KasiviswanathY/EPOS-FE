@@ -233,28 +233,48 @@ export const SidebarData = [
         label: "Customer Types",
         link: "/customer-types",
         icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Clocking Types",
         link: "/clocking-types",
         icon: "clock",
+        showSubRoute: false,
+        submenu: false,
+    },
+    {
         label: "Stock Movement Reasons",
         link: "/stock-movement-reasons",
         icon: "ti ti-box",
+        showSubRoute: false,
+        submenu: false,
+      },
 
       {
         label: "No Sale Reason",
         link: "/no-sale-reason",
         icon: "ti ti-ban",
+        showSubRoute: false,
+        submenu: false,
+      },
 
        {
         label: "Refund Reasons",
         link: "/refund-reasons",
         icon: "	ti ti-rotate-clockwise",
+        showSubRoute: false,
+        submenu: false,
+       },
 
 
        {
         label: "Discount Reasons",
         link: "/discount-reasons",
         icon: "ti ti-discount-2",
+        showSubRoute: false,
+        submenu: false,
+       },
 
       {
         label: "Receipts",

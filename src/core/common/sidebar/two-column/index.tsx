@@ -446,31 +446,35 @@ const TwoColumnSidebar = () => {
                                                 <span>Customer Types</span>
                                             </Link>
                                         </li>
-
+                                          <li>
                                             <Link href={route.clockingtypes}>
                                                 <span>Clocking Types</span>
                                             </Link>
                                         </li>
 
-
+                                        <li>
                                             <Link href={route.stockmovementreasons}>
                                                 <span>Stock Movement Reasons</span>
                                             </Link>
                                         </li>
                                         
-
+                                        <li>
 
                                             <Link href={route.nosalereason}>
                                                 <span>No Sale Reason</span>
-
-
+                                                </Link>
+                                           </li>
+                                           <li>
                                             <Link href={route.refundreasons}>
                                                 <span>Refund Reasons</span>
-
-
+                                            </Link>
+                                            </li>
+                                            <li>
                                             <Link href={route.discountreasons}>
                                                 <span>Discount Reasons</span>
-
+                                            </Link>
+                                            </li>
+                                            <li>
                                             <Link href={route.receipts}>
                                                 <span>Receipts</span>
                                               </Link>

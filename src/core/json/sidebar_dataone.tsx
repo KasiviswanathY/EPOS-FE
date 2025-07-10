@@ -235,22 +235,25 @@ export const SidebarData1 = [
         hasSubRoute: false,
         showSubRoute: true,
         route: "/customer-types",
-        
+      },
+      {
         title: 'clocking types',
         hasSubRoute: false,
         showSubRoute: true,
         route: "/clocking-types",
-
+      },
       {
         title: 'Stock Movement Reasons',
         hasSubRoute: false,
         showSubRoute: true,
         route: "/stock-movement-reasons",
+      },
         {
         title: 'no sale reason',
         hasSubRoute: false,
         showSubRoute: true,
         route: "/no-sale-reason",
+        },
 
       {
 
@@ -258,13 +261,15 @@ export const SidebarData1 = [
         hasSubRoute: false,
         showSubRoute: true,
         route: "/refund-reasons",
-
+      },
+{
 
         title: 'discount reasons',
         hasSubRoute: false,
         showSubRoute: true,
         route: "/discount-reasons",
-
+},
+{
         title: 'Receipts',
         hasSubRoute: false,
         showSubRoute: true,
