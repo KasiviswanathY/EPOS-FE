@@ -305,6 +305,13 @@ export const SidebarData1 = [
                 route: "/Devices-list",
                 subRoutes: [],
               },
+              {
+                title: 'Opening Hours',
+                hasSubRoute: false,
+                showSubRoute: false,
+                route: "/opening-hours",
+                subRoutes: [],
+              },
             ],
           },
         ],

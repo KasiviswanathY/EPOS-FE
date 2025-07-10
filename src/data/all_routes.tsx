@@ -176,6 +176,7 @@ export const all_routes = {
   receipts: "/receipts",
   locationslist:"/locationslist",
   deviceslist:"/deviceslist",
+  openinghours:"/openinghours",
   supplierreport: "/supplier-report",
   customerreport: "/customer-report",
   expensereport: "/expense-report",

@@ -500,6 +500,9 @@ const TwoColumnSidebar = () => {
                                                 <li>
                                             <Link href={route.deviceslist}>Devices List</Link>
                                         </li>
+                                        <li>
+                                            <Link href={route.openinghours}>Devices List</Link>
+                                        </li>
                                                 
                                             </ul>
                                         </li>
