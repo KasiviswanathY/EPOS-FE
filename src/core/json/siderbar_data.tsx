@@ -577,6 +577,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Tender Types",
+        link: route.tendertypes,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "All Transactions",
         link: "/all-transactions",
         icon: "moneybag",

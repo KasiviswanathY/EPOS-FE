@@ -715,6 +715,12 @@ const TwoColumnSidebar = () => {
                                             
                                         </li>
                                         <li>
+                                            <Link href={route.tendertypes}>
+                                                <span>Tender Types</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
                                             <Link href={route.alltransactions}>
                                                 <span>All Transactions</span>
                                             </Link>
