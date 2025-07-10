@@ -307,6 +307,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Devices List",
+        link: route.deviceslist,
+        icon: "fas fa-server",
+        showSubRoute: false,
+        submenu: false,
+      },
     
     ],
   },
