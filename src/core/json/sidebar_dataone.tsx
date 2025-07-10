@@ -232,6 +232,12 @@ export const SidebarData1 = [
       },
       {
 
+        title: 'refund reasons',
+        hasSubRoute: false,
+        showSubRoute: true,
+        route: "/refund-reasons",
+
+
         title: 'discount reasons',
         hasSubRoute: false,
         showSubRoute: true,
@@ -241,6 +247,7 @@ export const SidebarData1 = [
         hasSubRoute: false,
         showSubRoute: true,
         route: "/receipts",
+
 
         subRoutes: [],
       },
@@ -296,8 +303,6 @@ export const SidebarData1 = [
           },
           {
 
-            
-
             title: 'Stock Audit History',
             hasSubRoute: false,
             showSubRoute: false,
@@ -305,10 +310,6 @@ export const SidebarData1 = [
             subRoutes: [],
 
           },
-
- 
-       
-
           {
             title: 'Stock Level',
             hasSubRoute: false,

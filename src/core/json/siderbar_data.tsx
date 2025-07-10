@@ -231,6 +231,12 @@ export const SidebarData = [
       },
 
        {
+        label: "Refund Reasons",
+        link: "/refund-reasons",
+        icon: "	ti ti-rotate-clockwise",
+
+
+       {
         label: "Discount Reasons",
         link: "/discount-reasons",
         icon: "ti ti-discount-2",
