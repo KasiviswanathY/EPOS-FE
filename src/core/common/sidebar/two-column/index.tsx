@@ -720,6 +720,12 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                             
                                         </li>
+<li>
+                                            <Link href={route.taxrates}>
+                                                <span>Tax Rates List</span>
+                                            </Link>
+                                            
+                                        </li>
                                         <li>
                                             <Link href={route.alltransactions}>
                                                 <span>All Transactions</span>
