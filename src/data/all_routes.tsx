@@ -243,6 +243,7 @@ export const all_routes = {
   tenders: "/tenders",
   tendertypes:"/tender-types",
   taxrateslist:"/tax-rateslist",
+  pettycashreasons:"/petty-cash-reasons",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",
