@@ -593,6 +593,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'Petty Cash Reasons',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/petty-cash-reasons",
+        subRoutes: [],
+      },
+      {
         title: 'All Transactions',
         hasSubRoute: false,
         showSubRoute: false,

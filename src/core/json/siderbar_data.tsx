@@ -590,6 +590,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Petty Cash Reasons",
+        link: route.pettycashreasons,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
       {
         label: "All Transactions",
         link: "/all-transactions",
