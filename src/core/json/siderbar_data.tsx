@@ -605,6 +605,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Additional Logins",
+        link: route.additionallogins,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "All Transactions",
         link: "/all-transactions",
         icon: "moneybag",
