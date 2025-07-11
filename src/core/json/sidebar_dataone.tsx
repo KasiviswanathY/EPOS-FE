@@ -614,6 +614,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'Cloud Sync',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/cloud-sync",
+        subRoutes: [],
+      },
+      {
         title: 'All Transactions',
         hasSubRoute: false,
         showSubRoute: false,
