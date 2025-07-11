@@ -600,6 +600,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'Pay Out Reasons',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/pay-out-reasons",
+        subRoutes: [],
+      },
+      {
         title: 'All Transactions',
         hasSubRoute: false,
         showSubRoute: false,
