@@ -607,6 +607,13 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+        title: 'Additional Logins',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/additional-logins",
+        subRoutes: [],
+      },
+      {
         title: 'All Transactions',
         hasSubRoute: false,
         showSubRoute: false,

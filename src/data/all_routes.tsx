@@ -245,6 +245,7 @@ export const all_routes = {
   taxrateslist:"/tax-rateslist",
   pettycashreasons:"/petty-cash-reasons",
   payoutreasons:"/pay-out-reasons",
+  additionallogins:"/additional-logins",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",
