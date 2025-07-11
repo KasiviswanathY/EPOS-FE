@@ -22,33 +22,23 @@ const allReasons: Reason[] = [
 ];
 
 export default function PettyCashReasons() {
-  /* ---------- pagination ---------- */
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(allReasons.length / pageSize));
   const paged = allReasons.slice((page - 1) * pageSize, page * pageSize);
-
-  /* ---------- handlers ---------- */
   const handleDelete = (id: number) => {
-    // TODO: wire to real delete
     alert(`Delete reason #${id}`);
   };
 
   return (
     <div className="page-wrapper">
       <div className="content">
-
-        {/* heading + add btn */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="fw-bold mb-0">Petty Cash Reasons</h4>
-
-          {/* route this wherever your “add” form lives */}
           <Link href="/addpettycashreasons" className="btn btn-primary">
             ADD PETTY CASH REASON
           </Link>
         </div>
-
-        {/* table */}
         <div className="card">
           <div className="card-body p-0">
             <table className="table mb-0">
@@ -79,7 +69,6 @@ export default function PettyCashReasons() {
             </table>
           </div>
 
-          {/* pagination */}
           <div className="card-footer d-flex justify-content-start">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
               <button
