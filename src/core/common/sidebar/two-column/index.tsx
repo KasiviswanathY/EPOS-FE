@@ -745,6 +745,12 @@ const TwoColumnSidebar = () => {
                                             
                                         </li>
                                         <li>
+                                            <Link href={route.restoredata}>
+                                                <span>Restore Data</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
                                             <Link href={route.alltransactions}>
                                                 <span>All Transactions</span>
                                             </Link>
