@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
 
 import CollapesIcon from "@/core/common/tooltip-content/collapes";
 import RefreshIcon from "@/core/common/tooltip-content/refresh";
@@ -22,7 +21,8 @@ export default function EmployeesGridComponent  ()  {
         className="form-control me-2"
         style={{ maxWidth: "300px" }}
       />
-      <button className="btn btn-primary">Add Staff</button>
+      <a href="/addstaff" className="btn btn-sm btn-success"> Add Staff</a>
+
     </div>
     <div className="table-responsive">
       <table className="table table-striped align-middle text-center">
@@ -163,9 +163,10 @@ export default function EmployeesGridComponent  ()  {
         </tbody>
       </table>
     </div>
-    <div className="mt-3 text-start">
-      <button className="btn btn-primary">Edit Roles</button>
-    </div>
+<Link href="editstaff" className="btn btn-sm btn-primary">
+  Edit Roles
+</Link>
+
   </div>
 </div>
 
