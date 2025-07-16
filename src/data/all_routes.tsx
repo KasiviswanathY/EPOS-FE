@@ -246,6 +246,7 @@ export const all_routes = {
   pettycashreasons:"/petty-cash-reasons",
   payoutreasons:"/pay-out-reasons",
   additionallogins:"/additional-logins",
+  restoredata:"/restoredata",
   cloudsync:"/cloud-sync",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
