@@ -11,11 +11,16 @@ return (
     <>
   <div className="page-wrapper">
   <div className="content">
+              <div className="page-header">
+  <div className="add-item d-flex">
+              <div className="page-title">
+                <h3>Roles</h3>
+              </div>
+            </div>
   <div className="d-flex justify-content-end mb-3">
-  <button
-    className="btn fw-bold px-4 py-2"style={{ backgroundColor: '#f7941d', color: 'white', border: 'none' }}>
-    ADD ROLES
-  </button>
+  <Link
+      href="addstaff"                   
+      className="btn btn-success flex items-center gap-1">Add Roles</Link></div>
 </div>
 <div style={{ overflowX: "auto" }}>
   <table className="table table-bordered align-middle text-center" style={{ minWidth: "1000px", width: "100%" }}>
@@ -166,11 +171,8 @@ return (
     </tbody>
   </table>
 </div>
-<div className="d-flex justify-content-start mt-4">
-  <button
-    className="btn fw-bold px-4 py-2"style={{ backgroundColor: '#f7941d', color: 'white', border: 'none' }}>
-    EDIT STAFF
-  </button>
+<div className="d-flex justify-content-start mt-4" >
+ <Link href="/employees-grid"className="btn btn-success flex items-center gap-1" ><span className="text-lg leading-none" ></span>Edit Staff</Link>
 </div>
 </div>
 </div>
