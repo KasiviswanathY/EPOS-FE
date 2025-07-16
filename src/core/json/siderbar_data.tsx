@@ -693,6 +693,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Hours",
+        link: "/hours",
+        icon: "clock",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Suppliers",
         link: "/suppliers",
         icon: "user-dollar",

@@ -255,6 +255,7 @@ export const all_routes = {
   cashflow: "/cash-flow",
   accountstatement: "/account-statement",
   biller: "/billers",
+  hours:"/hours",
   employeedetails: "/employee-details",
   stockhistory: "/stock-history",
   soldstock: "/sold-stock",
