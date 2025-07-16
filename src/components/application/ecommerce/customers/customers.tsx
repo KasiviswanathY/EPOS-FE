@@ -1,527 +1,340 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
-
-import React from "react";
-import Select from "react-select";
-import { useSelector } from "react-redux";
-import { Edit, Eye, Trash2 } from "feather-icons-react";
+import { useState } from "react";
 import Link from "next/link";
-import TooltipIcons from "@/core/common/tooltip-content/tooltipIcons";
-import RefreshIcon from "@/core/common/tooltip-content/refresh";
-import CollapesIcon from "@/core/common/tooltip-content/collapes";
-import  Table  from "@/core/common/pagination/datatable";
-import CommonFooter from "@/core/common/footer/commonFooter";
-import { city, countries, state } from "@/core/common/selectOption/selectOption";
-import { CustomerData } from "@/core/json/customerData";
+const pageSlice = <T,>(arr: T[], p: number, size: number) =>
+  arr.slice((p - 1) * size, p * size);
+const PAGE_SIZE = 9;
+const dummyCustomers = [
+  {
+    id: 1,
+    title: "Mr",
+    firstName: "Roger",
+    lastName: "Flood",
+    businessName: "",
+    address1: "12 High Street",
+    town: "Derby",
+    zip: "DE1 1DG",
+    type: "Retail",
+    signUpLocation: "Derby Store",
+  },
+  {
+    id: 2,
+    title: "Mr",
+    firstName: "Kennedy",
+    lastName: "Bryant",
+    businessName: "",
+    address1: "1 Example Road",
+    town: "London",
+    zip: "SW1A 1AA",
+    type: "Retail",
+    signUpLocation: "Web",
+  },
+  {
+    id: 3,
+    title: "Mr",
+    firstName: "Winston",
+    lastName: "Abbott",
+    businessName: "",
+    address1: "33 Station Way",
+    town: "York",
+    zip: "YO1 6GA",
+    type: "Trade",
+    signUpLocation: "York Depot",
+  },
+  {
+    id: 4,
+    title: "Mr",
+    firstName: "Tony",
+    lastName: "Daylov",
+    businessName: "TD Building",
+    address1: "7 Builder Lane",
+    town: "Leeds",
+    zip: "LS1 4BA",
+    type: "Trade",
+    signUpLocation: "Leeds Branch",
+  },
+  {
+    id: 5,
+    title: "Ms",
+    firstName: "Mary",
+    lastName: "Rome",
+    businessName: "",
+    address1: "Flat 2, 3 King St",
+    town: "Manchester",
+    zip: "M1 1AE",
+    type: "Retail",
+    signUpLocation: "Mobile App",
+  },
+  {
+    id: 6,
+    title: "Mrs",
+    firstName: "Carolyn",
+    lastName: "Byrum",
+    businessName: "",
+    address1: "99 Sample Ave",
+    town: "Bristol",
+    zip: "BS1 2HQ",
+    type: "Retail",
+    signUpLocation: "Bristol Store",
+  },
+  {
+    id: 7,
+    title: "Mr",
+    firstName: "Tiny",
+    lastName: "March",
+    businessName: "",
+    address1: "22 Garden Rd",
+    town: "Cardiff",
+    zip: "CF10 1AA",
+    type: "Retail",
+    signUpLocation: "Cardiff Store",
+  },
+  {
+    id: 8,
+    title: "Ms",
+    firstName: "Gretel",
+    lastName: "Smith",
+    businessName: "",
+    address1: "4 Woodland Walk",
+    town: "Nottingham",
+    zip: "NG1 6AA",
+    type: "Trade",
+    signUpLocation: "HQ",
+  },
+  {
+    id: 9,
+    title: "Mrs",
+    firstName: "Carrie",
+    lastName: "Privett",
+    businessName: "Mrs Kaye",
+    address1: "11 River Drive",
+    town: "Sheffield",
+    zip: "S1 4AG",
+    type: "Retail",
+    signUpLocation: "Sheffield Store",
+  },
+  {
+    id: 10,
+    title: "Ms",
+    firstName: "Sarah",
+    lastName: "White",
+    businessName: "",
+    address1: "5 Meadow Close",
+    town: "Oxford",
+    zip: "OX1 2BG",
+    type: "Retail",
+    signUpLocation: "Oxford Store",
+  },
+];
 
-export default function CustomersComponent () {
-  const data = CustomerData;
+export default function CustomersComponent() {
+  const [customerType, setCustomerType] = useState("* Show All");
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  const columns = [
-    {
-      title: "Customer Name",
-      dataIndex: "Customer",
-      sorter: (a:any, b:any) => a.Customer.length - b.Customer.length,
-    },
-    {
-      title: "Code",
-      dataIndex: "Code",
-      sorter: (a:any, b:any) => a.Code.length - b.Code.length,
-    },
-    {
-      title: "Customer",
-      dataIndex: "Customer",
-      sorter: (a:any, b:any) => a.Customer.length - b.Customer.length,
-    },
+  const filtered = dummyCustomers.filter((c) => {
+    const matchesType =
+      customerType === "* Show All" || c.type === customerType;
+    const q = query.trim().toLowerCase();
+    const matchesQuery =
+      q === "" ||
+      [
+        c.firstName,
+        c.lastName,
+        c.businessName,
+        c.address1,
+        c.town,
+        c.zip,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q);
+    return matchesType && matchesQuery;
+  });
 
-    {
-      title: "Email",
-      dataIndex: "Email",
-      sorter: (a:any, b:any) => a.Email.length - b.Email.length,
-    },
-
-    {
-      title: "Phone",
-      dataIndex: "Phone",
-      sorter: (a:any, b:any) => a.Phone.length - b.Phone.length,
-    },
-
-    {
-      title: "Country",
-      dataIndex: "Country",
-      sorter: (a:any, b:any) => a.Country.length - b.Country.length,
-    },
-
-    {
-      title: "Action",
-      dataIndex: "action",
-      render: () => (
-        <div className="action-table-data">
-          <div className="edit-delete-action">
-            <div className="input-block add-lists"></div>
-
-            <Link className="me-2 p-2" href="#">
-              <Eye className="feather-view" />
-            </Link>
-
-            <Link
-              className="me-2 p-2"
-              href="#"
-              data-bs-toggle="modal"
-              data-bs-target="#edit-units"
-            >
-              <Edit className="feather-edit" />
-            </Link>
-
-            <Link
-              className="confirm-text p-2"
-              href="#"
-              data-bs-toggle="modal" data-bs-target="#delete-modal"
-            >
-              <Trash2 className="feather-trash-2" />
-            </Link>
-          </div>
-        </div>
-      ),
-      sorter: (a:any, b:any) => a.createdby.length - b.createdby.length,
-    },
-  ];
+  const pageCount = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+  const paginated = pageSlice(filtered, page, PAGE_SIZE);
 
   return (
-    <>
-      <div className="page-wrapper">
-        <div className="content">
-          <div className="page-header">
-            <div className="add-item d-flex">
-              <div className="page-title">
-                <h4 className="fw-bold">Customers</h4>
-                <h6>Manage your customers</h6>
-              </div>
-            </div>
-            <ul className="table-top-head">
-              <TooltipIcons />
-              <RefreshIcon />
-              <CollapesIcon />
-            </ul>
-            <div className="page-btn">
-              <Link
-                href="#"
-                className="btn btn-primary text-white"
-                data-bs-toggle="modal"
-                data-bs-target="#add-units"
-              >
-              <i className='ti ti-circle-plus me-1'></i>
-                Add Customer
-              </Link>
-            </div>
-          </div>
-          {/* /product list */}
-          <div className="card table-list-card">
-            <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-              <div className="search-set">
-              </div>
-              <div className="d-flex table-dropdown my-xl-auto right-content align-items-center flex-wrap row-gap-3">
-                <div className="dropdown me-2">
-                  <Link
-                    href="#"
-                    className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
-                    data-bs-toggle="dropdown"
-                  >
-                    Status
-                  </Link>
-                  <ul className="dropdown-menu  dropdown-menu-end p-3">
-                    <li>
-                      <Link
-                        href="#"
-                        className="dropdown-item rounded-1"
-                      >
-                        Active
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="#"
-                        className="dropdown-item rounded-1"
-                      >
-                        Inactive
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="table-responsive">
-                <Table columns={columns} dataSource={data} />
-              </div>
-            </div>
-          </div>
-          {/* /product list */}
+    <div className="page-wrapper">
+      <div className="content">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h4 className="mb-0">
+            Customer Search{" "}
+            <small className="ms-2 text-info">
+              
+            </small>
+          </h4>
+          <Link href="/addcustomers" className="btn btn-sm btn-primary">
+            ADD CUSTOMER
+          </Link>
         </div>
-        <CommonFooter />
+
+        <div className="alert alert-secondary d-flex justify-content-between">
+          <div>
+            <p className="mb-2 fw-semibold">
+              <a href="#" className="text-decoration-underline">
+                Drive brand loyalty through customer interaction with apps from
+                the Epos Now App Store
+              </a>
+            </p>
+            <p className="mb-1">
+              On this page you can view, edit and delete your Customers. To add
+              a new customer, tap “Add Customer” button at the top of the page.
+            </p>
+            <p className="mb-0">
+              Use the search box below to find a certain customer that has been
+              stored on your database. Either insert their name or postcode.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={(e) =>
+              (e.currentTarget.parentElement!.style.display = "none")
+            }
+          />
+        </div>
+
+        <div className="card mb-4">
+          <div className="card-body">
+            <div className="row g-2">
+              <div className="col-lg-6">
+                <label className="form-label d-lg-none">
+                  Filter by Customer Type
+                </label>
+                <select
+                  className="form-select"
+                  value={customerType}
+                  onChange={(e) => {
+                    setCustomerType(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option>* Show All</option>
+                  <option>Retail</option>
+                  <option>Trade</option>
+                </select>
+              </div>
+              <div className="col-lg-5">
+                <label className="form-label d-lg-none">
+                  Filter by Name, Business, Main Address or Contact Number
+                </label>
+                <input
+                  className="form-control"
+                  placeholder="Filter by Name, Business, Main Address or Contact Number"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
+              <div className="col-lg-1 d-grid">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setPage(1)}
+                >
+                  SEARCH
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body">
+            <div className="table-responsive">
+              <table className="table table-bordered table-striped align-middle">
+                <thead className="table-light">
+                  <tr>
+                    <th style={{ width: "60px" }}></th>
+                    <th>Title</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Business Name</th>
+                    <th>Address Line 1</th>
+                    <th>Town</th>
+                    <th>ZIP Code</th>
+                    <th>Type</th>
+                    <th>Sign Up Location</th>
+                    <th style={{ width: "90px" }}></th>
+                    <th style={{ width: "90px" }}></th>
+                    <th style={{ width: "40px" }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginated.map((c) => (
+                    <tr key={c.id}>
+                      <td>
+                        <Link
+                          href={`/customers/${c.id}/edit`}
+                          className="btn btn-outline-primary btn-sm w-100"
+                        >
+                          EDIT
+                        </Link>
+                      </td>
+
+                      <td>{c.title}</td>
+                      <td>{c.firstName}</td>
+                      <td>{c.lastName}</td>
+                      <td>{c.businessName || "-"}</td>
+                      <td>{c.address1}</td>
+                      <td>{c.town}</td>
+                      <td>{c.zip}</td>
+                      <td>{c.type}</td>
+                      <td>{c.signUpLocation}</td>
+                      <td>
+                        <Link href="/addcustomerdetails" className=" btn btn-outline-info btn-sm w-100">
+            DETAILS
+          </Link>
+                      </td>
+                      <td>
+                        <Link
+                          href={`/customers/${c.id}/invoice`}
+                          className="btn btn-outline-info btn-sm w-100"
+                        >
+                          INVOICE
+                        </Link>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-outline-danger btn-sm w-100"
+                          onClick={() =>
+                            confirm(
+                              `Delete ${c.firstName} ${c.lastName}?`,
+                            )
+                          }
+                        >
+                          ×
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {paginated.length === 0 && (
+                    <tr>
+                      <td colSpan={13} className="text-center py-4">
+                        No customers match your search.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <nav className="mt-3">
+              <ul className="pagination mb-0">
+                {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
+                  <li key={n} className={`page-item ${page === n ? "active" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => setPage(n)}
+                    >
+                      {n}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </div>
       </div>
-
-      <>
-        {/* Add Customer */}
-        <div className="modal fade" id="add-units">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="page-wrapper-new p-0">
-                <div className="content">
-                  <div className="modal-header">
-                    <div className="page-title">
-                      <h4>Add Customer</h4>
-                    </div>
-                    <button
-                      type="button"
-                      className="close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <form>
-                      <div className="new-employee-field">
-                        <div className="profile-pic-upload">
-                          <div className="profile-pic">
-                            <span>
-                              <i
-                                data-feather="plus-circle"
-                                className="plus-down-add"
-                              />{" "}
-                              Add Image
-                            </span>
-                          </div>
-                          <div className="mb-3">
-                            <div className="image-upload mb-0">
-                              <input type="file" />
-                              <div className="image-uploads">
-                                <h4>Upload Image</h4>
-                              </div>
-                            </div>
-                            <p className="mt-2">JPEG, PNG up to 2 MB</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            First Name<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            Last Name<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                        <div className="col-lg-12 mb-3">
-                          <label className="form-label">
-                            Email<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="email" className="form-control" />
-                        </div>
-                        <div className="col-lg-12 mb-3">
-                          <label className="form-label">
-                            Phone<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="tel" className="form-control" />
-                        </div>
-                        <div className="col-lg-12 mb-3">
-                          <label className="form-label">
-                            Address<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            City<span className="text-danger ms-1">*</span>
-                          </label>
-                          <Select
-                            classNamePrefix="react-select"
-                            options={city}
-                            placeholder="Choose"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            State<span className="text-danger ms-1">*</span>
-                          </label>
-                          <Select
-                            classNamePrefix="react-select"
-                            options={state}
-                            placeholder="Choose"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            Country<span className="text-danger ms-1">*</span>
-                          </label>
-                          <Select
-                            classNamePrefix="react-select"
-                            options={countries}
-                            placeholder="Choose"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            Postal Code<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                        <div className="col-lg-12">
-                          <div className="status-toggle modal-status d-flex justify-content-between align-items-center">
-                            <span className="status-label">Status</span>
-                            <input
-                              type="checkbox"
-                              id="user1"
-                              className="check"
-                              defaultChecked
-                            />
-                            <label htmlFor="user1" className="checktoggle">
-                              {" "}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn me-2 btn-secondary fs-13 fw-medium p-2 px-3 shadow-none"
-                      data-bs-dismiss="modal"
-                    >
-                      Cancel
-                    </button>
-                    <Link
-                      href="#"
-                      className="btn btn-primary fs-13 fw-medium p-2 px-3" data-bs-dismiss="modal"
-                    >
-                      Add Customer
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* /Add Customer */}
-        {/* Edit Customer */}
-        <div className="modal fade" id="edit-units">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="page-wrapper-new p-0">
-                <div className="content">
-                  <div className="modal-header">
-                    <div className="page-title">
-                      <h4>Edit Customer</h4>
-                    </div>
-                    <button
-                      type="button"
-                      className="close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <form>
-                      <div className="new-employee-field">
-                        <div className="profile-pic-upload image-field">
-                          <div className="profile-pic p-2">
-                           <img
-                              src="./assets/img/users/user-41.jpg"
-                              className="object-fit-cover h-100 rounded-1"
-                              alt="user"
-                            />
-                            <button type="button" className="close rounded-1">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                          </div>
-                          <div className="mb-3">
-                            <div className="image-upload mb-0">
-                              <input type="file" />
-                              <div className="image-uploads">
-                                <h4>Change Image</h4>
-                              </div>
-                            </div>
-                            <p className="mt-2">JPEG, PNG up to 2 MB</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            First Name<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            defaultValue="Carl"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            Last Name<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            defaultValue="Evans"
-                          />
-                        </div>
-                        <div className="col-lg-12 mb-3">
-                          <label className="form-label">
-                            Email<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input
-                            type="email"
-                            className="form-control"
-                            defaultValue="carlevans@example.com"
-                          />
-                        </div>
-                        <div className="col-lg-12 mb-3">
-                          <label className="form-label">
-                            Phone<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input
-                            type="tel"
-                            className="form-control"
-                            defaultValue={+12163547758}
-                          />
-                        </div>
-                        <div className="col-lg-12 mb-3">
-                          <label className="form-label">
-                            Address<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            defaultValue="87 Griffin Street"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            City<span className="text-danger ms-1">*</span>
-                          </label>
-                          <Select
-                            classNamePrefix="react-select"
-                            options={city}
-                            placeholder="Choose"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            State<span className="text-danger ms-1">*</span>
-                          </label>
-                          <Select
-                            classNamePrefix="react-select"
-                            options={state}
-                            placeholder="Choose"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            Country<span className="text-danger ms-1">*</span>
-                          </label>
-                          <Select
-                            classNamePrefix="react-select"
-                            options={countries}
-                            placeholder="Choose"
-                          />
-                        </div>
-                        <div className="col-lg-6 mb-3">
-                          <label className="form-label">
-                            Postal Code<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            defaultValue={90001}
-                          />
-                        </div>
-                        <div className="col-lg-12">
-                          <div className="status-toggle modal-status d-flex justify-content-between align-items-center">
-                            <span className="status-label">Status</span>
-                            <input
-                              type="checkbox"
-                              id="user2"
-                              className="check"
-                              defaultChecked
-                            />
-                            <label htmlFor="user2" className="checktoggle">
-                              {" "}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn me-2 btn-secondary fs-13 fw-medium p-2 px-3 shadow-none"
-                      data-bs-dismiss="modal"
-                    >
-                      Cancel
-                    </button>
-                    <Link
-                      href="submit"
-                      className="btn btn-primary fs-13 fw-medium p-2 px-3" data-bs-dismiss="modal"
-                    >
-                      Save Changes
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* /Edit Customer */}
-        {/* delete modal */}
-        <div className="modal fade" id="delete-modal">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="page-wrapper-new p-0">
-                <div className="content p-5 px-3 text-center">
-                  <span className="rounded-circle d-inline-flex p-2 bg-danger-transparent mb-2">
-                    <i className="ti ti-trash fs-24 text-danger" />
-                  </span>
-                  <h4 className="fs-20 fw-bold mb-2 mt-1">Delete Customer</h4>
-                  <p className="mb-0 fs-16">
-                    Are you sure you want to delete customer?
-                  </p>
-                  <div className="modal-footer-btn mt-3 d-flex justify-content-center">
-                    <button
-                      type="button"
-                      className="btn me-2 btn-secondary fs-13 fw-medium p-2 px-3 shadow-none"
-                      data-bs-dismiss="modal"
-                    >
-                      Cancel
-                    </button>
-                    <Link
-                      href="#"
-                      className="btn btn-primary fs-13 fw-medium p-2 px-3" data-bs-dismiss="modal"
-                    >
-                      Yes Delete
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-
-    </>
-
-
+    </div>
   );
-};
-
+}
