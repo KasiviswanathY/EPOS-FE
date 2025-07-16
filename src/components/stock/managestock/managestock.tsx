@@ -1,524 +1,267 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
-
 import CommonFooter from "@/core/common/footer/commonFooter";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
-import CollapesIcon from "@/core/common/tooltip-content/collapes";
-import RefreshIcon from "@/core/common/tooltip-content/refresh";
-import TooltipIcons from "@/core/common/tooltip-content/tooltipIcons";
-import { ManageStocksdata } from "@/core/json/managestocks_data";
 import Link from "next/link";
-import { useState } from "react";
-import Select from "react-select";
 import Table from "@/core/common/pagination/datatable";
-import {
-  Edit,
-  MinusCircle,
-  PlusCircle,
-  Search,
-  Trash2,
-} from "feather-icons-react";
-import {
-  ResponsiblePerson,
-  Shop,
-  Store,
-  WareHouse,
-} from "@/core/common/selectOption/selectOption";
 
 export default function ManageStockComponent() {
-  const data = ManageStocksdata;
+  const data = [
+    {
+      name: "Hi 5 Disposable",
+      category: "Nicotine Vape",
+      costPriceExTax: "$6.50",
+      salePriceExTax: "$7.99",
+      salePriceIncTax: "$8.53",
+      stock: 84,
+      onOrder: "-",
+      minStock: 100,
+      maxStock: 300,
+      supplier: "None",
+    },
+    {
+      name: "Royal Honey",
+      category: "Accessories",
+      costPriceExTax: "$2.00",
+      salePriceExTax: "$5.99",
+      salePriceIncTax: "$6.39",
+      stock: -237,
+      onOrder: "-",
+      minStock: 0,
+      maxStock: 120,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+     {
+      name: "Body Oil",
+      category: "Accessories",
+      costPriceExTax: "$0.75",
+      salePriceExTax: "$2.29",
+      salePriceIncTax: "$2.44",
+      stock: 11,
+      onOrder: "-",
+      minStock: 3,
+      maxStock: 50,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+     {
+      name: "Body Oil",
+      category: "Accessories",
+      costPriceExTax: "$0.75",
+      salePriceExTax: "$2.29",
+      salePriceIncTax: "$2.44",
+      stock: 11,
+      onOrder: "-",
+      minStock: 3,
+      maxStock: 50,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+    {
+      name: "Hi 5 Disposable",
+      category: "Nicotine Vape",
+      costPriceExTax: "$6.50",
+      salePriceExTax: "$7.99",
+      salePriceIncTax: "$8.53",
+      stock: 84,
+      onOrder: "-",
+      minStock: 100,
+      maxStock: 300,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+    {
+      name: "Juul Refill",
+      category: "Cigarettes",
+      costPriceExTax: "$12.30",
+      salePriceExTax: "$17.99",
+      salePriceIncTax: "$19.20",
+      stock: -1721,
+      onOrder: "-",
+      minStock: 4,
+      maxStock: 60,
+      supplier: "None",
+    },
+    {
+      name: "Hi 5 Disposable",
+      category: "Nicotine Vape",
+      costPriceExTax: "$6.50",
+      salePriceExTax: "$7.99",
+      salePriceIncTax: "$8.53",
+      stock: 84,
+      onOrder: "-",
+      minStock: 100,
+      maxStock: 300,
+      supplier: "None",
+    },
+    
+  ];
 
   const columns = [
-    {
-      title: "Warehouse",
-      dataIndex: "Warehouse",
-      sorter: (a: any, b: any) => a.Warehouse.length - b.Warehouse.length,
-    },
-    {
-      title: "Shop",
-      dataIndex: "Shop",
-      sorter: (a: any, b: any) => a.Shop.length - b.Shop.length,
-    },
-    {
-      title: "Product",
-      dataIndex: "Product",
-      render: (text: any, record: any) => (
-        <span className="userimgname">
-          <Link href="#" className="product-img">
-            <img alt="img" src={record.Product.Image} />
-          </Link>
-          <Link href="#">{record.Product.Name}</Link>
-        </span>
-      ),
-      sorter: (a: any, b: any) => a.Product.Name.length - b.Product.Name.length,
-    },
-
-    {
-      title: "Date",
-      dataIndex: "Date",
-      sorter: (a: any, b: any) => a.Email.length - b.Email.length,
-    },
-
-    {
-      title: "Person",
-      dataIndex: "Person",
-      render: (text: any, record: any) => (
-        <span className="userimgname">
-          <Link href="#" className="product-img">
-            <img alt="img" src={record.Person.Image} />
-          </Link>
-          <Link href="#">{record.Person.Name}</Link>
-        </span>
-      ),
-      sorter: (a: any, b: any) => a.Person.Name.length - b.Person.Name.length,
-    },
-
-    {
-      title: "Qty",
-      dataIndex: "Quantity",
-      sorter: (a: any, b: any) => a.Quantity.length - b.Quantity.length,
-    },
-
+    { title: "Name", dataIndex: "name" },
+    { title: "Category", dataIndex: "category" },
+    { title: "Cost price (exTAX)", dataIndex: "costPriceExTax" },
+    { title: "Sale Price (exTAX)", dataIndex: "salePriceExTax" },
+    { title: "Sale Price (incTAX)", dataIndex: "salePriceIncTax" },
+    { title: "Stock", dataIndex: "stock" },
+    { title: "On order", dataIndex: "onOrder" },
+    { title: "Min", dataIndex: "minStock" },
+    { title: "Max", dataIndex: "maxStock" },
+    { title: "Supplier", dataIndex: "supplier" },
     {
       title: "",
       dataIndex: "action",
       render: () => (
-        <div className="action-table-data">
-          <div className="edit-delete-action">
-            <div className="input-block add-lists"></div>
-
-            <Link
-              className="me-2 p-2"
-              href="#"
-              data-bs-toggle="modal"
-              data-bs-target="#edit-units"
-            >
-              <Edit className="feather-edit" />
-            </Link>
-
-            <Link
-              className="confirm-text p-2"
-              data-bs-toggle="modal"
-              data-bs-target="#delete-modal"
-              href="#"
-            >
-              <Trash2 className="feather-trash-2" />
-            </Link>
-          </div>
+        <div className="dropdown">
+          <button className="btn p-0" data-bs-toggle="dropdown">
+            <i className="ti ti-dots-vertical fs-5"></i>
+          </button>
+          <ul className="dropdown-menu">
+            <li>
+              <Link className="dropdown-item" href="#">
+                Inventory
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" href="#">
+                Advanced Edit
+              </Link>
+            </li>
+          </ul>
         </div>
       ),
-      sorter: (a: any, b: any) => a.createdby.length - b.createdby.length,
     },
   ];
 
-  const [quantity, setQuantity] = useState(4);
-
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  const handleIncrement = () => {
-    setQuantity(quantity + 1);
-  };
   return (
-    <>
-      <div className="page-wrapper">
-        <div className="content">
-          <div className="page-header">
-            <div className="add-item d-flex">
-              <div className="page-title">
-                <h4>Manage Stock</h4>
-                <h6>Manage your stock</h6>
-              </div>
-            </div>
-            <ul className="table-top-head">
-              <TooltipIcons />
-              <RefreshIcon />
-              <CollapesIcon />
-            </ul>
-            <div className="page-btn">
-              <Link
-                href="#"
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#add-units"
-              >
-                <i className="ti ti-circle-plus me-1"></i>
-                Add New
-              </Link>
-            </div>
+    <div className="page-wrapper">
+      <div className="content">
+        <div className="page-header d-flex justify-content-between align-items-center mb-3">
+          <div className="page-title">
+            <h4 className="fw-bold mb-1">Stock management</h4>
+            <p className="text-muted mb-0" style={{ fontSize: "14px" }}>
+              Stock management allows you to track and control the products you buy from suppliers and sell to customers.
+            </p>
           </div>
-          {/* /product list */}
-          <div className="card table-list-card  manage-stock">
-            <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-              <div className="search-set"></div>
-              <div className="d-flex table-dropdown my-xl-auto right-content align-items-center flex-wrap row-gap-3">
-                <div className="dropdown me-2">
-                  <Link
-                    href="#"
-                    className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
-                    data-bs-toggle="dropdown"
-                  >
-                    Warehouse
-                  </Link>
-                  <ul className="dropdown-menu  dropdown-menu-end p-3">
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Lavish Warehouse
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Quaint Warehouse{" "}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Traditional Warehouse
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Cool Warehouse
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                <div className="dropdown me-2">
-                  <Link
-                    href="#"
-                    className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
-                    data-bs-toggle="dropdown"
-                  >
-                    Store
-                  </Link>
-                  <ul className="dropdown-menu  dropdown-menu-end p-3">
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Electro Mart
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Quantum Gadgets
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Prime Bazaar
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Gadget World
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                <div className="dropdown">
-                  <Link
-                    href="#"
-                    className="dropdown-toggle btn btn-white btn-md d-inline-flex align-items-center"
-                    data-bs-toggle="dropdown"
-                  >
-                    Product
-                  </Link>
-                  <ul className="dropdown-menu  dropdown-menu-end p-3">
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Lenovo IdeaPad 3
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Beats Pro{" "}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Nike Jordan
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="dropdown-item rounded-1">
-                        Apple Series 5 Watch
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="card-body">
-              <div className="custom-datatable-filter table-responsive">
-                <Table columns={columns} dataSource={data} />
-              </div>
-            </div>
+          <div className="page-btn">
+            <Link
+              href="#"
+              className="btn btn-warning text-white"
+              data-bs-toggle="modal"
+              data-bs-target="#adjust-stock"
+            >
+              <i className="ti ti-adjustments-horizontal me-1"></i>
+              Adjust Stock
+            </Link>
           </div>
-          {/* /product list */}
         </div>
+        <div className="card shadow-sm border-0">
+          <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3 py-3 px-4 bg-white">
+            <div className="d-flex align-items-center flex-wrap gap-3">
+              <div className="position-relative" style={{ minWidth: "250px" }}>
+               <i
+                  className="ti ti-search text-muted position-absolute"
+                  style={{
+                    left: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    fontSize: "14px",
+                  }}
+                ></i>
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-2">
+              <button className="btn btn-outline-dark btn-sm d-flex align-items-center">
+                <i className="ti ti-layout-grid me-1"></i> Columns
+              </button>
+              <button className="btn btn-outline-dark btn-sm d-flex align-items-center">
+                <i className="ti ti-filter me-1"></i> Filter
+              </button>
+            </div>
+          </div>
+          <div className="card-body px-0">
+            <div className="table-responsive px-4">
+              <Table columns={columns} dataSource={data} />
+            </div>
+          </div>
+          <div
+            className="d-flex justify-content-between align-items-center flex-wrap px-4 py-3"
+            style={{ background: "#f9f9f9", borderTop: "1px solid #eee" }}
+          >
+          </div>
+        </div>
+
         <CommonFooter />
+        <CommonDeleteModal />
       </div>
-      <CommonDeleteModal />
-
-      {/* Add Stock */}
-      <div className="modal fade" id="add-units">
-        <div className="modal-dialog modal-dialog-centered stock-adjust-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="page-title">
-                <h4>Add Stock</h4>
-              </div>
-              <button
-                type="button"
-                className="close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <form>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Warehouse <span className="text-danger ms-1">*</span>
-                      </label>
-                      <Select
-                        classNamePrefix="react-select"
-                        options={WareHouse}
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Store <span className="text-danger ms-1">*</span>
-                      </label>
-                      <Select
-                        classNamePrefix="react-select"
-                        options={Store}
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Responsible Person{" "}
-                        <span className="text-danger ms-1">*</span>
-                      </label>
-                      <Select
-                        classNamePrefix="react-select"
-                        options={ResponsiblePerson}
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="search-form mb-0">
-                      <label className="form-label">
-                        Product <span className="text-danger ms-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Select Product"
-                      />
-                      <i data-feather="search" className="feather-search" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary me-2"
-                  data-bs-dismiss="modal"
-                >
-                  Cancel
-                </button>
-                <Link
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  Add Stock
-                </Link>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* /Add Stock */}
-      {/* Edit Stock */}
-      <div className="modal fade" id="edit-units">
-        <div className="modal-dialog modal-dialog-centered stock-adjust-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="page-title">
-                <h4>Edit Stock</h4>
-              </div>
-              <button
-                type="button"
-                className="close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <form>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Warehouse<span className="text-danger ms-1">*</span>
-                      </label>
-                      <Select
-                        classNamePrefix="react-select"
-                        options={WareHouse}
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Shop<span className="text-danger ms-1">*</span>
-                      </label>
-                      <Select
-                        classNamePrefix="react-select"
-                        options={Shop}
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Responsible Person
-                        <span className="text-danger ms-1">*</span>
-                      </label>
-                      <Select
-                        classNamePrefix="react-select"
-                        options={ResponsiblePerson}
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="search-form mb-3">
-                      <label className="form-label">
-                        Product<span className="text-danger ms-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Select Product"
-                        defaultValue="Nike Jordan"
-                      />
-                      <Search className="feather-search" />
-                    </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="modal-body-table">
-                      <div className="table-responsive">
-                        <table className="table  datanew">
-                          <thead>
-                            <tr>
-                              <th>Product</th>
-                              <th>SKU</th>
-                              <th>Category</th>
-                              <th>Qty</th>
-                              <th className="no-sort" />
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>
-                                <div className="d-flex align-items-center">
-                                  <Link href="#" className="avatar avatar-md">
-                                    <img
-                                      src="assets/img/products/stock-img-02.png"
-                                      alt="product"
-                                    />
-                                  </Link>
-                                  <Link href="#">Nike Jordan</Link>
-                                </div>
-                              </td>
-                              <td>PT002</td>
-                              <td>Nike</td>
-                              <td>
-                                <div className="product-quantity bg-gray-transparent border-0">
-                                  <span
-                                    className="quantity-btn"
-                                    onClick={handleDecrement}
-                                  >
-                                    <MinusCircle />
-                                  </span>
-                                  <input
-                                    type="text"
-                                    className="quntity-input bg-transparent"
-                                    defaultValue={2}
-                                  />
-                                  <span
-                                    className="quantity-btn"
-                                    onClick={handleIncrement}
-                                  >
-                                    +
-                                    <PlusCircle className="plus-circle" />
-                                  </span>
-                                </div>
-                              </td>
-                              <td>
-                                <div className="d-flex align-items-center justify-content-between edit-delete-action">
-                                  <Link
-                                    className="d-flex align-items-center border rounded p-2"
-                                    href="#"
-                                  >
-                                    <i
-                                      data-feather="trash-2"
-                                      className="feather-trash-2"
-                                    />
-                                  </Link>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary me-2"
-                  data-bs-dismiss="modal"
-                >
-                  Cancel
-                </button>
-                <Link
-                  href="#"
-                  className="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  Save Changes
-                </Link>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      {/* /Edit Stock */}
-    </>
+    </div>
   );
 }

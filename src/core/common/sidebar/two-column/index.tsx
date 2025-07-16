@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
+
 
 import { all_routes } from '@/data/all_routes';
 import Link from 'next/link';
@@ -12,7 +12,6 @@ const TwoColumnSidebar = () => {
 
     return (
         <>
-            {/* Two Col Sidebar */}
             <div className="two-col-sidebar" id="two-col-sidebar">
                 <div className="sidebar sidebar-twocol">
                     <div className="twocol-mini">
@@ -154,7 +153,6 @@ const TwoColumnSidebar = () => {
                     </div>
                     <div className="sidebar-right">
                         <>
-                            {/* Logo */}
                             <div className="sidebar-logo">
                                 <Link href={route.newdashboard} className="logo logo-normal">
                                     <img src="assets/img/logo.svg" alt="Img" />
@@ -166,7 +164,7 @@ const TwoColumnSidebar = () => {
                                     <img src="assets/img/logo-small.png" alt="Img" />
                                 </Link>
                             </div>
-                            {/* /Logo */}
+                            
                         </>
 
                         <div className="sidebar-scroll">
@@ -342,6 +340,11 @@ const TwoColumnSidebar = () => {
                                             <span>Inventory</span>
                                         </li>
                                         <li>
+                                            <Link href={route.productview}>
+                                                <span>Product view</span>
+                                            </Link>
+                                        </li>
+                                        <li>
                                             <Link href={route.productlist}>
                                                 <span>Products</span>
                                             </Link>
@@ -377,6 +380,30 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
+                                            <Link href={route.buyingreview}>
+                                                <span>Buying Review</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+
+                                            <Link href={route.promotionlist}>
+                                                <span>Promotion list</span>
+                                            </Link>
+
+                                            <Link href={route.popupalert}>
+                                                <span>Pop Up Alert</span>
+                                            </Link>
+                                        </li>
+
+                                        <li>
+
+                                            <Link href={route.promotionlist}>
+                                                <span>Promotion list</span>
+                                            </Link>
+                                        </li>
+
+                                       <li>
                                             <Link href={route.units}>
                                                 <span>Units</span>
                                             </Link>
@@ -403,6 +430,84 @@ const TwoColumnSidebar = () => {
                                         </li>
                                     </ul>
                                 </div>
+
+                                <div className="tab-pane fade" id="Company">
+                                    <ul>
+                                        <li className="menu-title">
+                                            <span>Company</span>
+                                        </li>
+                                        <li>
+                                            <Link href={route.companydetails}>
+                                                <span>Company Details</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link href={route.customertypes}>
+                                                <span>Customer Types</span>
+                                            </Link>
+                                        </li>
+                                          <li>
+                                            <Link href={route.clockingtypes}>
+                                                <span>Clocking Types</span>
+                                            </Link>
+                                        </li>
+
+                                        <li>
+                                            <Link href={route.stockmovementreasons}>
+                                                <span>Stock Movement Reasons</span>
+                                            </Link>
+                                        </li>
+                                        
+                                        <li>
+
+                                            <Link href={route.nosalereason}>
+                                                <span>No Sale Reason</span>
+                                                </Link>
+                                           </li>
+                                           <li>
+                                            <Link href={route.refundreasons}>
+                                                <span>Refund Reasons</span>
+                                            </Link>
+                                            </li>
+                                            <li>
+                                            <Link href={route.discountreasons}>
+                                                <span>Discount Reasons</span>
+                                            </Link>
+                                            </li>
+                                            <li>
+                                            <Link href={route.receipts}>
+                                                <span>Receipts</span>
+                                              </Link>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                                <div className="tab-pane fade" id="locations list">
+                                    <ul>
+                                        <li className="menu-title">
+                                            <span>Locationslist</span>
+                                        </li>
+                                        <li className="submenu">
+                                            <Link href="#">
+                                                <span>LocationsList</span>
+                                                <span className="menu-arrow" />
+                                            </Link>
+                                            <ul>
+                                                <li>
+                                                    <Link href={route.locationslist}>Locationslist</Link>
+                                                </li>
+                                                <li>
+                                            <Link href={route.deviceslist}>Devices List</Link>
+                                        </li>
+                                        <li>
+                                            <Link href={route.openinghours}>Devices List</Link>
+                                        </li>
+                                                
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <div className="tab-pane fade" id="stock">
                                     <ul>
                                         <li className="menu-title">
@@ -414,6 +519,17 @@ const TwoColumnSidebar = () => {
                                             </Link>
                                         </li>
                                         <li>
+
+                                            <Link href={route.stocktakes}>
+                                                <span>Stock Takes</span>
+                                            </Link>
+
+                                            <Link href={route.stockmovements}>
+                                                <span>Stock Movements</span>
+
+                                            </Link>
+                                        </li>
+                                        <li>
                                             <Link href={route.stockadjustment}>
                                                 <span>Stock Adjustment</span>
                                             </Link>
@@ -421,6 +537,31 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.stocktransfer}>
                                                 <span>Stock Transfer</span>
+                                            </Link>
+
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.stockwarnings}>
+                                                <span>Stock Warnings</span>
+                                                
+                                            </Link>
+
+                                        </li>
+                                        <li>
+                                            <Link href={route.stockaudithistory}>
+                                                <span>Stock Audit History</span>
+                                            </Link>
+                                        </li>
+                                         <li>
+                                            <Link href={route.stocklevel}>
+                                                <span>Stock Level</span>
+
+                                            </Link>
+                                        </li>
+                                         <li>
+                                            <Link href={route.nonsellingstocks}>
+                                                <span>Non-SellingStocks</span>
                                             </Link>
                                         </li>
                                     </ul>
@@ -488,6 +629,11 @@ const TwoColumnSidebar = () => {
                                     <ul>
                                         <li className="menu-title">
                                             <span>FINANCE &amp; ACCOUNTS</span>
+                                        </li>
+                                         <li>
+                                            <Link href={route.generateLabels}>
+                                                <span>Generate Labels</span>
+                                            </Link>
                                         </li>
                                         <li>
                                             <Link href={route.coupons}>
@@ -559,6 +705,59 @@ const TwoColumnSidebar = () => {
                                         <li>
                                             <Link href={route.accountlist}>
                                                 <span>Bank Accounts</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.tenders}>
+                                                <span>Tenders</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.tendertypes}>
+                                                <span>Tender Types</span>
+                                            </Link>
+                                            
+                                        </li>
+                                         <li>
+                                            <Link href={route.taxrates}>
+                                                <span>Tax Rates List</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.pettycashreasons}>
+                                                <span>Petty Cash Reasons</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.payoutreasons}>
+                                                <span>Pay out Reasons</span>
+                                            </Link>
+                                            
+                                        </li>
+                                         <li>
+                                            <Link href={route.additionallogins}>
+                                                <span>Additional Logins</span>
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+
+                                            <Link href={route.restoredata}>
+                                                <span>Restore Data</span>
+
+                                            <Link href={route.cloudsync}>
+                                                <span>Cloud Sync</span>
+
+                                            </Link>
+                                            
+                                        </li>
+                                        <li>
+                                            <Link href={route.alltransactions}>
+                                                <span>All Transactions</span>
                                             </Link>
                                         </li>
                                         <li>

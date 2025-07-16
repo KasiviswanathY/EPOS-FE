@@ -101,6 +101,13 @@ export const SidebarData = [
     submenuHdr: "Inventory",
     submenuItems: [
       {
+        label: "Product-view",
+        link: "/product-view",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Products",
         link: "/product-list",
         icon: "box",
@@ -149,7 +156,30 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Buying Review",
+        link: "/buying-review",
+        icon: "file-search",
+        showSubRoute: false,
+        submenu: false,
+      },
       {
+        label: "Pop Up Alert",
+        link: "/pop-up-alert",
+        icon: "alert-triangle",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+
+        label: "Promotion List",
+        link: "/promotion-list",
+        icon: "triangles",
+        showSubRoute: false,
+        submenu: false,
+      },
+{
+
         label: "Units",
         link: "/units",
         icon: "brand-unity",
@@ -187,6 +217,115 @@ export const SidebarData = [
     ],
   },
   {
+    label: "Company",
+    submenuOpen: true,
+    showSubRoute: false,
+    submenuHdr: "Company",
+    submenuItems: [
+      {
+        label: "Company Details",
+        link: "/company-details",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Customer Types",
+        link: "/customer-types",
+        icon: "box",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Clocking Types",
+        link: "/clocking-types",
+        icon: "clock",
+        showSubRoute: false,
+        submenu: false,
+    },
+    {
+        label: "Stock Movement Reasons",
+        link: "/stock-movement-reasons",
+        icon: "ti ti-box",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+      {
+        label: "No Sale Reason",
+        link: "/no-sale-reason",
+        icon: "ti ti-ban",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+       {
+        label: "Refund Reasons",
+        link: "/refund-reasons",
+        icon: "	ti ti-rotate-clockwise",
+        showSubRoute: false,
+        submenu: false,
+       },
+
+
+       {
+        label: "Discount Reasons",
+        link: "/discount-reasons",
+        icon: "ti ti-discount-2",
+        showSubRoute: false,
+        submenu: false,
+       },
+
+      {
+        label: "Receipts",
+        link: "/receipts",
+        icon: "ti ti-receipt",
+        showSubRoute: false,
+        submenu: false,
+      },
+    ],
+  },
+
+  {
+    label: "Locations",
+    submenuOpen: true,
+    submenuHdr: "Locations",
+    submenu: false,
+    showSubRoute: false,
+    submenuItems: [
+      {
+        label: "Locations",
+        icon: "map",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          
+      {
+        label: "Locations",
+        link: route.locationslist,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Devices List",
+        link: route.deviceslist,
+        icon: "fas fa-server",
+        showSubRoute: false,
+        submenu: false,
+      },
+    {
+        label: "Opening Hours",
+        link: route.openinghours,
+        icon: "fas fa-server",
+        showSubRoute: false,
+        submenu: false,
+      },
+    ],
+  },
+ ],
+  },
+  {
     label: "Stock",
     submenuOpen: true,
     submenuHdr: "Stock",
@@ -201,15 +340,58 @@ export const SidebarData = [
         submenu: false,
       },
       {
-        label: "Stock Adjustment",
-        link: "/stock-adjustment",
-        icon: "stairs-up",
+
+        label: "Stock Takes",
+        link: "/stock-takes",
+        icon: "stack-3",
         showSubRoute: false,
         submenu: false,
       },
       {
-        label: "Stock Transfer",
-        link: "/stock-transfer",
+        label: "Stock Movements",
+        link: "/stock-movements",
+        icon: "stack-3",
+        showSubRoute: false,
+        submenu: false,
+      },
+      // {
+      //   label: "Stock Adjustment",
+      //   link: "/stock-adjustment",
+      //   icon: "stairs-up",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Stock Transfer",
+      //   link: "/stock-transfer",
+      //   icon: "stack-pop",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+    {
+        label: "Stock Audit History",
+        link: "/stock-audit-history",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Stock Level",
+        link: "/stock-level",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Stock Warnings",
+        link: "/stock-warnings",
+        icon: "stack-pop",
+        showSubRoute: false,
+        submenu: false,
+      },
+       {
+        label: "Non-Selling Stocks",
+        link: "/non-selling-stocks",
         icon: "stack-pop",
         showSubRoute: false,
         submenu: false,
@@ -279,6 +461,13 @@ export const SidebarData = [
     submenuHdr: "Promo",
     showSubRoute: false,
     submenuItems: [
+      {
+        label: "Generate Labels",
+        link: "/generate-labels",
+        icon: "cards",
+        showSubRoute: false,
+        submenu: false,
+      },
       {
         label: "Coupons",
         link: "/coupons",
@@ -377,6 +566,70 @@ export const SidebarData = [
         label: "Bank Accounts",
         link: route.accountlist,
         icon: "building-bank",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Tenders",
+        link: route.tenders,
+        icon: "report-money",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Tender Types",
+        link: route.tendertypes,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Tax Rates List",
+        link: route.taxrateslist,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+       {
+        label: "Petty Cash Reasons",
+        link: route.pettycashreasons,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Pay out Reasons",
+        link: route.payoutreasons,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Additional Logins",
+        link: route.additionallogins,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+
+        label: "Restore Data",
+        link: route.restoredata,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Cloud Sync",
+        link: route.cloudsync,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "All Transactions",
+        link: "/all-transactions",
+        icon: "moneybag",
         showSubRoute: false,
         submenu: false,
       },
