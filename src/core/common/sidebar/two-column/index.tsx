@@ -748,7 +748,9 @@ const TwoColumnSidebar = () => {
 
                                             <Link href={route.restoredata}>
                                                 <span>Restore Data</span>
-
+                                                </Link>
+                                                </li>
+                                             <li>
                                             <Link href={route.cloudsync}>
                                                 <span>Cloud Sync</span>
 
