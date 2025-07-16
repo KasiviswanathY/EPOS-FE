@@ -247,6 +247,7 @@ export const all_routes = {
   payoutreasons:"/pay-out-reasons",
   additionallogins:"/additional-logins",
   restoredata:"/restoredata",
+  cloudsync:"/cloud-sync",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",

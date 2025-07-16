@@ -612,8 +612,16 @@ export const SidebarData = [
         submenu: false,
       },
       {
+
         label: "Restore Data",
         link: route.restoredata,
+        icon: "bi bi-wallet2",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Cloud Sync",
+        link: route.cloudsync,
         icon: "bi bi-wallet2",
         showSubRoute: false,
         submenu: false,
