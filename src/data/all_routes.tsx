@@ -254,6 +254,7 @@ export const all_routes = {
   trailbalance: "/trial-balance",
   cashflow: "/cash-flow",
   accountstatement: "/account-statement",
+  customerreports:"/customer-reports",
   biller: "/billers",
   employeedetails: "/employee-details",
   stockhistory: "/stock-history",

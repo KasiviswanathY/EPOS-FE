@@ -685,6 +685,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Customer Reports",
+        link: route.customerreports,
+        icon: "report",
+        showSubRoute: false,
+        submenu: false,
+      },
       {
         label: "Billers",
         link: "/billers",
