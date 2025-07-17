@@ -626,6 +626,21 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+
+     
+      {
+        label: "Transaction-Report",
+        icon: "bank",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Transactions",
+            link: route.transactions,
+            showSubRoute: false,
+          },
+        ],
+  },
       {
         label: "All Transactions",
         link: "/all-transactions",

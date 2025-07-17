@@ -248,6 +248,7 @@ export const all_routes = {
   additionallogins:"/additional-logins",
   restoredata:"/restoredata",
   cloudsync:"/cloud-sync",
+  transactions:"/transactions",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",
