@@ -351,6 +351,13 @@ export const SidebarData1 = [
             route: "/stock-movements",
             subRoutes: [],
           },
+           {
+            title: 'Stock Disparencies',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/stock-disparencies",
+            subRoutes: [],
+          },
           {
             title: 'Stock Adjustment',
             hasSubRoute: false,
