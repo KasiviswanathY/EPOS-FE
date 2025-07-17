@@ -769,6 +769,11 @@ const TwoColumnSidebar = () => {
                                                 <span className="menu-arrow" />
                                             </Link>
                                         </li>
+                                        <li>
+                                            <Link href={route.heldtransactions}>
+                                                <span>held Transactions</span>
+                                            </Link>
+                                        </li>
                                     </ul>
                                 </div>
                                         <li>

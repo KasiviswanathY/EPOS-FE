@@ -249,6 +249,7 @@ export const all_routes = {
   restoredata:"/restoredata",
   cloudsync:"/cloud-sync",
   transactions:"/transactions",
+  heldtransactions:"/held-transactions",
   alltransactions: "/all-transactions",
   moneytransfer: "/money-transfer",
   balancesheet: "/balance-sheet",

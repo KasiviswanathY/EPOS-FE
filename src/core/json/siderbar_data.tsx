@@ -639,6 +639,11 @@ export const SidebarData = [
             link: route.transactions,
             showSubRoute: false,
           },
+          {
+            label: "Held Transactions",
+            link: route.heldtransactions,
+            showSubRoute: false,
+          },
         ],
   },
       {
