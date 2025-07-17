@@ -1095,6 +1095,13 @@ export const SidebarData1 = [
             subRoutes: [],
           },
           {
+            title: 'Hours',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/hours",
+            subRoutes: [],
+          },
+          {
             title: 'Suppliers',
             hasSubRoute: false,
             showSubRoute: false,
