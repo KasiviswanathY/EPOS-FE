@@ -706,6 +706,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Invoice Messages",
+        link: route.invoicemessages,
+        icon: "Invoice Icon",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Billers",
         link: "/billers",
         icon: "user-up",

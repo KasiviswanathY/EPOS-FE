@@ -1088,6 +1088,13 @@ export const SidebarData1 = [
             subRoutes: [],
           },
           {
+            title: 'Invoice Messages',
+            hasSubRoute: false,
+            showSubRoute: false,
+            route: "/invoice messages",
+            subRoutes: [],
+          },
+          {
             title: 'Billers',
             hasSubRoute: false,
             showSubRoute: false,
