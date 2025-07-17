@@ -206,8 +206,8 @@ export default function StockLevelsComponent() {
       <div className="d-flex flex-wrap gap-2">
         <button className="btn btn-outline-dark btn-sm fw-semibold">RESET</button>
         <button className="btn btn-sm text-white" style={{ backgroundColor: "#fd7e14" }}>APPLY</button>
-        <button className="btn btn-sm text-white fw-semibold" style={{ backgroundColor: "#fd7e14" }}>ADD STOCK</button>
-
+<Link href="/stock-movements"><button className="btn btn-primary">ADD STOCK</button>
+</Link>
       </div>
     </div>
   </div>
