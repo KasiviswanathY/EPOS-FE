@@ -585,6 +585,23 @@ export const SidebarData1 = [
         route: "/account-list",
         subRoutes: [],
       },
+
+
+      {
+    title: 'Accounting',
+    hasSubRoute: true,
+    icon: 'books',
+    showSubRoute: false,
+    subRoutes: [
+      {
+        title: 'Book keeping',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/book-keeping",
+        subRoutes: [],
+      },
+    ],
+  },
       {
         title: 'Tender Types',
         hasSubRoute: false,
