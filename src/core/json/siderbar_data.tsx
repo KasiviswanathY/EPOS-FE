@@ -576,6 +576,23 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+{
+    label: "Accounting",
+    submenuOpen: true,
+    submenuHdr: "Accounting",
+    showSubRoute: false,
+    submenuItems: [
+      {
+        label: "Book keeping",
+        link: "/book-keeping",
+        icon: "books",
+        showSubRoute: false,
+        submenu: false,
+      },
+    ],
+  },
+
+
       {
         label: "Tenders",
         link: route.tenders,
