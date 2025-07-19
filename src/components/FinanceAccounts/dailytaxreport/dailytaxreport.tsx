@@ -96,7 +96,7 @@ export default function TaxSummaryComponent() {
                   </td>
                 </tr>
               ))}
-              <tr className="fw-bold bg-primary text-white">
+              <tr className="fw-bold text-white">
                 <td>Total:</td>
                 <td>${totalSalesExclTax.toFixed(2)}</td>
                 <td>${totalTax.toFixed(2)}</td>
