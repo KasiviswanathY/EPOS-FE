@@ -589,6 +589,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+            {
+        label: "End Of Year Tax Report",
+        link: "/end-of-year-tax-report",
+        icon: "books",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
 
