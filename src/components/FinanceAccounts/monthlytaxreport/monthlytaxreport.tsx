@@ -22,7 +22,7 @@ export default function MonthlyTaxComponent() {
   };
 
   const handleApply = () => {
-    // You can fetch or filter data here based on current state
+    
     console.log("Applied Filters:", { year, month, location, device });
   };
 
@@ -88,10 +88,10 @@ export default function MonthlyTaxComponent() {
   const totalTax = taxSummary.reduce((acc, t) => acc + t.tax, 0);
 
   return (
-    <div className="page-wrapper px-4 py-4">
+    <div className="page-wrapper">
       <div className="content">
         <h4 className="fw-bold mb-2">
-          Monthly Tax <span className="text-primary">HELP</span>
+          Monthly Tax 
         </h4>
         <p className="mb-4">On this page you have a breakdown of all tax by tax rate.</p>
 
@@ -181,10 +181,10 @@ export default function MonthlyTaxComponent() {
                   <td>${item.salesInclTax.toFixed(2)}</td>
                 </tr>
               ))}
-              <tr className="fw-bold bg-primary text-white">
-                <td colSpan={4}>Total:</td>
-                <td>${totalTax.toFixed(2)}</td>
-                <td></td>
+              <tr className="fw-bold text-white">
+                <td >Total:</td><td></td><td></td><td></td>
+                <td >${totalTax.toFixed(2)}</td>
+              
               </tr>
             </tbody>
           </table>
