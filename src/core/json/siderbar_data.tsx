@@ -592,6 +592,7 @@ export const SidebarData = [
         submenu: false,
       },
       {
+
         label: "Monthly Tax",
         link: route.monthlytaxreport,
         icon: "fas fa-server",
@@ -599,6 +600,21 @@ export const SidebarData = [
         submenu: false,
       },
    
+
+        label: "Daily Tax Report",
+        link: "/daily-tax-report",
+        icon: "books",
+        showSubRoute: false,
+        submenu: false,
+      },
+       {
+        label: "Daily Tax Report ",
+        link: "/daily-tax-report",
+        icon: "tax",
+        showSubRoute: false,
+        submenu: false,
+      },
+
     ],
   },
  
