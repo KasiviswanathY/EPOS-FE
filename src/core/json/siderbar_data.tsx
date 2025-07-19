@@ -576,22 +576,32 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-{
-    label: "Accounting",
-    submenuOpen: true,
-    submenuHdr: "Accounting",
-    showSubRoute: false,
-    submenuItems: [
+
       {
-        label: "Book keeping",
-        link: "/book-keeping",
-        icon: "books",
+        label: "Accounting",
+        icon: "map",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          
+      {
+        label: "Book Keeping",
+        link: route.bookkeeping,
+        icon: "map",
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Monthly Tax",
+        link: route.monthlytaxreport,
+        icon: "fas fa-server",
+        showSubRoute: false,
+        submenu: false,
+      },
+   
     ],
   },
-
+ 
 
       {
         label: "Tenders",
