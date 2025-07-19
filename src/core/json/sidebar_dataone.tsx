@@ -600,6 +600,13 @@ export const SidebarData1 = [
         route: "/book-keeping",
         subRoutes: [],
       },
+      {
+        title: 'Quarterly Tax Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/quarterly-tax-report",
+        subRoutes: [],
+      },
     ],
   },
       {
