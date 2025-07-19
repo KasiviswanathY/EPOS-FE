@@ -600,7 +600,7 @@ export const SidebarData = [
         submenu: false,
       },
    
-
+{
         label: "Daily Tax Report",
         link: "/daily-tax-report",
         icon: "books",
@@ -640,10 +640,6 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-
-
-
-
     ],
   },
  
