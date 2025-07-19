@@ -623,6 +623,15 @@ export const SidebarData = [
         submenu: false,
       },
 
+      {
+        label: "Payroll Report",
+        link: "/pay-roll-report",
+        icon: "books",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+
 
        {
         label: "Daily Tax Report ",
@@ -631,6 +640,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+
 
 
 

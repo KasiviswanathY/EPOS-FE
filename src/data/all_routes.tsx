@@ -244,6 +244,9 @@ export const all_routes = {
   accountlist: "/account-list",
   bookkeeping: "/book-keeping",
 
+  payrollreport:"/payroll-report",
+
+
   endofyeartaxreport:"/end-of-year-tax-report",
 
 
@@ -252,6 +255,7 @@ export const all_routes = {
   monthlytaxreport:"/monthly-tax-report",
 
   dailytaxreport:"/daily-tax-report",
+
 
 
   tenders: "/tenders",

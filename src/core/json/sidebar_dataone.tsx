@@ -602,6 +602,12 @@ export const SidebarData1 = [
       },
       {
 
+        title: 'Payroll Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/payroll-report",
+
+
         title: 'End-Of-Year-Tax-Report',
         hasSubRoute: false,
         showSubRoute: false,
@@ -623,6 +629,7 @@ export const SidebarData1 = [
         hasSubRoute: false,
         showSubRoute: false,
         route: "/daily-tax-report",
+
 
         subRoutes: [],
       },
