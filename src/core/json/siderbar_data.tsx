@@ -589,6 +589,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+       {
+        label: "Daily Tax Report ",
+        link: "/daily-tax-report",
+        icon: "tax",
+        showSubRoute: false,
+        submenu: false,
+      },
     ],
   },
 
