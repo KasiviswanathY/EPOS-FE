@@ -615,6 +615,15 @@ export const SidebarData = [
         submenu: false,
       },
 
+            {
+        label: "End Of Year Tax Report",
+        link: "/end-of-year-tax-report",
+        icon: "books",
+        showSubRoute: false,
+        submenu: false,
+      },
+
+
        {
         label: "Daily Tax Report ",
         link: "/daily-tax-report",
@@ -622,6 +631,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+
 
 
     ],
