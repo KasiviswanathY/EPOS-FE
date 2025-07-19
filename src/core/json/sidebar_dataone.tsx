@@ -601,10 +601,36 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+
         title: 'Payroll Report',
         hasSubRoute: false,
         showSubRoute: false,
         route: "/payroll-report",
+
+
+        title: 'End-Of-Year-Tax-Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/end-of-year-tax-report",
+
+
+        title: 'Quarterly Tax Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/quarterly-tax-report",
+
+
+        title: 'Monthly Tax-Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/monthly-tax-report",
+
+        title: 'Daily Tax Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/daily-tax-report",
+
+
         subRoutes: [],
       },
     ],
