@@ -244,9 +244,12 @@ export const all_routes = {
   accountlist: "/account-list",
   bookkeeping: "/book-keeping",
 
+  quarterlytaxreport:"/quarterly-tax-report",
+
   monthlytaxreport:"/monthly-tax-report",
 
   dailytaxreport:"/daily-tax-report",
+
   tenders: "/tenders",
   tendertypes:"/tender-types",
   taxrateslist:"/tax-rateslist",

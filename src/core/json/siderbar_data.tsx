@@ -607,6 +607,14 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Quarterly Tax Report",
+        link: "/quarterly-tax-report",
+        icon: "books",
+        showSubRoute: false,
+        submenu: false,
+      },
+
        {
         label: "Daily Tax Report ",
         link: "/daily-tax-report",
@@ -614,6 +622,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+
 
     ],
   },
