@@ -600,6 +600,13 @@ export const SidebarData1 = [
         route: "/book-keeping",
         subRoutes: [],
       },
+      {
+        title: 'Payroll Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/payroll-report",
+        subRoutes: [],
+      },
     ],
   },
       {

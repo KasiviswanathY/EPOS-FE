@@ -243,6 +243,7 @@ export const all_routes = {
   discountPlan: "/discount-plan",
   accountlist: "/account-list",
   bookkeeping: "/book-keeping",
+  payrollreport:"/payroll-report",
   tenders: "/tenders",
   tendertypes:"/tender-types",
   taxrateslist:"/tax-rateslist",
