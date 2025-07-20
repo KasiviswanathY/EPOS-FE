@@ -570,13 +570,21 @@ export const SidebarData = [
         ],
       },
       {
-        label: "Bank Accounts",
-        link: route.accountlist,
-        icon: "building-bank",
+        label: "Banking",
+        icon: "bank",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+{
+        label: "End Of Day Report",
+        link: route.endofdayreport,
+        icon: "map",
         showSubRoute: false,
         submenu: false,
       },
 
+    ],
+  },
       {
         label: "Accounting",
         icon: "map",
