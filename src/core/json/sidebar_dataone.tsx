@@ -579,13 +579,19 @@ export const SidebarData1 = [
         ],
       },
       {
-        title: 'Bank Accounts',
+    title: 'Banking',
+    hasSubRoute: true,
+    showSubRoute: false,
+    subRoutes: [
+      {
+        title: 'End Of Day Report',
         hasSubRoute: false,
         showSubRoute: false,
-        route: "/account-list",
+        route: "/end-of-day-report",
         subRoutes: [],
       },
-
+    ],
+  },
 
       {
     title: 'Accounting',

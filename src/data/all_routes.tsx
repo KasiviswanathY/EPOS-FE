@@ -130,6 +130,7 @@ export const all_routes = {
   paymentgateway: "/payment-gateway-settings",
   banksettingslist: "/bank-settings-list",
   banksettingsgrid: "/bank-settings-grid",
+  endofdayreport:"/end-of-day-report",
   taxrates: "/tax-rates",
   currencysettings: "/currency-settings",
   storagesettings: "/storage-settings",
