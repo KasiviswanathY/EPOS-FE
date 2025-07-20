@@ -134,6 +134,7 @@ export const all_routes = {
   floatadjustmentreport:"/float-adjustment-report",
   taxrates: "/tax-rates",
   payoutsreport:"/pay-outs-report",
+  integratedcardtypesreport:"/integrated-card-types-report",
   pettycashreport:"/petty-cash-report",
   currencysettings: "/currency-settings",
   storagesettings: "/storage-settings",

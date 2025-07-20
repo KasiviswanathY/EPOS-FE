@@ -613,6 +613,13 @@ export const SidebarData1 = [
         route: "/petty-cash-report",
         subRoutes: [],
       },
+      {
+        title: 'Integrated Card Types Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/integrated-card-types-report",
+        subRoutes: [],
+      },
     ],
   },
 
