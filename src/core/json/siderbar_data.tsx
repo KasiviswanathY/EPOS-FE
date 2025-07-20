@@ -583,8 +583,19 @@ export const SidebarData = [
         submenu: false,
       },
       {
+
         label: "Float Adjustment Report",
         link: route.floatadjustmentreport,
+
+        label: "Payouts Report",
+        link: route.payoutsreport,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Petty Cash Report",
+        link: route.pettycashreport,
         icon: "map",
         showSubRoute: false,
         submenu: false,
