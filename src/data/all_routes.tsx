@@ -132,6 +132,7 @@ export const all_routes = {
   banksettingsgrid: "/bank-settings-grid",
   endofdayreport:"/end-of-day-report",
   taxrates: "/tax-rates",
+  payoutsreport:"/pay-outs-report",
   currencysettings: "/currency-settings",
   storagesettings: "/storage-settings",
   banipaddress: "/ban-ip-address",

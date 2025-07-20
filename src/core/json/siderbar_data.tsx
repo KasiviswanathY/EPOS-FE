@@ -582,6 +582,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Payouts Report",
+        link: route.payoutsreport,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
 
     ],
   },
