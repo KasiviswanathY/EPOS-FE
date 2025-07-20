@@ -591,6 +591,11 @@ export const SidebarData1 = [
         subRoutes: [],
       },
       {
+
+        title: 'Float Adjustment Report',
+        hasSubRoute: false,
+        showSubRoute: false,
+        route: "/float-adjustment-report",
         title: 'Payouts Report',
         hasSubRoute: false,
         showSubRoute: false,
