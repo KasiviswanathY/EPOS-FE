@@ -589,6 +589,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Petty Cash Report",
+        link: route.pettycashreport,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
 
     ],
   },

@@ -133,6 +133,7 @@ export const all_routes = {
   endofdayreport:"/end-of-day-report",
   taxrates: "/tax-rates",
   payoutsreport:"/pay-outs-report",
+  pettycashreport:"/petty-cash-report",
   currencysettings: "/currency-settings",
   storagesettings: "/storage-settings",
   banipaddress: "/ban-ip-address",
