@@ -131,6 +131,7 @@ export const all_routes = {
   banksettingslist: "/bank-settings-list",
   banksettingsgrid: "/bank-settings-grid",
   endofdayreport:"/end-of-day-report",
+  floatadjustmentreport:"/float-adjustment-report",
   taxrates: "/tax-rates",
   currencysettings: "/currency-settings",
   storagesettings: "/storage-settings",
