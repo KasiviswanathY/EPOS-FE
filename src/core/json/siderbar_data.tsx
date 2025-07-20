@@ -586,6 +586,11 @@ export const SidebarData = [
 
         label: "Float Adjustment Report",
         link: route.floatadjustmentreport,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
 
         label: "Payouts Report",
         link: route.payoutsreport,
