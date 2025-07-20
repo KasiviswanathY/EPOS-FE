@@ -605,6 +605,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Integrated Card Types Report",
+        link: route.integratedcardtypesreport,
+        icon: "map",
+        showSubRoute: false,
+        submenu: false,
+      },
 
     ],
   },
