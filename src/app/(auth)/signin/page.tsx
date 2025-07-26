@@ -1,42 +1,50 @@
 "use client";
-{/* eslint-disable-next-line @next/next/no-img-element */}
 import Link from "next/link";
-import { useState } from "react";
-import { all_routes } from "../../../data/all_routes";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { all_routes } from "../../../data/all_routes";
+
 export default function Login() {
-const router = useRouter();
-const route = all_routes;
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
-const [isPasswordVisible, setPasswordVisible] = useState(false);
-const togglePasswordVisibility = () => {
-setPasswordVisible((prevState) => !prevState);
-};
+  const router = useRouter();
+  const route = all_routes;
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
 
- const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Hardcoded credentials
-    const adminCreds = { email: "admin@example.com", password: "admin123" };
-    const userCreds = { email: "user@example.com", password: "user123" };
-
-    if (email === adminCreds.email && password === adminCreds.password) {
-      router.push(route.newdashboard); 
-    } else if (email === userCreds.email && password === userCreds.password) {
-      router.push(route.pos2); 
-    } else {  
-      alert("Invalid credentials");
-    }
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
   };
+
+  // Prevent back navigation to dashboard when on login page
+  useEffect(() => {
+    // Push dummy history entry to prevent back
+    window.history.pushState(null, "", window.location.href);
+    const blockBack = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", blockBack);
+
+    return () => {
+      window.removeEventListener("popstate", blockBack);
+    };
+  }, []);
+
+  // Dummy login handler (replace with actual auth logic)
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Store auth flag
+    sessionStorage.setItem("isLoggedIn", "true");
+
+    // Replace login page with dashboard (so login is removed from history)
+    router.replace(route.newdashboard);
+  };
+
   return (
     <>
-      {/* Main Wrapper */}
       <div className="main-wrapper">
         <div className="account-content">
           <div className="login-wrapper bg-img">
             <div className="login-content authent-content">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleLogin}>
                 <div className="login-userset">
                   <div className="login-logo logo-normal">
                     <img src="assets/img/logo.png" alt="img" />
@@ -60,8 +68,6 @@ setPasswordVisible((prevState) => !prevState);
                     <div className="input-group">
                       <input
                         type="text"
-                          value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                         defaultValue=""
                         className="form-control border-end-0"
                       />
@@ -77,8 +83,6 @@ setPasswordVisible((prevState) => !prevState);
                     <div className="pass-group">
                       <input
                         type={isPasswordVisible ? "text" : "password"}
-                        value={password}
-                          onChange={(e) => setPassword(e.target.value)}
                         className="pass-input form-control"
                       />
                       <span
@@ -111,9 +115,9 @@ setPasswordVisible((prevState) => !prevState);
                     </div>
                   </div>
                   <div className="form-login">
-                  <button type="submit" className="btn btn-login">
+                    <button type="submit" className="btn btn-primary w-100">
                       Sign In
-                  </button>
+                    </button>
                   </div>
                   <div className="signinform">
                     <h4>
@@ -149,7 +153,7 @@ setPasswordVisible((prevState) => !prevState);
                           <img
                             className="img-fluid m-1"
                             src="assets/img/icons/google-logo.svg"
-                            alt="Facebook"
+                            alt="Google"
                           />
                         </Link>
                       </div>
@@ -168,7 +172,7 @@ setPasswordVisible((prevState) => !prevState);
                     </div>
                   </div>
                   <div className="my-4 d-flex justify-content-center align-items-center copyright-text">
-                    <p>Copyright © 2025 DreamsPOS</p>
+                    {/* Footer or copyright text */}
                   </div>
                 </div>
               </form>
@@ -176,7 +180,6 @@ setPasswordVisible((prevState) => !prevState);
           </div>
         </div>
       </div>
-      {/* /Main Wrapper */}
     </>
   );
 }
