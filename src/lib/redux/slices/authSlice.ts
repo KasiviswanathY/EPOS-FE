@@ -27,23 +27,30 @@ const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
+    setUserFromLocal: (state, action: PayloadAction<{ token: string; user: any }>) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isLoggedIn = true;
+    },
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.isLoggedIn = false;
-      state.error = null;
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
     },
   },
   extraReducers: (builder) => {
     builder
+    
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
         const { token, user } = action.payload;
-        state.user = user;
-        state.token = token;
+         state.token = action.payload.token;
+         state.user = action.payload.user;
         state.isLoggedIn = true;
         state.loading = false;
       })
@@ -54,5 +61,5 @@ const appSlice = createSlice({
   },
 });
 
-export const { logout } = appSlice.actions;
+export const { setUserFromLocal, logout } = appSlice.actions;
 export default appSlice.reducer;

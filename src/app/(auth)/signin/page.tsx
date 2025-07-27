@@ -1,185 +1,154 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { all_routes } from "../../../data/all_routes";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store"; // Adjust path as needed
+import { loginUser } from "@/lib/redux/actions/loginAction"; // Your action
+import { SubmitHandler, useForm } from "react-hook-form";
+
 
 export default function Login() {
+  const isLoggedIn = useSelector((state: RootState) => state.app.isLoggedIn);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace("/signin"); // 👈 replace prevents back navigation
+    }
+  }, [isLoggedIn]);
+
   const router = useRouter();
   const route = all_routes;
+  const dispatch = useDispatch<AppDispatch>();
+type LoginFormInputs = {
+  email: string;
+  password: string;
+};
+
+  const {
+  register,
+  handleSubmit,
+  formState: { errors },
+} = useForm<LoginFormInputs>();
+
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
+    setPasswordVisible((prevState) => !prevState);
   };
 
-  // Prevent back navigation to dashboard when on login page
+  const { token, loading, error } = useSelector(
+    (state: RootState) => state.app // make sure auth is added in reducer
+  );
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
+  dispatch(loginUser(data));
+};
+
   useEffect(() => {
-    // Push dummy history entry to prevent back
-    window.history.pushState(null, "", window.location.href);
-    const blockBack = () => {
-      window.history.pushState(null, "", window.location.href);
-    };
-
-    window.addEventListener("popstate", blockBack);
-
-    return () => {
-      window.removeEventListener("popstate", blockBack);
-    };
-  }, []);
-
-  // Dummy login handler (replace with actual auth logic)
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Store auth flag
-    sessionStorage.setItem("isLoggedIn", "true");
-
-    // Replace login page with dashboard (so login is removed from history)
-    router.replace(route.newdashboard);
-  };
+    if (token) {
+      router.push(route.newdashboard); // Redirect after successful login
+    }
+  }, [token]);
 
   return (
-    <>
-      <div className="main-wrapper">
-        <div className="account-content">
-          <div className="login-wrapper bg-img">
-            <div className="login-content authent-content">
-              <form onSubmit={handleLogin}>
-                <div className="login-userset">
-                  <div className="login-logo logo-normal">
-                    <img src="assets/img/logo.png" alt="img" />
-                  </div>
-                  <Link
-                    href={route.dashboard}
-                    className="login-logo logo-white"
-                  >
-                    <img src="assets/img/logo-white.png" alt="Img" />
-                  </Link>
-                  <div className="login-userheading">
-                    <h3>Sign In</h3>
-                    <h4 className="fs-16">
-                      Access the Dreamspos panel using your email and passcode.
-                    </h4>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Email <span className="text-danger"> *</span>
-                    </label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        defaultValue=""
-                        className="form-control border-end-0"
-                      />
-                      <span className="input-group-text border-start-0">
-                        <i className="ti ti-mail" />
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Password <span className="text-danger"> *</span>
-                    </label>
-                    <div className="pass-group">
-                      <input
-                        type={isPasswordVisible ? "text" : "password"}
-                        className="pass-input form-control"
-                      />
-                      <span
-                        className={`text-gray-9 ti toggle-password ${
-                          isPasswordVisible ? "ti-eye" : "ti-eye-off"
-                        }`}
-                        onClick={togglePasswordVisibility}
-                      ></span>
-                    </div>
-                  </div>
-                  <div className="form-login authentication-check">
-                    <div className="row">
-                      <div className="col-12 d-flex align-items-center justify-content-between">
-                        <div className="custom-control custom-checkbox">
-                          <label className="checkboxs ps-4 mb-0 pb-0 line-height-1 fs-16 text-gray-6">
-                            <input type="checkbox" className="form-control" />
-                            <span className="checkmarks" />
-                            Remember me
-                          </label>
-                        </div>
-                        <div className="text-end">
-                          <Link
-                            className="text-orange fs-16 fw-medium"
-                            href={route.forgotPassword}
-                          >
-                            Forgot Password?
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-login">
-                    <button type="submit" className="btn btn-primary w-100">
-                      Sign In
-                    </button>
-                  </div>
-                  <div className="signinform">
-                    <h4>
-                      New on our platform?
-                      <Link href={route.register} className="hover-a">
-                        {" "}
-                        Create an account
-                      </Link>
-                    </h4>
-                  </div>
-                  <div className="form-setlogin or-text">
-                    <h4>OR</h4>
-                  </div>
-                  <div className="mt-2">
-                    <div className="d-flex align-items-center justify-content-center flex-wrap">
-                      <div className="text-center me-2 flex-fill">
-                        <Link
-                          href="#"
-                          className="br-10 p-2 btn btn-info d-flex align-items-center justify-content-center"
-                        >
-                          <img
-                            className="img-fluid m-1"
-                            src="assets/img/icons/facebook-logo.svg"
-                            alt="Facebook"
-                          />
-                        </Link>
-                      </div>
-                      <div className="text-center me-2 flex-fill">
-                        <Link
-                          href="#"
-                          className="btn btn-white br-10 p-2  border d-flex align-items-center justify-content-center"
-                        >
-                          <img
-                            className="img-fluid m-1"
-                            src="assets/img/icons/google-logo.svg"
-                            alt="Google"
-                          />
-                        </Link>
-                      </div>
-                      <div className="text-center flex-fill">
-                        <Link
-                          href="#"
-                          className="bg-dark br-10 p-2 btn btn-dark d-flex align-items-center justify-content-center"
-                        >
-                          <img
-                            className="img-fluid m-1"
-                            src="assets/img/icons/apple-logo.svg"
-                            alt="Apple"
-                          />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="my-4 d-flex justify-content-center align-items-center copyright-text">
-                    {/* Footer or copyright text */}
+    <div className="main-wrapper">
+      <div className="account-content">
+        <div className="login-wrapper bg-img">
+          <div className="login-content authent-content">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="login-userset">
+                <div className="login-logo logo-normal">
+                  <img src="assets/img/logo.png" alt="img" />
+                </div>
+                <Link href={route.dashboard} className="login-logo logo-white">
+                  <img src="assets/img/logo-white.png" alt="Img" />
+                </Link>
+                <div className="login-userheading">
+                  <h3>Sign In</h3>
+                  <h4 className="fs-16">
+                    Access the Dreamspos panel using your email and passcode.
+                  </h4>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">
+                    Email <span className="text-danger">*</span>
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type="email"
+                      className="form-control border-end-0"
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                          message: "Enter a valid email address",
+                        },
+                      })}
+                    />
+                    <span className="input-group-text border-start-0">
+                      <i className="ti ti-mail" />
+                    </span>
                   </div>
                 </div>
-              </form>
-            </div>
+
+                <div className="mb-3">
+                  <label className="form-label">
+                    Password <span className="text-danger">*</span>
+                  </label>
+                  <div className="pass-group">
+                    <input
+                      type={isPasswordVisible ? "text" : "password"}
+                      className="pass-input form-control"
+                      {...register("password", { required: "Password is required" })}
+                    />
+                    <span
+                      className={`text-gray-9 ti toggle-password ${isPasswordVisible ? "ti-eye" : "ti-eye-off"
+                        }`}
+                      onClick={togglePasswordVisibility}
+                    />
+                  </div>
+                </div>
+
+                {error && <p className="text-danger">{error}</p>}
+
+                <div className="form-login">
+                  <button type="submit" className="btn btn-login" disabled={loading}>
+                    {loading ? "Signing In..." : "Sign In"}
+                  </button>
+                </div>
+
+                <div className="signinform">
+                  <h4>
+                    New on our platform?
+                    <Link href={route.register} className="hover-a">
+                      {" "}
+                      Create an account
+                    </Link>
+                  </h4>
+                </div>
+
+                <div className="form-setlogin or-text">
+                  <h4>OR</h4>
+                </div>
+
+                {/* Social Buttons can stay the same */}
+                <div className="mt-2">
+                  <div className="d-flex align-items-center justify-content-center flex-wrap">
+                    {/* ... social links */}
+                  </div>
+                </div>
+
+                <div className="my-4 d-flex justify-content-center align-items-center copyright-text">
+                  <p>Copyright © 2025 DreamsPOS</p>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

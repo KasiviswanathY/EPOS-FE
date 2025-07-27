@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+import { apiRoutes } from '@/lib/redux/constants/api_routes';
+import { log } from 'console';
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (
@@ -9,7 +10,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(
-        ' https://epos-be.onrender.com/api/v1/login',
+        apiRoutes.login,
         payload,
         {
     headers: {
@@ -23,7 +24,8 @@ export const loginUser = createAsyncThunk(
 
       // Save token to localStorage (or sessionStorage, or cookies)
       localStorage.setItem('authToken', token);
-
+      localStorage.setItem('user', JSON.stringify(user));
+     console.log(user)
       return { token, user };
     } catch (err: any) {
       return rejectWithValue(

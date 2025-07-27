@@ -6,6 +6,13 @@ import FeatherIcon, { Search } from "feather-icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { useSelector } from 'react-redux';
+
+import { useDispatch } from 'react-redux';
+import { logout } from '@/lib/redux/slices/authSlice';
+import { useRouter } from 'next/navigation';
+import { RootState } from "@/lib/redux/store";
+
 export default function Header() {
   const route = all_routes;
   const [toggle, SetToggle] = useState(false);
@@ -14,6 +21,8 @@ export default function Header() {
   const [expandMenus, setExpandMenus] = useState(false); // Local state for expandMenus
   const [dataLayout, setDataLayout] = useState("default"); // Local state for dataLayout
 
+const user = useSelector((state: RootState) => state.app.user);
+ 
 
 
   const handlesidebar = (): void => {
@@ -21,6 +30,13 @@ export default function Header() {
     SetToggle((current: boolean) => !current);
   };
 
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleLogout = () => {
+  dispatch(logout()); // 🧠 clear Redux state
+  router.replace('/signin'); // ⛔ back button won't go to dashboard
+};
   const sidebarOverlay = (): void => {
     document?.querySelector(".main-wrapper")?.classList?.toggle("slide-nav");
     document?.querySelector(".sidebar-overlay")?.classList?.toggle("opened");
@@ -534,7 +550,7 @@ export default function Header() {
                     <img src="assets/img/profiles/avator1.jpg" alt="Img" />
                   </span>
                   <div>
-                    <h6 className="fw-medium">John Smilga</h6>
+                    <h6 className="fw-medium">Welcome,  {user?.name || user?.email || 'Guest'}</h6>
                     <p>Admin</p>
                   </div>
                 </div>
@@ -551,11 +567,11 @@ export default function Header() {
                   Settings
                 </Link>
                 <hr className="my-2" />
-                <Link className="dropdown-item logout pb-0" href={route.signin}>
+                <a className="dropdown-item logout pb-0" onClick={handleLogout}>
                   <i className="ti ti-logout me-2" />
                   Logout
-                </Link>
-              </div>
+                </a>
+              </div> 
             </li>
           </ul>
           {/* /Header Menu */}
