@@ -10,7 +10,8 @@ import CollapesIcon from "@/core/common/tooltip-content/collapes";
 import Table from "@/core/common/pagination/datatable";
 import AddUsers from "@/core/modals/usermanagement/addusers";
 import EditUser from "@/core/modals/usermanagement/edituser";
-import { fetchUsersList } from "@/lib/redux/actions/loginAction";
+import { fetchUsersList } from "@/lib/redux/slices/authSlice";
+
 
 export default function UsersComponent() {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,20 +29,13 @@ export default function UsersComponent() {
   const dataSource = usersList;
 
 
-
+console.log("Data Source:", dataSource);
   const columns = [
     {
       title: "User Name",
       dataIndex: "username",
-      render: (text: any, record: any) => (
-        <span className="userimgname">
-          <Link href="#" className="avatar avatar-md me-2">
-            <img alt="" src={record.img} />
-          </Link>
-          <div>
-            <Link href="#">{text}</Link>
-          </div>
-        </span>
+      render: (text: any) => (
+        <span style={{ fontWeight: 500 }}>{text}</span>
       ),
       sorter: (a: any, b: any) => a.username.length - b.username.length,
     },
