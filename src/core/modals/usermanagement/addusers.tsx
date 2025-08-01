@@ -1,167 +1,201 @@
-"use client";
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { PlusCircle } from 'feather-icons-react';
-import Link from 'next/link';
-/* eslint-disable @next/next/no-img-element */
-
-
-import React, { useState } from 'react'
-import Select from 'react-select'
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import Select from 'react-select';
+import { AppDispatch, RootState } from '@/lib/redux/store';
+import { createUser } from '@/lib/redux/actions/createUserAction';
+import { resetSuccess } from '@/lib/redux/slices/authSlice';
 
 const AddUsers = () => {
-    const status = [
-        { value: 'Choose', label: 'Choose' },
-        { value: 'Manager', label: 'Manager' },
-        { value: 'Admin', label: 'Admin' },
-    ];
-    const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const success = useSelector((state: RootState) => state.app.success);
 
-    const handleTogglePassword = () => {
-      setShowPassword((prevShowPassword) => !prevShowPassword);
-    };
-    const [showConfirmPassword, setConfirmPassword] = useState(false);
-    const handleToggleConfirmPassword = () => {
-        setConfirmPassword((prevShowPassword) => !prevShowPassword);
-    };
-  
-    return (
-        <div>
-            {/* Add User */}
-            <div className="modal fade" id="add-units">
-                <div className="modal-dialog modal-dialog-centered custom-modal-two">
-                    <div className="modal-content">
-                        <div className="page-wrapper-new p-0">
-                            <div className="content">
-                                <div className="modal-header border-0 custom-modal-header">
-                                    <div className="page-title">
-                                        <h4>Add User</h4>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        className="close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                    >
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body custom-modal-body">
-                                    <form>
-                                        <div className="row">
-                                            <div className="col-lg-12">
-                                                <div className="new-employee-field">
-                                                    <span>Avatar</span>
-                                                    <div className="profile-pic-upload mb-2">
-                                                        <div className="profile-pic">
-                                                            <span>
-                                                                <PlusCircle className="plus-down-add" />
-                                                                Profile Photo
-                                                            </span>
-                                                        </div>
-                                                        <div className="input-blocks mb-0">
-                                                            <div className="image-upload mb-0">
-                                                                <input type="file" />
-                                                                <div className="image-uploads">
-                                                                    <h4>Change Image</h4>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="input-blocks">
-                                                    <label>User Name</label>
-                                                    <input type="text" className="form-control" />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="input-blocks">
-                                                    <label>Phone</label>
-                                                    <input type="text" className="form-control" />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="input-blocks">
-                                                    <label>Email</label>
-                                                    <input type="email" className="form-control" />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="input-blocks">
-                                                    <label>Role</label>
+  const [showPassword, setShowPassword] = useState(false);
+  const [selectedPermission, setSelectedPermission] = useState<{ value: string; label: string } | null>(null);
 
-                                                    <Select
-                                                        classNamePrefix="react-select"
-                                                        options={status}
-                                                        placeholder="Choose Status"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="input-blocks">
-                                                    <label>Password</label>
-                                                    <div className="pass-group">
-                                                        <input
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            className="pass-input form-control"
-                                                            placeholder="Enter your password"
-                                                        />
-                                                        <span
-                                                            className={`ti toggle-password ${showPassword ? 'ti-eye' : 'ti-eye-off'}`}
-                                                            onClick={handleTogglePassword}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="input-blocks">
-                                                    <label>Confirm Passworrd</label>
-                                                    <div className="pass-group">
-                                                        <input
-                                                            type={showConfirmPassword ? 'text' : 'password'}
-                                                            className="pass-input form-control"
-                                                            placeholder="Enter your password"
-                                                        />
-                                                        <span
-                                                            className={`ti   toggle-password  ${showConfirmPassword ? 'ti-eye' : 'ti-eye-off'}`}
-                                                            onClick={handleToggleConfirmPassword}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-12">
-                                                <div className="mb-0 input-blocks">
-                                                    <label className="form-label">Descriptions</label>
-                                                    <textarea
-                                                        className="form-control mb-1"
-                                                        defaultValue={"Type Message"}
-                                                    />
-                                                    <p>Maximum 600 Characters</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="modal-footer-btn">
-                                            <button
-                                                type="button"
-                                                className="btn btn-cancel me-2"
-                                                data-bs-dismiss="modal"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <Link href="#" className="btn btn-submit">
-                                                Submit
-                                            </Link>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+
+  const permissionOptions = [
+    { value: 'admin', label: 'Admin' },
+    { value: 'manager', label: 'Manager' },
+  ];
+
+  const onSubmit = (data: any) => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert('Token not found!');
+      return;
+    }
+
+    if (!selectedPermission) {
+      alert('Please select a permission');
+      return;
+    }
+
+    const userPayload = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      Status: data.status,
+      permissions: [selectedPermission.value],
+    };
+
+    dispatch(createUser({ payload: userPayload, token }));
+  };
+
+  useEffect(() => {
+    if (success) {
+      alert('User created successfully!');
+      const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
+      closeBtn?.click(); // Close modal
+      reset(); // Reset form
+      setSelectedPermission(null);
+      dispatch(resetSuccess()); // Clear success flag
+    }
+  }, [success, dispatch, reset]);
+
+  return (
+    <div>
+      <div className="modal fade" id="add-units">
+        <div className="modal-dialog modal-dialog-centered custom-modal-two">
+          <div className="modal-content">
+            <div className="page-wrapper-new p-0">
+              <div className="content">
+                <div className="modal-header border-0 custom-modal-header">
+                  <div className="page-title">
+                    <h4>Add User</h4>
+                  </div>
+                  <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
                 </div>
-            </div>
-            {/* /Add User */}
-        </div>
-    )
-}
+                <div className="modal-body custom-modal-body">
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <div className="new-employee-field">
+                          <span>Avatar</span>
+                          <div className="profile-pic-upload mb-2">
+                            <div className="profile-pic">
+                              <span>
+                                <PlusCircle className="plus-down-add" />
+                                Profile Photo
+                              </span>
+                            </div>
+                            <div className="input-blocks mb-0">
+                              <div className="image-upload mb-0">
+                                <input type="file" />
+                                <div className="image-uploads">
+                                  <h4>Change Image</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-export default AddUsers
+                      <div className="col-lg-6">
+                        <div className="input-blocks">
+                          <label>User Name</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            {...register('username', { required: true })}
+                          />
+                          {errors.username && <p className="text-danger">Username is required</p>}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6">
+                        <div className="input-blocks">
+                          <label>Email</label>
+                          <input
+                            type="email"
+                            className="form-control"
+                            {...register('email', {
+                              required: 'Email is required',
+                              pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Invalid email address',
+                              },
+                            })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6">
+                        <div className="input-blocks">
+                          <label>Password</label>
+                          <div className="pass-group">
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              className="pass-input form-control"
+                              placeholder="Enter your password"
+                              {...register('password', { required: true })}
+                            />
+                            <span
+                              className={`ti toggle-password ${showPassword ? 'ti-eye' : 'ti-eye-off'}`}
+                              onClick={handleTogglePassword}
+                            />
+                          </div>
+                          {errors.password && <p className="text-danger">Password is required</p>}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6">
+                        <div className="input-blocks">
+                          <label>Status</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="e.g. active"
+                            {...register('status', { required: true })}
+                          />
+                          {errors.status && <p className="text-danger">Status is required</p>}
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6">
+                        <div className="input-blocks">
+                          <label>Permissions</label>
+                          <Select
+                            classNamePrefix="react-select"
+                            options={permissionOptions}
+                            placeholder="Choose Permissions"
+                            value={selectedPermission}
+                            onChange={setSelectedPermission}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="modal-footer-btn">
+                      <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
+                        Cancel
+                      </button>
+                      <button type="submit" className="btn btn-submit">
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddUsers;
