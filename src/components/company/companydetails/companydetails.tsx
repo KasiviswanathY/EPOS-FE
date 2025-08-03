@@ -1,205 +1,184 @@
 "use client";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { createCompany, getCompany } from "@/lib/redux/actions/createCompany";
+import { useEffect, useState } from "react";
+import { updateCompany } from "@/lib/redux/actions/createCompany";
+import router from "next/router";
+import { all_routes } from "@/data/all_routes";
+import { useRouter } from 'next/navigation';
 
 export default function CompanySettings() {
-  const [companyName, setCompanyName] = useState("");
-  const [taxNumber, setTaxNumber] = useState("");
-  const [currency, setCurrency] = useState("Dollar ($)");
-  const [language, setLanguage] = useState("English (US)");
-
-  const [settings, setSettings] = useState({
-    updateCostPrice: true,
-    captureConsent: false,
-    eraseCustomer: false,
-    skipInitialReports: true,
-    showIncExc: true,
-    startupInstructions: true,
-  });
-
+  const dispatch = useDispatch<AppDispatch>();
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+  const company = useSelector((state: RootState) => state.app.company);
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [devices] = useState(1);
+  const [locations] = useState(1);
   const guid = "1234-5678-ABCD-EFGH";
-  const devices = 1;
-  const locations = 1;
+  const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-  const handleCheckbox = (key: string) => {
-    setSettings((prev) => ({
-      ...prev,
-      [key]: !prev[key as keyof typeof prev],
-    }));
+  // Load company data on mount
+  useEffect(() => {
+    if (token) {
+      dispatch(getCompany({ token })).then((res: any) => {
+        if (res?.payload) {
+          setCompanyId(res.payload.id);
+          Object.keys(res.payload).forEach((key) => {
+            if (res.payload[key] !== null && res.payload[key] !== undefined) {
+              setValue(key as any, res.payload[key]);
+            }
+          });
+        }
+      });
+    }
+  }, [dispatch, token, setValue]);
+
+  const onSubmit = (data: any) => {
+    if (!token) {
+      alert("Token not found!");
+      return;
+    }
+   
+
+    const payload = {
+      name: data.name,
+      taxNumber: data.taxNumber,
+      customCurrency: data.customCurrency,
+      language: data.language,
+      updateCostPriceOnMasterUpdate: data.updateCostPriceOnMasterUpdate || false,
+      explicitConsent: data.explicitConsent || false,
+      eraseCustomerData: data.eraseCustomerData || false,
+      runReportsOnPageLoad: data.runReportsOnPageLoad || false,
+      showIncExTaxOption: data.showIncExTaxOption || false,
+      maxNoOfDevices: devices,
+      maxNoOfLocations: locations,
+      showInstructionsOnStartup: data.showInstructionsOnStartup || false,
+    };
+
+    if (companyId) {
+      dispatch(updateCompany({ id: companyId, payload, token }));
+    } else {
+      dispatch(createCompany({ payload, token })).then((res: any) => {
+        if (res?.payload?.id) setCompanyId(res.payload.id);
+      });
+    }
   };
 
-  return (
+const router = useRouter();
+
+const handleCancel = () => {
+  router.push('/index'); // Navigate to index or any route
+};
+ return (
     <div className="page-wrapper">
       <div className="content">
         <div className="card">
-          <div className="card-header fw-bold">
-            Company: <span className="text-muted">{companyName}</span>
-          </div>
-
+          <div className="card-header fw-bold">Company Settings</div>
           <div className="card-body">
-            <h5 className="mb-4">Company Information</h5>
-            <form>
-
-              
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Company Name</label>
-                <div className="col-sm-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                  />
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Text Fields */}
+              {[
+                { label: "Company Name", name: "name" },
+                // { label: "email", name: "email" },
+                // { label: "Website", name: "website" },
+                // { label: "Display Name", name: "displayName" },
+                // { label: "Description", name: "description" },
+                { label: "Tax Number", name: "taxNumber" },
+              ].map((field) => (
+                <div className="row align-items-center mb-3" key={field.name}>
+                  <label className="col-sm-3 col-form-label text-end">{field.label}</label>
+                  <div className="col-sm-6">
+                    <input
+                      {...register(field.name, { required: field.name !== "description" && field.name !== "taxNumber" })}
+                      className="form-control"
+                      type="text"
+                    />
+                    {errors[field.name] && (
+                      <small className="text-danger">This field is required</small>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ))}
 
-              
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Tax Number</label>
-                <div className="col-sm-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={taxNumber}
-                    onChange={(e) => setTaxNumber(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              
+              {/* Currency */}
               <div className="row align-items-center mb-3">
                 <label className="col-sm-3 col-form-label text-end">Custom Currency</label>
                 <div className="col-sm-6">
-                  <select className="form-select" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                    <option>Dollar ($)</option>
-                    <option>Euro (€)</option>
-                    <option>Pound (£)</option>
+                  <select className="form-select" {...register("customCurrency", { required: true })}>
+                    <option value="Dollar ($)">Dollar ($)</option>
+                    <option value="Euro (€)">Euro (€)</option>
+                    <option value="Pound (£)">Pound (£)</option>
                   </select>
                 </div>
               </div>
 
-             
-              <div className="row align-items-center mb-4">
-                <label className="col-sm-3 col-form-label text-end">UI Language</label>
+              {/* Language */}
+              <div className="row align-items-center mb-3">
+                <label className="col-sm-3 col-form-label text-end">Language</label>
                 <div className="col-sm-6">
-                  <select className="form-select" value={language} onChange={(e) => setLanguage(e.target.value)}>
-                    <option>English (US)</option>
-                    <option>English (UK)</option>
-                    <option>French</option>
-                    <option>German</option>
+                  <select className="form-select" {...register("language", { required: true })}>
+                    <option value="en">English (US)</option>
+                    <option value="en-uk">English (UK)</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
                   </select>
                 </div>
               </div>
 
-             
-              <div className="row mb-4">
-                <div className="offset-sm-3 col-sm-9">
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="updateCostPrice"
-                      checked={settings.updateCostPrice}
-                      onChange={() => handleCheckbox("updateCostPrice")}
-                    />
-                    <label className="form-check-label" htmlFor="updateCostPrice">
-                      Update Cost Price of Products when Master Product Cost Prices are updated
-                    </label>
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="captureConsent"
-                      checked={settings.captureConsent}
-                      onChange={() => handleCheckbox("captureConsent")}
-                    />
-                    <label className="form-check-label" htmlFor="captureConsent">
-                      Show fields to capture explicit consent at customer signup
-                    </label>
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="eraseCustomer"
-                      checked={settings.eraseCustomer}
-                      onChange={() => handleCheckbox("eraseCustomer")}
-                    />
-                    <label className="form-check-label" htmlFor="eraseCustomer">
-                      Erase customer personal information on delete customer <strong>WARNING! This data cannot be recovered</strong>
-                    </label>
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="skipInitialReports"
-                      checked={settings.skipInitialReports}
-                      onChange={() => handleCheckbox("skipInitialReports")}
-                    />
-                    <label className="form-check-label" htmlFor="skipInitialReports">
-                      Do not run reports on initial page load
-                    </label>
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="showIncExc"
-                      checked={settings.showIncExc}
-                      onChange={() => handleCheckbox("showIncExc")}
-                    />
-                    <label className="form-check-label" htmlFor="showIncExc">
-                      Show Inc/Exc Tax Option
-                    </label>
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="startupInstructions"
-                      checked={settings.startupInstructions}
-                      onChange={() => handleCheckbox("startupInstructions")}
-                    />
-                    <label className="form-check-label" htmlFor="startupInstructions">
-                      Show instructions on startup (Dashboard)
-                    </label>
+              {/* Checkboxes */}
+              {[
+                { name: "updateCostPriceOnMasterUpdate", label: "Update cost price on master update" },
+                { name: "explicitConsent", label: "Capture explicit consent on signup" },
+                { name: "eraseCustomerData", label: "Erase customer data on delete" },
+                { name: "runReportsOnPageLoad", label: "Run reports on page load" },
+                { name: "showIncExTaxOption", label: "Show inclusive/exclusive tax option" },
+                { name: "showInstructionsOnStartup", label: "Show instructions on startup" },
+              ].map((checkbox) => (
+                <div className="row mb-2" key={checkbox.name}>
+                  <div className="offset-sm-3 col-sm-9">
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        {...register(checkbox.name)}
+                      />
+                      <label className="form-check-label">{checkbox.label}</label>
+                    </div>
                   </div>
                 </div>
+              ))}
+
+              {/* Readonly Fields */}
+              <div className="row align-items-center mb-3">
+                <label className="col-sm-3 col-form-label text-end">Max Devices</label>
+                <div className="col-sm-6 pt-1"><span>{devices}</span></div>
               </div>
 
-              
               <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Maximum Number of Devices</label>
-                <div className="col-sm-6 pt-1">
-                  <span>{devices}</span>
-                </div>
-              </div>
-
-            
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Max Number of Locations</label>
-                <div className="col-sm-6 pt-1">
-                  <span>{locations}</span>
-                </div>
+                <label className="col-sm-3 col-form-label text-end">Max Locations</label>
+                <div className="col-sm-6 pt-1"><span>{locations}</span></div>
               </div>
 
               <div className="row align-items-center mb-3">
                 <label className="col-sm-3 col-form-label text-end">GUID</label>
-                <div className="col-sm-6 pt-1">
-                  <span className="text-muted">{guid}</span>
-                </div>
+                <div className="col-sm-6 pt-1"><span className="text-muted">{guid}</span></div>
+              </div>
+
+              {/* Buttons */}
+              <div className="card-footer d-flex justify-content-between">
+                <button
+                 type="button"
+                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                 onClick={handleCancel}
+               >
+                 Cancel
+               </button>
+
+                <button type="submit" className="btn btn-success">SAVE</button>
               </div>
             </form>
-          </div>
-          <div className="card-footer d-flex justify-content-between">
-            <button className="btn btn-danger">CANCEL</button>
-            <button className="btn btn-success">SAVE</button>
           </div>
         </div>
       </div>
