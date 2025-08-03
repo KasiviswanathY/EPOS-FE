@@ -15,6 +15,7 @@ const AddUsers = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState<{ value: string; label: string } | null>(null);
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
   const {
     register,
@@ -26,19 +27,25 @@ const AddUsers = () => {
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
   const permissionOptions = [
-    { value: 'admin', label: 'Admin' },
-    { value: 'manager', label: 'Manager' },
+    { value: 'USER_RIGHTS', label: 'User Rights' },
+    { value: 'PRODUCT_RIGHTS', label: 'Product Rights' },
+    { value: 'SALES_RIGHTS', label: 'Sales Rights' },
   ];
+
+  const showMessage = (text: string, type: 'success' | 'error' | 'warning') => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 3000); // Hide after 3s
+  };
 
   const onSubmit = (data: any) => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      alert('Token not found!');
+      showMessage('Token not found!', 'error');
       return;
     }
 
     if (!selectedPermission) {
-      alert('Please select a permission');
+      showMessage('Please select a permission.', 'warning');
       return;
     }
 
@@ -46,7 +53,7 @@ const AddUsers = () => {
       username: data.username,
       email: data.email,
       password: data.password,
-      Status: data.status,
+      status: data.status,
       permissions: [selectedPermission.value],
     };
 
@@ -55,12 +62,12 @@ const AddUsers = () => {
 
   useEffect(() => {
     if (success) {
-      alert('User created successfully!');
+      showMessage('User created successfully!', 'success');
       const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
-      closeBtn?.click(); // Close modal
-      reset(); // Reset form
+      closeBtn?.click();
+      reset();
       setSelectedPermission(null);
-      dispatch(resetSuccess()); // Clear success flag
+      dispatch(resetSuccess());
     }
   }, [success, dispatch, reset]);
 
@@ -80,6 +87,14 @@ const AddUsers = () => {
                   </button>
                 </div>
                 <div className="modal-body custom-modal-body">
+
+                  {/* Inline Message */}
+                  {message && (
+                    <div className={`alert alert-${message.type} mb-3`} role="alert">
+                      {message.text}
+                    </div>
+                  )}
+
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
                       <div className="col-lg-12">
@@ -130,6 +145,7 @@ const AddUsers = () => {
                               },
                             })}
                           />
+                          {errors.email?.message && <p className="text-danger">{String(errors.email.message)}</p>}
                         </div>
                       </div>
 
@@ -158,7 +174,7 @@ const AddUsers = () => {
                           <input
                             type="text"
                             className="form-control"
-                            placeholder="e.g. active"
+                            placeholder="e.g. ACTIVE"
                             {...register('status', { required: true })}
                           />
                           {errors.status && <p className="text-danger">Status is required</p>}

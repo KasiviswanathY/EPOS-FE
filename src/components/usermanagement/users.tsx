@@ -10,22 +10,30 @@ import Table from "@/core/common/pagination/datatable";
 import AddUsers from "@/core/modals/usermanagement/addusers";
 import EditUser from "@/core/modals/usermanagement/edituser";
 import { fetchUsersList } from "@/lib/redux/actions/getallusersAction";
-
+import { deleteUser } from "@/lib/redux/actions/deleteUserAction";
+import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
 export default function UsersComponent() {
   const dispatch = useDispatch<AppDispatch>();
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
 
-  const {
-    usersList,
-    usersListLoading,
-    usersListError,
-  } = useSelector((state: RootState) => state.app);
-
+  const { usersList, usersListLoading, usersListError } = useSelector(
+    (state: RootState) => state.app
+  );
+const handlerefresh = () => {
+    dispatch(fetchUsersList());
+  }
   useEffect(() => {
     dispatch(fetchUsersList());
   }, [dispatch]);
 
-  // Prepare data with keys (and include ID internally)
+  const handleDeleteConfirm = () => {
+    if (userToDelete) {
+      dispatch(deleteUser({ id: userToDelete.id }));
+      setUserToDelete(null);
+    }
+  };
+
   const dataSource = usersList.map((user, index) => ({
     ...user,
     key: user.id || index,
@@ -74,12 +82,14 @@ export default function UsersComponent() {
             >
               <i className="feather-edit"></i>
             </Link>
-            <Link className="confirm-text p-2" href="#">
-              <i
-                className="feather-trash-2"
-                data-bs-toggle="modal"
-                data-bs-target="#delete-modal"
-              ></i>
+            <Link
+              className="confirm-text p-2"
+              href="#"
+              data-bs-toggle="modal"
+              data-bs-target="#delete-modal"
+              onClick={() => setUserToDelete(record)}
+            >
+              <i className="feather-trash-2"></i>
             </Link>
           </div>
         </div>
@@ -99,7 +109,8 @@ export default function UsersComponent() {
           </div>
           <ul className="table-top-head">
             <TooltipIcons />
-            <RefreshIcon />
+            <span onClick={handlerefresh}><RefreshIcon /></span>
+            
             <CollapesIcon />
           </ul>
           <div className="page-btn">
@@ -130,9 +141,13 @@ export default function UsersComponent() {
         </div>
       </div>
 
-      {/* Modals */}
       <AddUsers />
       <EditUser user={selectedUser} />
+      <CommonDeleteModal
+        title="Delete User"
+        description={`Are you sure you want to delete "${userToDelete?.username}"?`}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 }

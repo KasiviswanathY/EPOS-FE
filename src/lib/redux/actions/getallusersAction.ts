@@ -8,13 +8,10 @@ export const fetchUsersList = createAsyncThunk(
     try {
       const state: any = getState();
       const token = state.app.token;
-
-      console.log('Token:', token);
-
       if (!token) {
         return rejectWithValue('Token is missing from Redux state');
       }
-
+console.log('Fetching users with token:', token);
       const response = await axios.get(apiRoutes.fetchUsers, {
         headers: {
           Authorization: `Bearer ${token}`,

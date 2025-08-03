@@ -8,4 +8,5 @@ export const apiRoutes = {
   createUser: `${BASE_URL}/api/v1/users`,
   fetchUsers: `${BASE_URL}/api/v1/users`, 
   updateUser: (id: string) => `${BASE_URL}/api/v1/users/${id}`,
+  deleteUser: (id: string) => `${BASE_URL}/api/v1/users/${id}`,
 };

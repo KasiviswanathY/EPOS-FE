@@ -3,6 +3,7 @@ import { loginUser } from '../actions/loginAction';
 import { createUser } from '../actions/createUserAction';
 import { fetchUsersList } from '../actions/getallusersAction';
 import { patchUser } from "@/lib/redux/actions/updateAction";
+import { deleteUser } from '../actions/deleteUserAction';
 
 interface User {
   id: number;
@@ -167,7 +168,37 @@ const appSlice = createSlice({
       .addCase(patchUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // ===== DELETE USER =====
+.addCase(deleteUser.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
+  state.loading = false;
+  state.success = true;
+
+  // Remove user from usersList
+  state.usersList = state.usersList.filter((u) => u.id.toString() !== action.payload);
+
+  // Optionally, if the deleted user is the logged-in user, log them out
+  if (state.user?.id?.toString() === action.payload) {
+    state.user = null;
+    state.token = null;
+    state.isLoggedIn = false;
+
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
+  }
+})
+
+.addCase(deleteUser.rejected, (state, action) => {
+  state.loading = false;
+  state.error = (action.payload as string) ?? null;
+});
   },
 });
 
