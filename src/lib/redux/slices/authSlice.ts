@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loginUser } from "../actions/loginAction";
 import { createUser } from "../actions/createUserAction";
 import { createCompany, getCompany, updateCompany } from "../actions/createCompany";
+import { createReceipt, getReceipt, updateReceipt } from "../actions/createReceiptsAction";
 
 interface User {
   name: string;
@@ -23,6 +24,18 @@ interface Company {
   maxNoOfLocations: number;
   showInstructionsOnStartup: boolean;
 }
+interface Receipt {
+  id: string;
+  companyId: string;
+  footerText: string;
+  headerText: string;
+  printCopies: number;
+  showTaxSummary: boolean;
+  displayQRCode: boolean;
+  termsAndConditions: string;
+  guid: BigInteger;
+}
+
 
 interface AppState {
   user: User | null;
@@ -32,6 +45,11 @@ interface AppState {
   error: string | null;
   success: boolean;
   company: Company | null;
+  receipt: Receipt | null;
+receiptLoading: boolean;
+receiptError: string | null;
+receiptSuccess: boolean;
+
 }
 
 const initialState: AppState = {
@@ -42,6 +60,11 @@ const initialState: AppState = {
   error: null,
   success: false,
   company: null,
+  receipt: null,
+receiptLoading: false,
+receiptError: null,
+receiptSuccess: false
+
 };
 
 const appSlice = createSlice({
@@ -66,6 +89,7 @@ const appSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+ 
   },
   extraReducers: (builder) => {
     builder
@@ -143,7 +167,51 @@ const appSlice = createSlice({
       .addCase(updateCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "Update company failed";
-      });
+      })
+      // ===== CREATE RECEIPT =====
+.addCase(createReceipt.pending, (state) => {
+  state.receiptLoading = true;
+  state.receiptError = null;
+  state.receiptSuccess = false;
+})
+.addCase(createReceipt.fulfilled, (state, action: PayloadAction<Receipt>) => {
+  state.receiptLoading = false;
+  state.receipt = action.payload;
+  state.receiptSuccess = true;
+})
+.addCase(createReceipt.rejected, (state, action) => {
+  state.receiptLoading = false;
+  state.receiptError = (action.payload as string) ?? "Create receipt failed";
+})
+
+// ===== GET RECEIPT =====
+.addCase(getReceipt.pending, (state) => {
+  state.receiptLoading = true;
+  state.receiptError = null;
+})
+.addCase(getReceipt.fulfilled, (state, action: PayloadAction<Receipt>) => {
+  state.receiptLoading = false;
+  state.receipt = action.payload;
+})
+.addCase(getReceipt.rejected, (state, action) => {
+  state.receiptLoading = false;
+  state.receiptError = (action.payload as string) ?? "Get receipt failed";
+})
+
+// ===== UPDATE RECEIPT =====
+.addCase(updateReceipt.pending, (state) => {
+  state.receiptLoading = true;
+  state.receiptError = null;
+})
+.addCase(updateReceipt.fulfilled, (state, action: PayloadAction<Receipt>) => {
+  state.receiptLoading = false;
+  state.receipt = action.payload;
+})
+.addCase(updateReceipt.rejected, (state, action) => {
+  state.receiptLoading = false;
+  state.receiptError = (action.payload as string) ?? "Update receipt failed";
+});
+
   },
 });
 
