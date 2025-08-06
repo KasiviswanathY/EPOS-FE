@@ -24,17 +24,17 @@ const AddUsers = () => {
     formState: { errors },
   } = useForm();
 
-  const handleTogglePassword = () => setShowPassword((prev) => !prev);
-
   const permissionOptions = [
     { value: 'USER_RIGHTS', label: 'User Rights' },
     { value: 'PRODUCT_RIGHTS', label: 'Product Rights' },
     { value: 'SALES_RIGHTS', label: 'Sales Rights' },
   ];
 
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+
   const showMessage = (text: string, type: 'success' | 'error' | 'warning') => {
     setMessage({ text, type });
-    setTimeout(() => setMessage(null), 3000); // Hide after 3s
+    setTimeout(() => setMessage(null), 3000);
   };
 
   const onSubmit = (data: any) => {
@@ -61,15 +61,16 @@ const AddUsers = () => {
   };
 
   useEffect(() => {
-    if (success) {
-      showMessage('User created successfully!', 'success');
-      const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
-      closeBtn?.click();
-      reset();
-      setSelectedPermission(null);
-      dispatch(resetSuccess());
-    }
-  }, [success, dispatch, reset]);
+  if (success) {
+    alert('Operation Done successfully!'); // ✅ Show browser alert
+    const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
+    closeBtn?.click();
+    reset();
+    setSelectedPermission(null);
+    dispatch(resetSuccess());
+  }
+}, [success, dispatch, reset]);
+;
 
   return (
     <div>
@@ -88,7 +89,7 @@ const AddUsers = () => {
                 </div>
                 <div className="modal-body custom-modal-body">
 
-                  {/* Inline Message */}
+                  {/* Inline Feedback Message */}
                   {message && (
                     <div className={`alert alert-${message.type} mb-3`} role="alert">
                       {message.text}
@@ -119,6 +120,7 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Username */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>User Name</label>
@@ -131,6 +133,7 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Email */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Email</label>
@@ -145,10 +148,13 @@ const AddUsers = () => {
                               },
                             })}
                           />
-                          {errors.email?.message && <p className="text-danger">{String(errors.email.message)}</p>}
+                          {errors.email?.message && (
+                            <p className="text-danger">{String(errors.email.message)}</p>
+                          )}
                         </div>
                       </div>
 
+                      {/* Password */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Password</label>
@@ -168,6 +174,7 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Status */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Status</label>
@@ -181,6 +188,7 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Permissions */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Permissions</label>
@@ -195,6 +203,7 @@ const AddUsers = () => {
                       </div>
                     </div>
 
+                    {/* Submit/Cancel Buttons */}
                     <div className="modal-footer-btn">
                       <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
                         Cancel
@@ -204,6 +213,7 @@ const AddUsers = () => {
                       </button>
                     </div>
                   </form>
+
                 </div>
               </div>
             </div>
