@@ -6,9 +6,7 @@ import { fetchUsersList } from '../actions/getallusersAction';
 import { patchUser } from "@/lib/redux/actions/updateAction";
 import { deleteUser } from '../actions/deleteUserAction';
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loginUser } from "../actions/loginAction";
-import { createUser } from "../actions/createUserAction";
+
 import { createCompany, getCompany, updateCompany } from "../actions/createCompany";
 import { createReceipt, getReceipt, updateReceipt } from "../actions/createReceiptsAction";
 
@@ -108,9 +106,9 @@ const initialState: AppState = {
   token: getInitialToken(),
   isLoggedIn: !!getInitialToken(),
 
-  user: null,
-  token: null,
-  isLoggedIn: false,
+  // user: null,
+  // token: null,
+  // isLoggedIn: false,
 
   loading: false,
   loadingCreate: false,
@@ -262,15 +260,9 @@ const appSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loadingDelete = false;
         state.error = (action.payload as string) ?? null;
-      });
+      })
 
-        state.loading = false;
-        state.success = true;
-      })
-      .addCase(createUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = (action.payload as string) ?? "Create user failed";
-      })
+    
 
       // ===== CREATE COMPANY =====
       .addCase(createCompany.pending, (state) => {
