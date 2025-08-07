@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
 import { patchUser } from "@/lib/redux/actions/updateAction";
+import { resetSuccess } from "@/lib/redux/slices/authSlice"; // <-- Make sure this exists
 
 const roleOptions = [
   { value: "Choose", label: "Choose" },
@@ -23,6 +24,7 @@ interface EditUserProps {
 
 const EditUser: React.FC<EditUserProps> = ({ user }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const success = useSelector((state: RootState) => state.app.success);
 
   const [formValues, setFormValues] = useState({
     username: "",
@@ -55,6 +57,16 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
     }
   }, [user]);
 
+  // ✅ Handle modal close after success
+  useEffect(() => {
+    if (success) {
+      alert("User updated successfully!");
+      const closeBtn = document.querySelector('#edit-units .close') as HTMLElement;
+      closeBtn?.click();
+      dispatch(resetSuccess());
+    }
+  }, [success, dispatch]);
+
   const handleInputChange = (field: string, value: any) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
   };
@@ -69,28 +81,16 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
 
     const updatedData = {
       username: formValues.username,
+      phone: formValues.phone,
       email: formValues.email,
       password: formValues.password || user.password,
+      role: formValues.role,
       status: formValues.status,
       permissions: formValues.permissions,
+      description: formValues.description,
     };
 
-
-    dispatch(patchUser({ id: user.id, updatedData }))
-      .unwrap()
-      .then(() => {
-        const closeBtn = document.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
-        closeBtn?.click();
-      })
-      .catch((error: any) => {
-        const msg =
-          error?.response?.data?.message ||
-          error?.response?.data?.error ||
-          error?.message ||
-          "Unknown error";
-        console.error("Update failed:", error.response?.data || error);
-        alert("Failed to update user: " + msg);
-      });
+    dispatch(patchUser({ id: user.id, updatedData }));
   };
 
   return (
@@ -121,6 +121,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         />
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Phone</label>
@@ -132,6 +133,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         />
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Email</label>
@@ -143,6 +145,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         />
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Role</label>
@@ -155,6 +158,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         />
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Password</label>
@@ -166,14 +170,13 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                             onChange={(e) => handleInputChange("password", e.target.value)}
                           />
                           <span
-                            className={`ti toggle-password ${
-                              showPassword ? "ti-eye" : "ti-eye-off"
-                            }`}
+                            className={`ti toggle-password ${showPassword ? "ti-eye" : "ti-eye-off"}`}
                             onClick={() => setShowPassword(!showPassword)}
                           />
                         </div>
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Confirm Password</label>
@@ -185,14 +188,13 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                             onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                           />
                           <span
-                            className={`ti toggle-password ${
-                              showConfirmPassword ? "ti-eye" : "ti-eye-off"
-                            }`}
+                            className={`ti toggle-password ${showConfirmPassword ? "ti-eye" : "ti-eye-off"}`}
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           />
                         </div>
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Status</label>
@@ -206,6 +208,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         </select>
                       </div>
                     </div>
+
                     <div className="col-lg-6">
                       <div className="input-blocks">
                         <label>Permissions</label>
@@ -225,6 +228,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         />
                       </div>
                     </div>
+
                     <div className="col-lg-12">
                       <div className="input-blocks">
                         <label>Descriptions</label>
@@ -237,6 +241,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                       </div>
                     </div>
                   </div>
+
                   <div className="modal-footer-btn">
                     <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
                       Cancel

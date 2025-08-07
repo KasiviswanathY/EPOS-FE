@@ -1,7 +1,7 @@
-// src/lib/redux/actions/updateAction.ts
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { apiRoutes } from '../constants/api_routes';
+import { fetchUsersList } from './getallusersAction';
 
 interface PatchUserPayload {
   id: string;
@@ -19,7 +19,7 @@ interface PatchUserPayload {
 
 export const patchUser = createAsyncThunk(
   'app/patchUser',
-  async ({ id, updatedData }: PatchUserPayload, { getState, rejectWithValue }) => {
+  async ({ id, updatedData }: PatchUserPayload, { getState, rejectWithValue, dispatch }) => {
     try {
       const state = getState() as { app: { token: string | null } };
       const token = state.app.token;
@@ -39,6 +39,9 @@ export const patchUser = createAsyncThunk(
         }
       );
 
+      // ✅ Refresh list after update
+      dispatch(fetchUsersList());
+
       return response.data;
     } catch (err: any) {
       const errorMsg =
@@ -50,4 +53,3 @@ export const patchUser = createAsyncThunk(
     }
   }
 );
-

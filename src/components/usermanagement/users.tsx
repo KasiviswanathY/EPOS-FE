@@ -34,7 +34,7 @@ const handlerefresh = () => {
     }
   };
 
-  const dataSource = usersList.map((user, index) => ({
+  const dataSource = usersList.map((user: { id: any; }, index: any) => ({
     ...user,
     key: user.id || index,
   }));

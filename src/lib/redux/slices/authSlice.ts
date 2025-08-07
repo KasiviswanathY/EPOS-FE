@@ -23,6 +23,9 @@ interface AppState {
   token: string | null;
   isLoggedIn: boolean;
   loading: boolean;
+  loadingCreate: boolean;
+  loadingUpdate: boolean;
+  loadingDelete: boolean;
   error: string | null;
   success: boolean;
   usersList: User[];
@@ -46,7 +49,7 @@ const getInitialUser = (): User | null => {
       try {
         return JSON.parse(user);
       } catch {
-        localStorage.removeItem('user'); // Clean up invalid data
+        localStorage.removeItem('user');
         return null;
       }
     }
@@ -61,6 +64,9 @@ const initialState: AppState = {
   token: getInitialToken(),
   isLoggedIn: !!getInitialToken(),
   loading: false,
+  loadingCreate: false,
+  loadingUpdate: false,
+  loadingDelete: false,
   error: null,
   success: false,
   usersList: [],
@@ -102,7 +108,6 @@ const appSlice = createSlice({
         state.isLoggedIn = true;
         state.loading = false;
 
-        // Save to localStorage
         if (typeof window !== 'undefined') {
           localStorage.setItem('authToken', token);
           localStorage.setItem('user', JSON.stringify(user));
@@ -115,16 +120,16 @@ const appSlice = createSlice({
 
       // ===== CREATE USER =====
       .addCase(createUser.pending, (state) => {
-        state.loading = true;
+        state.loadingCreate = true;
         state.error = null;
         state.success = false;
       })
       .addCase(createUser.fulfilled, (state) => {
-        state.loading = false;
+        state.loadingCreate = false;
         state.success = true;
       })
       .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.loadingCreate = false;
         state.error = action.payload;
       })
 
@@ -142,22 +147,20 @@ const appSlice = createSlice({
         state.usersListError = action.error.message || 'Failed to load user list';
       })
 
-      // ===== UPDATE USER (PATCH) =====
+      // ===== UPDATE USER =====
       .addCase(patchUser.pending, (state) => {
-        state.loading = true;
+        state.loadingUpdate = true;
         state.error = null;
       })
       .addCase(patchUser.fulfilled, (state, action: PayloadAction<User>) => {
-        state.loading = false;
+        state.loadingUpdate = false;
         state.success = true;
 
-        // Update user in usersList
         const index = state.usersList.findIndex((u) => u.id === action.payload.id);
         if (index !== -1) {
           state.usersList[index] = action.payload;
         }
 
-        // Optionally update the logged-in user too
         if (state.user?.id === action.payload.id) {
           state.user = { ...state.user, ...action.payload };
           if (typeof window !== 'undefined') {
@@ -166,39 +169,36 @@ const appSlice = createSlice({
         }
       })
       .addCase(patchUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.loadingUpdate = false;
         state.error = action.payload;
       })
+
       // ===== DELETE USER =====
-.addCase(deleteUser.pending, (state) => {
-  state.loading = true;
-  state.error = null;
-})
+      .addCase(deleteUser.pending, (state) => {
+        state.loadingDelete = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loadingDelete = false;
+        state.success = true;
 
-.addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
-  state.loading = false;
-  state.success = true;
+        state.usersList = state.usersList.filter((u) => u.id.toString() !== action.payload);
 
-  // Remove user from usersList
-  state.usersList = state.usersList.filter((u) => u.id.toString() !== action.payload);
+        if (state.user?.id?.toString() === action.payload) {
+          state.user = null;
+          state.token = null;
+          state.isLoggedIn = false;
 
-  // Optionally, if the deleted user is the logged-in user, log them out
-  if (state.user?.id?.toString() === action.payload) {
-    state.user = null;
-    state.token = null;
-    state.isLoggedIn = false;
-
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-    }
-  }
-})
-
-.addCase(deleteUser.rejected, (state, action) => {
-  state.loading = false;
-  state.error = (action.payload as string) ?? null;
-});
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+          }
+        }
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loadingDelete = false;
+        state.error = (action.payload as string) ?? null;
+      });
   },
 });
 
