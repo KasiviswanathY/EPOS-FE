@@ -15,6 +15,7 @@ const AddUsers = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState<{ value: string; label: string } | null>(null);
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
   const {
     register,
@@ -23,22 +24,28 @@ const AddUsers = () => {
     formState: { errors },
   } = useForm();
 
+  const permissionOptions = [
+    { value: 'USER_RIGHTS', label: 'User Rights' },
+    { value: 'PRODUCT_RIGHTS', label: 'Product Rights' },
+    { value: 'SALES_RIGHTS', label: 'Sales Rights' },
+  ];
+
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
-  const permissionOptions = [
-    { value: 'admin', label: 'Admin' },
-    { value: 'manager', label: 'Manager' },
-  ];
+  const showMessage = (text: string, type: 'success' | 'error' | 'warning') => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 3000);
+  };
 
   const onSubmit = (data: any) => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      alert('Token not found!');
+      showMessage('Token not found!', 'error');
       return;
     }
 
     if (!selectedPermission) {
-      alert('Please select a permission');
+      showMessage('Please select a permission.', 'warning');
       return;
     }
 
@@ -46,7 +53,7 @@ const AddUsers = () => {
       username: data.username,
       email: data.email,
       password: data.password,
-      Status: data.status,
+      status: data.status,
       permissions: [selectedPermission.value],
     };
 
@@ -54,15 +61,16 @@ const AddUsers = () => {
   };
 
   useEffect(() => {
-    if (success) {
-      alert('User created successfully!');
-      const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
-      closeBtn?.click(); // Close modal
-      reset(); // Reset form
-      setSelectedPermission(null);
-      dispatch(resetSuccess()); // Clear success flag
-    }
-  }, [success, dispatch, reset]);
+  if (success) {
+    alert('Operation Done successfully!'); // ✅ Show browser alert
+    const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
+    closeBtn?.click();
+    reset();
+    setSelectedPermission(null);
+    dispatch(resetSuccess());
+  }
+}, [success, dispatch, reset]);
+;
 
   return (
     <div>
@@ -80,6 +88,14 @@ const AddUsers = () => {
                   </button>
                 </div>
                 <div className="modal-body custom-modal-body">
+
+                  {/* Inline Feedback Message */}
+                  {message && (
+                    <div className={`alert alert-${message.type} mb-3`} role="alert">
+                      {message.text}
+                    </div>
+                  )}
+
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
                       <div className="col-lg-12">
@@ -104,6 +120,7 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Username */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>User Name</label>
@@ -116,6 +133,7 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Email */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Email</label>
@@ -130,9 +148,13 @@ const AddUsers = () => {
                               },
                             })}
                           />
+                          {errors.email?.message && (
+                            <p className="text-danger">{String(errors.email.message)}</p>
+                          )}
                         </div>
                       </div>
 
+                      {/* Password */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Password</label>
@@ -152,19 +174,21 @@ const AddUsers = () => {
                         </div>
                       </div>
 
+                      {/* Status */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Status</label>
                           <input
                             type="text"
                             className="form-control"
-                            placeholder="e.g. active"
+                            placeholder="e.g. ACTIVE"
                             {...register('status', { required: true })}
                           />
                           {errors.status && <p className="text-danger">Status is required</p>}
                         </div>
                       </div>
 
+                      {/* Permissions */}
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Permissions</label>
@@ -179,6 +203,7 @@ const AddUsers = () => {
                       </div>
                     </div>
 
+                    {/* Submit/Cancel Buttons */}
                     <div className="modal-footer-btn">
                       <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
                         Cancel
@@ -188,6 +213,7 @@ const AddUsers = () => {
                       </button>
                     </div>
                   </form>
+
                 </div>
               </div>
             </div>
