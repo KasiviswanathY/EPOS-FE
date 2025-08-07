@@ -1,217 +1,278 @@
-"use client";
-import { useState } from "react";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/lib/redux/store';
+import { createReceipt, getReceipt, updateReceipt } from '@/lib/redux/actions/createReceiptsAction';
+import { getCompany } from '@/lib/redux/actions/createCompany';
+import { useRouter } from 'next/navigation';
+
+type ReceiptFormValues = {
+  name: string;
+  displayName: string;
+  taxNumber: string;
+  email: string;
+  website: string;
+  refundDays: number;
+  message: string;
+  showTaxBreakdown: boolean;
+  sendEmailReceipt: boolean;
+  showCustomerBalance: boolean;
+  printCustomerAddress: boolean;
+  showItemNodes: boolean;
+  groupItemsByPromotions: boolean;
+  groupItemOnPrint: boolean;
+  useProductNameOnPrint: boolean;
+  showBarCode: boolean;
+  showProductName: boolean;
+  showProductDescription: boolean;
+  customFontSize: number;
+  barCodeType: string;
+  qrCodeLink: string;
+  qrCodeDescription: string;
+  guid: string;
+};
 
 export default function ReceiptsComponent() {
-  const [companyInfo, setCompanyInfo] = useState({
-    name: "",
-    displayName: "",
-    taxNumber: "",
-    email: "",
-    website: "",
-    refundDays: "7",
-    receiptMessage: "Thank you for shopping with us",
-    fontSize: "12.0",
-    qrUrl: "",
-    qrDescription: "",
-    guid: "e.g., system-generated-guid",
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
-  const [dropdowns, setDropdowns] = useState({
-    orderDescription: "Product Description",
-    itemDisplay: "Product Description",
-    barcodeType: "Code 128 - Compatible with iOS and Android scanners",
-  });
+  const reduxToken = useSelector((state: RootState) => state.app.token);
+  const company = useSelector((state: RootState) => state.app.company);
 
-  const [toggles, setToggles] = useState({
-    taxBreakdown: true,
-    emailPrompt: false,
-    customerBalance: true,
-    customerAddress: false,
-    showNotes: false,
-    groupPromotions: true,
-    groupOrderItems: true,
-    useProductName: true,
-    showBarcodes: true,
-  });
+  const [token, setToken] = useState<string | null>(null);
+  const [receiptId, setReceiptId] = useState<string | null>(null);
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setCompanyInfo((prev) => ({ ...prev, [name]: value }));
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<ReceiptFormValues>();
+
+  // Get token from localStorage or Redux
+  useEffect(() => {
+    const localToken = localStorage.getItem("authToken");
+    setToken(localToken || reduxToken || null);
+  }, [reduxToken]);
+
+  // Fetch company details if not already in Redux
+  useEffect(() => {
+    if (!company && token) {
+      dispatch(getCompany({ token }));
+    }
+  }, [dispatch, token, company]);
+
+  // Load receipt data if company ID exists
+  useEffect(() => {
+    if (token && company?.id) {
+      dispatch(getReceipt({ token, id: company.id })).then((res: any) => {
+        if (res?.payload) {
+          const receipt = res.payload;
+          Object.keys(receipt).forEach((key) => {
+            if (receipt[key] !== null && receipt[key] !== undefined) {
+              setValue(key as keyof ReceiptFormValues, receipt[key]);
+            }
+          });
+          setReceiptId(receipt.id);
+        }
+      });
+    }
+  }, [dispatch, token, company?.id, setValue]);
+  // Pre-fill company details
+  useEffect(() => {
+    if (company) {
+     
+      setValue("name", company.name || "");
+      setValue("taxNumber", company.taxNumber || "");
+    }
+  }, [company, setValue]);
+
+  const onSubmit = (data: ReceiptFormValues) => {
+    if (!token) {
+      alert("Token missing!");
+      return;
+    }
+
+    if (!company || !company.id) {
+      alert("Company ID is missing or company not loaded yet!");
+      return;
+    }
+
+   const {
+  name,
+  displayName,
+  taxNumber,
+  email,
+  website,
+  refundDays,
+  message,
+  showTaxBreakdown,
+  sendEmailReceipt,
+  showCustomerBalance,
+  printCustomerAddress,
+  showItemNodes,
+  groupItemsByPromotions,
+  groupItemOnPrint,
+  useProductNameOnPrint,
+  showBarCode,
+  showProductName,
+  showProductDescription,
+  customFontSize,
+  barCodeType,
+  qrCodeLink,
+  qrCodeDescription,
+  guid,
+} = data;
+
+const payload = {
+  name,
+  displayName,
+  taxNumber,
+  email,
+  website,
+  refundDays: Number(refundDays),
+  message,
+  showTaxBreakdown,
+  sendEmailReceipt,
+  showCustomerBalance,
+  printCustomerAddress,
+  showItemNodes,
+  groupItemsByPromotions,
+  groupItemOnPrint,
+  useProductNameOnPrint,
+  showBarCode,
+  showProductName,
+  showProductDescription,
+  customFontSize: Number(customFontSize),
+  barCodeType,
+  qrCodeLink,
+  qrCodeDescription,
+  guid,
+  companyId: company.id,
+};
+  
+    if (receiptId) {
+      
+      dispatch(updateReceipt({ id: receiptId, payload, token }));
+
+    } else {
+      dispatch(createReceipt({ payload, token })).then((res: any) => {
+        if (res?.payload?.id) setReceiptId(res.payload.id);
+      });
+    }
   };
 
-  const handleToggle = (key: string) => {
-    setToggles((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
+  const handleCancel = () => {
+    router.push('/index');
   };
+
+  if (!company?.id) {
+    return <p className="text-center mt-5">Loading company details...</p>;
+  }
 
   return (
     <div className="page-wrapper">
       <div className="content">
         <div className="card">
           <div className="card-header fw-bold">Receipt Settings</div>
-
           <div className="card-body">
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Text Fields */}
               {[
-                ["Company Name", "name"],
-                ["Company Display Name", "displayName"],
-                ["Tax Number", "taxNumber"],
-                ["Email Address", "email"],
-                ["Website Address", "website"],
-              ].map(([label, field]) => (
-                <div className="row align-items-center mb-3" key={field}>
-                  <label className="col-sm-3 col-form-label text-end">{label}</label>
+                { label: "Company Name", name: "name" },
+                { label: "Display Name", name: "displayName" },
+                { label: "Tax Number", name: "taxNumber" },
+                { label: "Email", name: "email" },
+                { label: "Website", name: "website" },
+                { label: "Message", name: "message" },
+                { label: "QR Code Link", name: "qrCodeLink" },
+                { label: "QR Description", name: "qrCodeDescription" },
+              ].map((field) => (
+                <div className="row align-items-center mb-3" key={field.name}>
+                  <label className="col-sm-3 col-form-label text-end">{field.label}</label>
                   <div className="col-sm-6">
-                    <input
-                      type="text"
-                      className="form-control"
-                      name={field}
-                      value={companyInfo[field as keyof typeof companyInfo]}
-                      onChange={handleChange}
-                    />
+                    <input {...register(field.name as keyof ReceiptFormValues)} className="form-control" type="text" />
                   </div>
                 </div>
               ))}
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Refund Days</label>
-                <div className="col-sm-6">
-                  <input
-                    type="number"
-                    className="form-control"
-                    name="refundDays"
-                    value={companyInfo.refundDays}
-                    onChange={handleChange}
-                  />
+
+              {/* Numbers */}
+              {[
+                { label: "Refund Days", name: "refundDays" },
+                { label: "Custom Font Size", name: "customFontSize" },
+              ].map((field) => (
+                <div className="row align-items-center mb-3" key={field.name}>
+                  <label className="col-sm-3 col-form-label text-end">{field.label}</label>
+                  <div className="col-sm-6">
+                    <input type="number" {...register(field.name as keyof ReceiptFormValues)} className="form-control" />
+                  </div>
                 </div>
-              </div>
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Receipt Message</label>
-                <div className="col-sm-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="receiptMessage"
-                    value={companyInfo.receiptMessage}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="row mb-4">
-                <div className="offset-sm-3 col-sm-9">
-                  {[
-                    ["taxBreakdown", "Show Tax Breakdown"],
-                    ["emailPrompt", "New Email Receipt UI prompt after transaction"],
-                    ["customerBalance", "Show Customer Balance"],
-                    ["customerAddress", "Print customer address on cut out transactions"],
-                    ["showNotes", "Show item notes and multiple choice products on receipt"],
-                    ["groupPromotions", "Group items and promotions on receipt"],
-                    ["groupOrderItems", "Group items on order prints"],
-                    ["useProductName", "Use product name rather than description on receipts"],
-                    ["showBarcodes", "Show barcodes on transaction receipts"],
-                  ].map(([key, label]) => (
-                    <div className="form-check mb-3" key={key}>
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={toggles[key as keyof typeof toggles]}
-                        onChange={() => handleToggle(key)}
-                        id={key}
-                      />
-                      <label className="form-check-label" htmlFor={key}>
-                        {label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">
-                  Show Product Name or Product Description on Order Tickets
-                </label>
-                <div className="col-sm-6">
-                  <select
-                    className="form-select"
-                    value={dropdowns.orderDescription}
-                    onChange={(e) => setDropdowns({ ...dropdowns, orderDescription: e.target.value })}
-                  >
-                    <option>Product Description</option>
-                    <option>Product Name</option>
-                  </select>
-                </div>
-              </div>
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Set custom font size</label>
-                <div className="col-sm-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="fontSize"
-                    value={companyInfo.fontSize}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
+              ))}
+
+              {/* Barcode Type */}
               <div className="row align-items-center mb-3">
                 <label className="col-sm-3 col-form-label text-end">Barcode Type</label>
                 <div className="col-sm-6">
-                  <select
-                    className="form-select"
-                    value={dropdowns.barcodeType}
-                    onChange={(e) => setDropdowns({ ...dropdowns, barcodeType: e.target.value })}
-                  >
-                    <option>Code 128 - Compatible with iOS and Android scanners</option>
-                    <option>QR Code</option>
-                    <option>EAN-13</option>
+                  <select {...register("barCodeType")} className="form-select">
+                    <option value="CODE128">CODE128</option>
+                    <option value="QRCODE">QR Code</option>
+                    <option value="EAN13">EAN-13</option>
                   </select>
                 </div>
               </div>
-              <div className="row align-items-center mb-4">
-                <label className="col-sm-3 col-form-label text-end">Company Logo</label>
-                <div className="col-sm-6">
-                  <div className="border border-dashed p-4 text-center bg-light">
-                    <i className="ti ti-photo text-muted" style={{ fontSize: "2rem" }}></i>
-                    <p className="mb-1 mt-2">Drop your file here or click to upload</p>
-                    <small className="text-muted">PNG/JPG only, max 200x200px</small>
+
+              {/* Checkboxes */}
+              {[
+                { name: "showTaxBreakdown", label: "Show Tax Breakdown" },
+                { name: "sendEmailReceipt", label: "Send Email Receipt" },
+                { name: "showCustomerBalance", label: "Show Customer Balance" },
+                { name: "printCustomerAddress", label: "Print Customer Address" },
+                { name: "showItemNodes", label: "Show Item Notes" },
+                { name: "groupItemsByPromotions", label: "Group Items by Promotions" },
+                { name: "groupItemOnPrint", label: "Group Items on Print" },
+                { name: "useProductNameOnPrint", label: "Use Product Name on Print" },
+                { name: "showBarCode", label: "Show Barcode" },
+                { name: "showProductName", label: "Show Product Name" },
+                { name: "showProductDescription", label: "Show Product Description" },
+              ].map((checkbox) => (
+                <div className="row mb-2" key={checkbox.name}>
+                  <div className="offset-sm-3 col-sm-9">
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        {...register(checkbox.name as keyof ReceiptFormValues)}
+                      />
+                      <label className="form-check-label">{checkbox.label}</label>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
+
+              {/* GUID */}
               <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">QR Code URL or Link</label>
-                <div className="col-sm-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="qrUrl"
-                    value={companyInfo.qrUrl}
-                    onChange={handleChange}
-                    placeholder="https://example.com/review"
-                  />
-                </div>
-              </div>
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">QR Code Description</label>
-                <div className="col-sm-6">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="qrDescription"
-                    value={companyInfo.qrDescription}
-                    onChange={handleChange}
-                    placeholder="Please scan here and leave us a review"
-                  />
-                </div>
-              </div>
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">GUID (Support Only)</label>
+                <label className="col-sm-3 col-form-label text-end">GUID</label>
                 <div className="col-sm-6 pt-1">
-                  <span className="text-muted">{companyInfo.guid}</span>
+                  <span className="text-muted">{receiptId || 'Auto-generated'}</span>
                 </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="card-footer d-flex justify-content-between">
+                <button
+                  type="button"
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-success">
+                  SAVE
+                </button>
               </div>
             </form>
-          </div>
-          <div className="card-footer text-end">
-            <button className="btn btn-success">
-              <i className="ti ti-device-floppy me-1"></i> SAVE
-            </button>
           </div>
         </div>
       </div>
