@@ -48,8 +48,8 @@ const handlerefresh = () => {
     },
     { title: "Phone", dataIndex: "phone" },
     { title: "Email", dataIndex: "email" },
-    { title: "Role", dataIndex: "role" },
-    { title: "Created On", dataIndex: "createdon" },
+    { title: "Role", dataIndex: "permissions" },
+    { title: "Created On", dataIndex: "createdAt" },
     {
       title: "Status",
       dataIndex: "status",

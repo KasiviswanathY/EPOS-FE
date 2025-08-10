@@ -12,5 +12,9 @@ export const apiRoutes = {
   createCompany:`${BASE_URL}/api/v1/companies/create`,
   // updateCompany:`${BASE_URL}/api/v1/company-receipts/${id}`
   createReceipts: `${BASE_URL}/api/v1/company-receipts`,
+  createClock:`${BASE_URL}/api/v1/clocking-types`,
+  getClock:`${BASE_URL}/api/v1/clocking-types`,
+  updateClock:(id: string) => `${BASE_URL}/api/v1/clocking-types/${id}`,
+  deletClock:(id: string) => `${BASE_URL}/api/v1/clocking-types/${id}`
   
 };

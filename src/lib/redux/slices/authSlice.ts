@@ -9,6 +9,7 @@ import { deleteUser } from '../actions/deleteUserAction';
 
 import { createCompany, getCompany, updateCompany } from "../actions/createCompany";
 import { createReceipt, getReceipt, updateReceipt } from "../actions/createReceiptsAction";
+import { createClocking, deleteClockingType, getClockingTypes, updateClockingType } from '../actions/createClockingType';
 
 
 interface User {
@@ -71,6 +72,11 @@ interface AppState {
 receiptLoading: boolean;
 receiptError: string | null;
 receiptSuccess: boolean;
+clockingTypes: any[]; // You can define a proper ClockingType interface if needed
+clockingLoading: boolean;
+clockingError: string | null;
+clockingSuccess: boolean;
+setClockingTypes: any | null;
 
 }
 
@@ -100,7 +106,6 @@ const getInitialUser = (): User | null => {
 
 // --- Initial state ---
 const initialState: AppState = {
-
   id: null,
   user: getInitialUser(),
   token: getInitialToken(),
@@ -109,7 +114,6 @@ const initialState: AppState = {
   // user: null,
   // token: null,
   // isLoggedIn: false,
-
   loading: false,
   loadingCreate: false,
   loadingUpdate: false,
@@ -122,10 +126,14 @@ const initialState: AppState = {
 
   company: null,
   receipt: null,
-receiptLoading: false,
-receiptError: null,
-receiptSuccess: false
-
+  receiptLoading: false,
+  receiptError: null,
+  receiptSuccess: false,
+  clockingTypes: [],
+  clockingLoading: false,
+  clockingError: null,
+  clockingSuccess: false,
+  setClockingTypes: undefined
 };
 
 const appSlice = createSlice({
@@ -349,7 +357,73 @@ const appSlice = createSlice({
 .addCase(updateReceipt.rejected, (state, action) => {
   state.receiptLoading = false;
   state.receiptError = (action.payload as string) ?? "Update receipt failed";
+})
+// ===== GET CLOCKING TYPES =====
+.addCase(getClockingTypes.pending, (state) => {
+  state.clockingLoading = true;
+  state.clockingError = null;
+})
+.addCase(getClockingTypes.fulfilled, (state, action: PayloadAction<any[]>) => {
+  state.clockingTypes = action.payload;
+  state.clockingLoading = false;
+})
+.addCase(getClockingTypes.rejected, (state, action) => {
+  state.clockingLoading = false;
+  state.clockingError = (action.payload as string) ?? "Failed to fetch clocking types";
+})
+
+// ===== CREATE CLOCKING TYPE =====
+.addCase(createClocking.pending, (state) => {
+  state.clockingLoading = true;
+  state.clockingError = null;
+  state.clockingSuccess = false;
+})
+.addCase(createClocking.fulfilled, (state, action: PayloadAction<any>) => {
+  state.clockingLoading = false;
+  state.clockingSuccess = true;
+  state.clockingTypes.push(action.payload); // Optional: update state immediately
+})
+.addCase(createClocking.rejected, (state, action) => {
+  state.clockingLoading = false;
+  state.clockingError = (action.payload as string) ?? "Failed to create clocking type";
+})
+
+// ===== UPDATE CLOCKING TYPE =====
+.addCase(updateClockingType.pending, (state) => {
+  state.clockingLoading = true;
+  state.clockingError = null;
+  state.clockingSuccess = false;
+})
+.addCase(updateClockingType.fulfilled, (state, action: PayloadAction<any>) => {
+  state.clockingLoading = false;
+  state.clockingSuccess = true;
+
+  const index = state.clockingTypes.findIndex(c => c.id === action.payload.id);
+  if (index !== -1) {
+    state.clockingTypes[index] = action.payload;
+  }
+})
+.addCase(updateClockingType.rejected, (state, action) => {
+  state.clockingLoading = false;
+  state.clockingError = (action.payload as string) ?? "Failed to update clocking type";
+})
+
+// ===== DELETE CLOCKING TYPE =====
+.addCase(deleteClockingType.pending, (state) => {
+  state.clockingLoading = true;
+  state.clockingError = null;
+})
+.addCase(deleteClockingType.fulfilled, (state, action: PayloadAction<string>) => {
+  state.clockingLoading = false;
+  state.clockingSuccess = true;
+
+  state.clockingTypes = state.clockingTypes.filter(c => c.id !== action.payload);
+})
+.addCase(deleteClockingType.rejected, (state, action) => {
+  state.clockingLoading = false;
+  state.clockingError = (action.payload as string) ?? "Failed to delete clocking type";
 });
+
 
 
   },
