@@ -47,3 +47,47 @@ export const createRole = createAsyncThunk(
       }
     }
   );
+
+
+  export const updateRole = createAsyncThunk(
+    'Role/updateRolee',
+    async ({id, payload, token }: any, thunkAPI) => {
+      try {
+        const response = await axios.patch(
+          apiRoutes.updateRole(id),
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        return response.data;
+      } catch (error: any) {
+        console.error("Backend Error:", error.response?.data || error.message);
+        return thunkAPI.rejectWithValue(error.response?.data);
+      }
+    }
+  );
+  export const deleteRole = createAsyncThunk(
+    'Role/deleteRole',
+     async ({id,  token }: any, thunkAPI) => {
+      try {
+        const response = await axios.delete(
+          apiRoutes.deleteRole(id),
+  
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        return response.data;
+      } catch (error: any) {
+        console.error("Backend Error:", error.response?.data || error.message);
+        return thunkAPI.rejectWithValue(error.response?.data);
+      }
+    }
+  );
