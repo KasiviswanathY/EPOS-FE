@@ -19,6 +19,11 @@ export const apiRoutes = {
   createRole: `${BASE_URL}/api/v1/roles`,
   getRole:`${BASE_URL}/api/v1/roles`,
   updateRole: (id: string) => `${BASE_URL}/api/v1/roles/${id}`,
-   deleteRole: (id: string) => `${BASE_URL}/api/v1/roles/${id}`
+   deleteRole: (id: string) => `${BASE_URL}/api/v1/roles/${id}`,
+
+  createLocation: `${BASE_URL}/api/v1/locations`,
+  getLocations: `${BASE_URL}/api/v1/locations`,
+  updateLocations: (id: string) =>  `${BASE_URL}/api/v1/locations/${id}`,
+  deleteLocations: (id: string) =>  `${BASE_URL}/api/v1/locations/${id}`
   
 };

@@ -11,6 +11,7 @@ import { createCompany, getCompany, updateCompany } from "../actions/createCompa
 import { createReceipt, getReceipt, updateReceipt } from "../actions/createReceiptsAction";
 import { createClocking, deleteClockingType, getClockingTypes, updateClockingType } from '../actions/createClockingType';
 import { getRoles } from '../actions/createRoles';
+import { getLocations } from '../actions/createLocation';
 
 
 interface User {
@@ -60,6 +61,22 @@ interface Role {
   permissions: string[];
 }
 
+export interface Locations {
+  id: string; // Assuming each location has a unique ID
+  name: string;
+  address: string;
+  city: string;
+  country: string;
+  pincode: string;
+  description: string;
+  status: "ACTIVE" | "INACTIVE"; // Enum-like restriction
+  email: string;
+  phone: string;
+  language: string;
+  timeZone: string;
+  companyId: string;
+}
+
 interface AppState {
   id: string | null;
   user: User | null;
@@ -85,6 +102,7 @@ clockingError: string | null;
 clockingSuccess: boolean;
 setClockingTypes: any | null;
 roles: Role[];
+ Locations:any[];
 
 }
 
@@ -142,7 +160,8 @@ const initialState: AppState = {
   clockingError: null,
   clockingSuccess: false,
   setClockingTypes: undefined,
-  roles: []
+  roles: [],
+  Locations: []
 };
 
 const appSlice = createSlice({
@@ -163,6 +182,16 @@ const appSlice = createSlice({
     },
     resetSuccess: (state) => {
       state.success = false;
+    },
+    updateLocationSuccess: (state, action) => {
+      state.Locations = state.Locations.map((loc) =>
+        loc.id === action.payload.id ? action.payload : loc
+      );
+    },
+      deleteLocationSuccess: (state, action) => {
+      state.Locations = state.Locations.filter(
+        (loc) => loc.id !== action.payload
+      );
     },
 
 
@@ -432,7 +461,7 @@ const appSlice = createSlice({
   state.clockingLoading = false;
   state.clockingError = (action.payload as string) ?? "Failed to delete clocking type";
 })
-
+///roles
  .addCase(getRoles.pending, (state) => {
         state.loading = true;
       })
@@ -443,12 +472,24 @@ const appSlice = createSlice({
       .addCase(getRoles.rejected, (state) => {
         state.loading = false;
         state.roles = [];
+      })
+////locations
+ .addCase(getLocations.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getLocations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Locations = action.payload;
+      })
+      .addCase(getLocations.rejected, (state) => {
+        state.loading = false;
+        state.Locations = [];
       });
-
-
 
   },
 });
+
+export const { updateLocationSuccess, deleteLocationSuccess } = appSlice.actions;
 
 export const { setUserFromLocal, logout, resetSuccess, setError } = appSlice.actions;
 export default appSlice.reducer;
