@@ -1,12 +1,38 @@
-import CommonFooter from '@/core/common/footer/commonFooter'
-import CollapesIcon from '@/core/common/tooltip-content/collapes'
-import RefreshIcon from '@/core/common/tooltip-content/refresh'
-import TooltipIcons from '@/core/common/tooltip-content/tooltipIcons'
-import AddDesignation from '@/core/modals/hrm/adddesignation'
-import EditDesignation from '@/core/modals/hrm/editdesignation'
+"use client";
+import { getRoles } from '@/lib/redux/actions/createRoles'
+import { AppDispatch, RootState } from '@/lib/redux/store'
 import Link from 'next/link'
-import React from 'react'
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+
+
+
 export default function DesignationComponent (){
+
+const dispatch = useDispatch<AppDispatch>();
+  const {roles, loading } = useSelector((state: RootState) => state.app);
+ const token =
+    typeof window !== "undefined" ? localStorage.getItem("authToken") : null; 
+  // Fetch roles when token is available
+  useEffect(() => {
+    if (token) {
+      dispatch(getRoles({ token }));
+    }
+  }, [token, dispatch]);
+
+  // Collect all unique permissions from the roles
+  const allPermissions = useMemo(() => {
+    const perms = new Set<string>();
+    roles.forEach((role) => {
+      role.permissions?.forEach((perm: string) => perms.add(perm));
+    });
+    return Array.from(perms).sort();
+  }, [roles]);
+
+  if (loading) {
+    return <p className="p-3">Loading roles...</p>;
+  }
+
 return (
     <>
   <div className="page-wrapper">
@@ -22,155 +48,52 @@ return (
       href="addstaff"                   
       className="btn btn-success flex items-center gap-1">Add Roles</Link></div>
 </div>
-<div style={{ overflowX: "auto" }}>
-  <table className="table table-bordered align-middle text-center" style={{ minWidth: "1000px", width: "100%" }}>
-    <thead className="bg-light">
-      <tr>
-        <th>Designation</th>
-        <th>Description</th>
-        <th>Back Office</th>
-        <th>Till</th>
-        <th>Admin Access on Till</th>
-        <th>Till Settings</th>
-        <th>Quick Add Setting</th>
-        <th>Clock In/Out Info</th>
-       <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Manager</td>
-        <td>Full access to all till functions</td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-       <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Cashier</td>
-        <td>Cashier</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Sales Manager</td>
-        <td>Sales Manager</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Inventory Manager</td>
-        <td>Inventory Manager</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Accountant</td>
-        <td>Accountant</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-      <tr>
-        <td>System Administrator</td>
-        <td>System Administrator</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Hr Manager</td>
-        <td>Hr Manager</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-       <tr>
-        <td>Marketing Manager</td>
-        <td>Marketing Manager</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-       <tr>
-        <td>QA Analyst</td>
-        <td>QA Analyst</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-       <tr>
-        <td>Research Analyst</td>
-        <td>Research Analyst</td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td><input type="checkbox" /></td>
-        <td><input type="checkbox" defaultChecked /></td>
-        <td>
-          <button className="btn btn-outline-warning btn-sm fw-bold">EDIT</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+ <div style={{ overflowX: "auto" }}>
+          <table
+            className="table table-bordered align-middle text-center"
+            style={{ minWidth: "1200px" }}
+          >
+            <thead className="bg-light">
+              <tr>
+                <th>Role Name</th>
+                <th>Role Description</th>
+                {allPermissions.map((perm) => (
+                  <th key={perm}>{perm.replace(/_/g, " ")}</th>
+                ))}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roles.map((role) => (
+                <tr key={role.id}>
+                  <td>{role.name}</td>
+                  <td>{role.description}</td>
+                  {allPermissions.map((perm) => (
+                    <td key={perm}>
+                      <input
+                        type="checkbox"
+                        checked={role.permissions.includes(perm)}
+                        readOnly
+                      />
+                    </td>
+                  ))}
+                  <td>
+                    <button className="btn btn-outline-warning btn-sm fw-bold">
+                      EDIT
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+              {roles.length === 0 && (
+                <tr>
+                  <td colSpan={allPermissions.length + 3}>No roles found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+        </div>
 <div className="d-flex justify-content-start mt-4" >
  <Link href="/employees-grid"className="btn btn-success flex items-center gap-1" ><span className="text-lg leading-none" ></span>Edit Staff</Link>
 </div>

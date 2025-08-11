@@ -10,6 +10,7 @@ import { deleteUser } from '../actions/deleteUserAction';
 import { createCompany, getCompany, updateCompany } from "../actions/createCompany";
 import { createReceipt, getReceipt, updateReceipt } from "../actions/createReceiptsAction";
 import { createClocking, deleteClockingType, getClockingTypes, updateClockingType } from '../actions/createClockingType';
+import { getRoles } from '../actions/createRoles';
 
 
 interface User {
@@ -52,6 +53,12 @@ interface Receipt {
   guid: BigInteger;
 }
 
+interface Role {
+   id: string | number;
+  name: string;
+  description: string;
+  permissions: string[];
+}
 
 interface AppState {
   id: string | null;
@@ -77,6 +84,7 @@ clockingLoading: boolean;
 clockingError: string | null;
 clockingSuccess: boolean;
 setClockingTypes: any | null;
+roles: Role[];
 
 }
 
@@ -133,7 +141,8 @@ const initialState: AppState = {
   clockingLoading: false,
   clockingError: null,
   clockingSuccess: false,
-  setClockingTypes: undefined
+  setClockingTypes: undefined,
+  roles: []
 };
 
 const appSlice = createSlice({
@@ -422,7 +431,19 @@ const appSlice = createSlice({
 .addCase(deleteClockingType.rejected, (state, action) => {
   state.clockingLoading = false;
   state.clockingError = (action.payload as string) ?? "Failed to delete clocking type";
-});
+})
+
+ .addCase(getRoles.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getRoles.fulfilled, (state, action) => {
+        state.loading = false;
+        state.roles = action.payload;
+      })
+      .addCase(getRoles.rejected, (state) => {
+        state.loading = false;
+        state.roles = [];
+      });
 
 
 

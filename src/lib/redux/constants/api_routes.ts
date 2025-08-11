@@ -15,6 +15,8 @@ export const apiRoutes = {
   createClock:`${BASE_URL}/api/v1/clocking-types`,
   getClock:`${BASE_URL}/api/v1/clocking-types`,
   updateClock:(id: string) => `${BASE_URL}/api/v1/clocking-types/${id}`,
-  deletClock:(id: string) => `${BASE_URL}/api/v1/clocking-types/${id}`
+  deletClock:(id: string) => `${BASE_URL}/api/v1/clocking-types/${id}`,
+  createRole: `${BASE_URL}/api/v1/roles`,
+  getRole:`${BASE_URL}/api/v1/roles`
   
 };
