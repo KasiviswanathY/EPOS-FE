@@ -7,12 +7,16 @@ export const createCompany = createAsyncThunk(
   "company/create",
   async ({ payload, token }: any, thunkAPI) => {
     try {
-      const response = await axios.post(apiRoutes.createCompany, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(
+        `${apiRoutes.companies}/create`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data;
     } catch (error: any) {
       console.error("Backend Error:", error.response?.data || error.message);
@@ -26,7 +30,7 @@ export const getCompany = createAsyncThunk(
   "company/getCompany",
   async ({ token }: { token: string }, thunkAPI) => {
     try {
-      const res = await axios.get(apiRoutes.company, {
+      const res = await axios.get(apiRoutes.companies, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -46,7 +50,7 @@ export const updateCompany = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      const res = await axios.patch(`${apiRoutes.company}/${id}`, payload, {
+      const res = await axios.patch(`${apiRoutes.companies}/${id}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

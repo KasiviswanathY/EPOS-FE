@@ -1,12 +1,16 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/lib/redux/store';
-import { createReceipt, getReceipt, updateReceipt } from '@/lib/redux/actions/createReceiptsAction';
-import { getCompany } from '@/lib/redux/actions/createCompany';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import {
+  createReceipt,
+  getReceiptByCompanyId,
+  updateReceipt,
+} from "@/lib/redux/actions/createReceiptsAction";
+import { getCompany } from "@/lib/redux/actions/createCompany";
+import { useRouter } from "next/navigation";
 
 type ReceiptFormValues = {
   name: string;
@@ -67,23 +71,24 @@ export default function ReceiptsComponent() {
   // Load receipt data if company ID exists
   useEffect(() => {
     if (token && company?.id) {
-      dispatch(getReceipt({ token, id: company.id })).then((res: any) => {
-        if (res?.payload) {
-          const receipt = res.payload;
-          Object.keys(receipt).forEach((key) => {
-            if (receipt[key] !== null && receipt[key] !== undefined) {
-              setValue(key as keyof ReceiptFormValues, receipt[key]);
-            }
-          });
-          setReceiptId(receipt.id);
+      dispatch(getReceiptByCompanyId({ token, companyId: company.id })).then(
+        (res: any) => {
+          if (res?.payload) {
+            const receipt = res.payload;
+            Object.keys(receipt).forEach((key) => {
+              if (receipt[key] !== null && receipt[key] !== undefined) {
+                setValue(key as keyof ReceiptFormValues, receipt[key]);
+              }
+            });
+            setReceiptId(receipt.id);
+          }
         }
-      });
+      );
     }
   }, [dispatch, token, company?.id, setValue]);
   // Pre-fill company details
   useEffect(() => {
     if (company) {
-     
       setValue("name", company.name || "");
       setValue("taxNumber", company.taxNumber || "");
     }
@@ -100,63 +105,61 @@ export default function ReceiptsComponent() {
       return;
     }
 
-   const {
-  name,
-  displayName,
-  taxNumber,
-  email,
-  website,
-  refundDays,
-  message,
-  showTaxBreakdown,
-  sendEmailReceipt,
-  showCustomerBalance,
-  printCustomerAddress,
-  showItemNodes,
-  groupItemsByPromotions,
-  groupItemOnPrint,
-  useProductNameOnPrint,
-  showBarCode,
-  showProductName,
-  showProductDescription,
-  customFontSize,
-  barCodeType,
-  qrCodeLink,
-  qrCodeDescription,
-  guid,
-} = data;
+    const {
+      name,
+      displayName,
+      taxNumber,
+      email,
+      website,
+      refundDays,
+      message,
+      showTaxBreakdown,
+      sendEmailReceipt,
+      showCustomerBalance,
+      printCustomerAddress,
+      showItemNodes,
+      groupItemsByPromotions,
+      groupItemOnPrint,
+      useProductNameOnPrint,
+      showBarCode,
+      showProductName,
+      showProductDescription,
+      customFontSize,
+      barCodeType,
+      qrCodeLink,
+      qrCodeDescription,
+      guid,
+    } = data;
 
-const payload = {
-  name,
-  displayName,
-  taxNumber,
-  email,
-  website,
-  refundDays: Number(refundDays),
-  message,
-  showTaxBreakdown,
-  sendEmailReceipt,
-  showCustomerBalance,
-  printCustomerAddress,
-  showItemNodes,
-  groupItemsByPromotions,
-  groupItemOnPrint,
-  useProductNameOnPrint,
-  showBarCode,
-  showProductName,
-  showProductDescription,
-  customFontSize: Number(customFontSize),
-  barCodeType,
-  qrCodeLink,
-  qrCodeDescription,
-  guid,
-  companyId: company.id,
-};
-  
+    const payload = {
+      name,
+      displayName,
+      taxNumber,
+      email,
+      website,
+      refundDays: Number(refundDays),
+      message,
+      showTaxBreakdown,
+      sendEmailReceipt,
+      showCustomerBalance,
+      printCustomerAddress,
+      showItemNodes,
+      groupItemsByPromotions,
+      groupItemOnPrint,
+      useProductNameOnPrint,
+      showBarCode,
+      showProductName,
+      showProductDescription,
+      customFontSize: Number(customFontSize),
+      barCodeType,
+      qrCodeLink,
+      qrCodeDescription,
+      guid,
+      companyId: company.id,
+    };
+
     if (receiptId) {
-      
       dispatch(updateReceipt({ id: receiptId, payload, token }));
-
     } else {
       dispatch(createReceipt({ payload, token })).then((res: any) => {
         if (res?.payload?.id) setReceiptId(res.payload.id);
@@ -165,7 +168,7 @@ const payload = {
   };
 
   const handleCancel = () => {
-    router.push('/index');
+    router.push("/index");
   };
 
   if (!company?.id) {
@@ -191,9 +194,15 @@ const payload = {
                 { label: "QR Description", name: "qrCodeDescription" },
               ].map((field) => (
                 <div className="row align-items-center mb-3" key={field.name}>
-                  <label className="col-sm-3 col-form-label text-end">{field.label}</label>
+                  <label className="col-sm-3 col-form-label text-end">
+                    {field.label}
+                  </label>
                   <div className="col-sm-6">
-                    <input {...register(field.name as keyof ReceiptFormValues)} className="form-control" type="text" />
+                    <input
+                      {...register(field.name as keyof ReceiptFormValues)}
+                      className="form-control"
+                      type="text"
+                    />
                   </div>
                 </div>
               ))}
@@ -204,16 +213,24 @@ const payload = {
                 { label: "Custom Font Size", name: "customFontSize" },
               ].map((field) => (
                 <div className="row align-items-center mb-3" key={field.name}>
-                  <label className="col-sm-3 col-form-label text-end">{field.label}</label>
+                  <label className="col-sm-3 col-form-label text-end">
+                    {field.label}
+                  </label>
                   <div className="col-sm-6">
-                    <input type="number" {...register(field.name as keyof ReceiptFormValues)} className="form-control" />
+                    <input
+                      type="number"
+                      {...register(field.name as keyof ReceiptFormValues)}
+                      className="form-control"
+                    />
                   </div>
                 </div>
               ))}
 
               {/* Barcode Type */}
               <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">Barcode Type</label>
+                <label className="col-sm-3 col-form-label text-end">
+                  Barcode Type
+                </label>
                 <div className="col-sm-6">
                   <select {...register("barCodeType")} className="form-select">
                     <option value="CODE128">CODE128</option>
@@ -228,14 +245,26 @@ const payload = {
                 { name: "showTaxBreakdown", label: "Show Tax Breakdown" },
                 { name: "sendEmailReceipt", label: "Send Email Receipt" },
                 { name: "showCustomerBalance", label: "Show Customer Balance" },
-                { name: "printCustomerAddress", label: "Print Customer Address" },
+                {
+                  name: "printCustomerAddress",
+                  label: "Print Customer Address",
+                },
                 { name: "showItemNodes", label: "Show Item Notes" },
-                { name: "groupItemsByPromotions", label: "Group Items by Promotions" },
+                {
+                  name: "groupItemsByPromotions",
+                  label: "Group Items by Promotions",
+                },
                 { name: "groupItemOnPrint", label: "Group Items on Print" },
-                { name: "useProductNameOnPrint", label: "Use Product Name on Print" },
+                {
+                  name: "useProductNameOnPrint",
+                  label: "Use Product Name on Print",
+                },
                 { name: "showBarCode", label: "Show Barcode" },
                 { name: "showProductName", label: "Show Product Name" },
-                { name: "showProductDescription", label: "Show Product Description" },
+                {
+                  name: "showProductDescription",
+                  label: "Show Product Description",
+                },
               ].map((checkbox) => (
                 <div className="row mb-2" key={checkbox.name}>
                   <div className="offset-sm-3 col-sm-9">
@@ -245,7 +274,9 @@ const payload = {
                         className="form-check-input"
                         {...register(checkbox.name as keyof ReceiptFormValues)}
                       />
-                      <label className="form-check-label">{checkbox.label}</label>
+                      <label className="form-check-label">
+                        {checkbox.label}
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -255,7 +286,9 @@ const payload = {
               <div className="row align-items-center mb-3">
                 <label className="col-sm-3 col-form-label text-end">GUID</label>
                 <div className="col-sm-6 pt-1">
-                  <span className="text-muted">{receiptId || 'Auto-generated'}</span>
+                  <span className="text-muted">
+                    {receiptId || "Auto-generated"}
+                  </span>
                 </div>
               </div>
 

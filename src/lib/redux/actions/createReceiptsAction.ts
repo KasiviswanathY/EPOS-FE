@@ -6,7 +6,7 @@ export const createReceipt = createAsyncThunk(
   "receipt/createReceipt",
   async ({ payload, token }: any, thunkAPI) => {
     try {
-      const response = await axios.post(apiRoutes.createReceipts, payload, {
+      const response = await axios.post(apiRoutes.companyReceipts, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -21,12 +21,15 @@ export const createReceipt = createAsyncThunk(
 );
 
 // GET Company
-export const getReceipt = createAsyncThunk(
+export const getReceiptByCompanyId = createAsyncThunk(
   "receipt/getReceipt",
-  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
+  async (
+    { companyId, token }: { companyId: string; token: string },
+    thunkAPI
+  ) => {
     try {
       const res = await axios.get(
-        `${apiRoutes.companyReceipts}/company/${id}`,
+        `${apiRoutes.companyReceipts}/company/${companyId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

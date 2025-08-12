@@ -7,16 +7,12 @@ export const createUser = createAsyncThunk(
   "user/create",
   async ({ payload, token }: any, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        apiRoutes.createUser,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(apiRoutes.users, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       // ✅ Refresh list after creation
       dispatch(fetchUsersList());

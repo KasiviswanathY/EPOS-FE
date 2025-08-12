@@ -1,17 +1,27 @@
-
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser } from '../actions/loginAction';
-import { createUser } from '../actions/createUserAction';
-import { fetchUsersList } from '../actions/getallusersAction';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { loginUser } from "../actions/loginAction";
+import { createUser } from "../actions/createUserAction";
+import { fetchUsersList } from "../actions/getallusersAction";
 import { patchUser } from "@/lib/redux/actions/updateAction";
-import { deleteUser } from '../actions/deleteUserAction';
+import { deleteUser } from "../actions/deleteUserAction";
 
-
-import { createCompany, getCompany, updateCompany } from "../actions/createCompany";
-import { createReceipt, getReceipt, updateReceipt } from "../actions/createReceiptsAction";
-import { createClocking, deleteClockingType, getClockingTypes, updateClockingType } from '../actions/createClockingType';
-import { getRoles } from '../actions/createRoles';
-
+import {
+  createCompany,
+  getCompany,
+  updateCompany,
+} from "../actions/createCompany";
+import {
+  createReceipt,
+  getReceiptByCompanyId,
+  updateReceipt,
+} from "../actions/createReceiptsAction";
+import {
+  createClocking,
+  deleteClockingType,
+  getClockingTypes,
+  updateClockingType,
+} from "../actions/createClockingType";
+import { getRoles } from "../actions/createRoles";
 
 interface User {
   id: number;
@@ -23,7 +33,6 @@ interface User {
   createdon?: string;
   status?: string;
   description?: string;
-
 }
 
 interface Company {
@@ -54,7 +63,7 @@ interface Receipt {
 }
 
 interface Role {
-   id: string | number;
+  id: string | number;
   name: string;
   description: string;
   permissions: string[];
@@ -76,35 +85,34 @@ interface AppState {
   usersListError: string | null;
   company: Company | null;
   receipt: Receipt | null;
-receiptLoading: boolean;
-receiptError: string | null;
-receiptSuccess: boolean;
-clockingTypes: any[]; // You can define a proper ClockingType interface if needed
-clockingLoading: boolean;
-clockingError: string | null;
-clockingSuccess: boolean;
-setClockingTypes: any | null;
-roles: Role[];
-
+  receiptLoading: boolean;
+  receiptError: string | null;
+  receiptSuccess: boolean;
+  clockingTypes: any[]; // You can define a proper ClockingType interface if needed
+  clockingLoading: boolean;
+  clockingError: string | null;
+  clockingSuccess: boolean;
+  setClockingTypes: any | null;
+  roles: Role[];
 }
 
 // --- Helpers to load from localStorage safely ---
 const getInitialToken = (): string | null => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('authToken');
-    return token && token !== 'undefined' ? token : null;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("authToken");
+    return token && token !== "undefined" ? token : null;
   }
   return null;
 };
 
 const getInitialUser = (): User | null => {
-  if (typeof window !== 'undefined') {
-    const user = localStorage.getItem('user');
-    if (user && user !== 'undefined') {
+  if (typeof window !== "undefined") {
+    const user = localStorage.getItem("user");
+    if (user && user !== "undefined") {
       try {
         return JSON.parse(user);
       } catch {
-        localStorage.removeItem('user');
+        localStorage.removeItem("user");
         return null;
       }
     }
@@ -142,14 +150,17 @@ const initialState: AppState = {
   clockingError: null,
   clockingSuccess: false,
   setClockingTypes: undefined,
-  roles: []
+  roles: [],
 };
 
 const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setUserFromLocal: (state, action: PayloadAction<{ token: string; user: User }>) => {
+    setUserFromLocal: (
+      state,
+      action: PayloadAction<{ token: string; user: User }>
+    ) => {
       state.token = action.payload.token;
       state.user = action.payload.user;
       state.isLoggedIn = true;
@@ -165,12 +176,9 @@ const appSlice = createSlice({
       state.success = false;
     },
 
-
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
- 
-
   },
   extraReducers: (builder) => {
     builder
@@ -186,9 +194,9 @@ const appSlice = createSlice({
         state.isLoggedIn = true;
         state.loading = false;
 
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('authToken', token);
-          localStorage.setItem('user', JSON.stringify(user));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("authToken", token);
+          localStorage.setItem("user", JSON.stringify(user));
         }
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -203,7 +211,6 @@ const appSlice = createSlice({
         state.success = false;
       })
       .addCase(createUser.fulfilled, (state) => {
-
         state.loadingCreate = false;
         state.success = true;
       })
@@ -217,13 +224,17 @@ const appSlice = createSlice({
         state.usersListLoading = true;
         state.usersListError = null;
       })
-      .addCase(fetchUsersList.fulfilled, (state, action: PayloadAction<User[]>) => {
-        state.usersList = action.payload;
-        state.usersListLoading = false;
-      })
+      .addCase(
+        fetchUsersList.fulfilled,
+        (state, action: PayloadAction<User[]>) => {
+          state.usersList = action.payload;
+          state.usersListLoading = false;
+        }
+      )
       .addCase(fetchUsersList.rejected, (state, action) => {
         state.usersListLoading = false;
-        state.usersListError = action.error.message || 'Failed to load user list';
+        state.usersListError =
+          action.error.message || "Failed to load user list";
       })
 
       // ===== UPDATE USER =====
@@ -235,15 +246,17 @@ const appSlice = createSlice({
         state.loadingUpdate = false;
         state.success = true;
 
-        const index = state.usersList.findIndex((u) => u.id === action.payload.id);
+        const index = state.usersList.findIndex(
+          (u) => u.id === action.payload.id
+        );
         if (index !== -1) {
           state.usersList[index] = action.payload;
         }
 
         if (state.user?.id === action.payload.id) {
           state.user = { ...state.user, ...action.payload };
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('user', JSON.stringify(state.user));
+          if (typeof window !== "undefined") {
+            localStorage.setItem("user", JSON.stringify(state.user));
           }
         }
       })
@@ -261,16 +274,18 @@ const appSlice = createSlice({
         state.loadingDelete = false;
         state.success = true;
 
-        state.usersList = state.usersList.filter((u) => u.id.toString() !== action.payload);
+        state.usersList = state.usersList.filter(
+          (u) => u.id.toString() !== action.payload
+        );
 
         if (state.user?.id?.toString() === action.payload) {
           state.user = null;
           state.token = null;
           state.isLoggedIn = false;
 
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("user");
           }
         }
       })
@@ -279,19 +294,20 @@ const appSlice = createSlice({
         state.error = (action.payload as string) ?? null;
       })
 
-    
-
       // ===== CREATE COMPANY =====
       .addCase(createCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
       })
-      .addCase(createCompany.fulfilled, (state, action: PayloadAction<Company>) => {
-        state.loading = false;
-        state.success = true;
-        state.company = action.payload;
-      })
+      .addCase(
+        createCompany.fulfilled,
+        (state, action: PayloadAction<Company>) => {
+          state.loading = false;
+          state.success = true;
+          state.company = action.payload;
+        }
+      )
       .addCase(createCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "Create company failed";
@@ -302,10 +318,13 @@ const appSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getCompany.fulfilled, (state, action: PayloadAction<Company>) => {
-        state.loading = false;
-        state.company = action.payload;
-      })
+      .addCase(
+        getCompany.fulfilled,
+        (state, action: PayloadAction<Company>) => {
+          state.loading = false;
+          state.company = action.payload;
+        }
+      )
       .addCase(getCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "Get company failed";
@@ -316,124 +335,158 @@ const appSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateCompany.fulfilled, (state, action: PayloadAction<Company>) => {
-        state.loading = false;
-        state.company = action.payload;
-      })
+      .addCase(
+        updateCompany.fulfilled,
+        (state, action: PayloadAction<Company>) => {
+          state.loading = false;
+          state.company = action.payload;
+        }
+      )
       .addCase(updateCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "Update company failed";
       })
       // ===== CREATE RECEIPT =====
-.addCase(createReceipt.pending, (state) => {
-  state.receiptLoading = true;
-  state.receiptError = null;
-  state.receiptSuccess = false;
-})
-.addCase(createReceipt.fulfilled, (state, action: PayloadAction<Receipt>) => {
-  state.receiptLoading = false;
-  state.receipt = action.payload;
-  state.receiptSuccess = true;
-})
-.addCase(createReceipt.rejected, (state, action) => {
-  state.receiptLoading = false;
-  state.receiptError = (action.payload as string) ?? "Create receipt failed";
-})
+      .addCase(createReceipt.pending, (state) => {
+        state.receiptLoading = true;
+        state.receiptError = null;
+        state.receiptSuccess = false;
+      })
+      .addCase(
+        createReceipt.fulfilled,
+        (state, action: PayloadAction<Receipt>) => {
+          state.receiptLoading = false;
+          state.receipt = action.payload;
+          state.receiptSuccess = true;
+        }
+      )
+      .addCase(createReceipt.rejected, (state, action) => {
+        state.receiptLoading = false;
+        state.receiptError =
+          (action.payload as string) ?? "Create receipt failed";
+      })
 
-// ===== GET RECEIPT =====
-.addCase(getReceipt.pending, (state) => {
-  state.receiptLoading = true;
-  state.receiptError = null;
-})
-.addCase(getReceipt.fulfilled, (state, action: PayloadAction<Receipt>) => {
-  state.receiptLoading = false;
-  state.receipt = action.payload;
-})
-.addCase(getReceipt.rejected, (state, action) => {
-  state.receiptLoading = false;
-  state.receiptError = (action.payload as string) ?? "Get receipt failed";
-})
+      // ===== GET RECEIPT =====
+      .addCase(getReceiptByCompanyId.pending, (state) => {
+        state.receiptLoading = true;
+        state.receiptError = null;
+      })
+      .addCase(
+        getReceiptByCompanyId.fulfilled,
+        (state, action: PayloadAction<Receipt>) => {
+          state.receiptLoading = false;
+          state.receipt = action.payload;
+        }
+      )
+      .addCase(getReceiptByCompanyId.rejected, (state, action) => {
+        state.receiptLoading = false;
+        state.receiptError = (action.payload as string) ?? "Get receipt failed";
+      })
 
-// ===== UPDATE RECEIPT =====
-.addCase(updateReceipt.pending, (state) => {
-  state.receiptLoading = true;
-  state.receiptError = null;
-})
-.addCase(updateReceipt.fulfilled, (state, action: PayloadAction<Receipt>) => {
-  state.receiptLoading = false;
-  state.receipt = action.payload;
-})
-.addCase(updateReceipt.rejected, (state, action) => {
-  state.receiptLoading = false;
-  state.receiptError = (action.payload as string) ?? "Update receipt failed";
-})
-// ===== GET CLOCKING TYPES =====
-.addCase(getClockingTypes.pending, (state) => {
-  state.clockingLoading = true;
-  state.clockingError = null;
-})
-.addCase(getClockingTypes.fulfilled, (state, action: PayloadAction<any[]>) => {
-  state.clockingTypes = action.payload;
-  state.clockingLoading = false;
-})
-.addCase(getClockingTypes.rejected, (state, action) => {
-  state.clockingLoading = false;
-  state.clockingError = (action.payload as string) ?? "Failed to fetch clocking types";
-})
+      // ===== UPDATE RECEIPT =====
+      .addCase(updateReceipt.pending, (state) => {
+        state.receiptLoading = true;
+        state.receiptError = null;
+      })
+      .addCase(
+        updateReceipt.fulfilled,
+        (state, action: PayloadAction<Receipt>) => {
+          state.receiptLoading = false;
+          state.receipt = action.payload;
+        }
+      )
+      .addCase(updateReceipt.rejected, (state, action) => {
+        state.receiptLoading = false;
+        state.receiptError =
+          (action.payload as string) ?? "Update receipt failed";
+      })
+      // ===== GET CLOCKING TYPES =====
+      .addCase(getClockingTypes.pending, (state) => {
+        state.clockingLoading = true;
+        state.clockingError = null;
+      })
+      .addCase(
+        getClockingTypes.fulfilled,
+        (state, action: PayloadAction<any[]>) => {
+          state.clockingTypes = action.payload;
+          state.clockingLoading = false;
+        }
+      )
+      .addCase(getClockingTypes.rejected, (state, action) => {
+        state.clockingLoading = false;
+        state.clockingError =
+          (action.payload as string) ?? "Failed to fetch clocking types";
+      })
 
-// ===== CREATE CLOCKING TYPE =====
-.addCase(createClocking.pending, (state) => {
-  state.clockingLoading = true;
-  state.clockingError = null;
-  state.clockingSuccess = false;
-})
-.addCase(createClocking.fulfilled, (state, action: PayloadAction<any>) => {
-  state.clockingLoading = false;
-  state.clockingSuccess = true;
-  state.clockingTypes.push(action.payload); // Optional: update state immediately
-})
-.addCase(createClocking.rejected, (state, action) => {
-  state.clockingLoading = false;
-  state.clockingError = (action.payload as string) ?? "Failed to create clocking type";
-})
+      // ===== CREATE CLOCKING TYPE =====
+      .addCase(createClocking.pending, (state) => {
+        state.clockingLoading = true;
+        state.clockingError = null;
+        state.clockingSuccess = false;
+      })
+      .addCase(
+        createClocking.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.clockingLoading = false;
+          state.clockingSuccess = true;
+          state.clockingTypes.push(action.payload); // Optional: update state immediately
+        }
+      )
+      .addCase(createClocking.rejected, (state, action) => {
+        state.clockingLoading = false;
+        state.clockingError =
+          (action.payload as string) ?? "Failed to create clocking type";
+      })
 
-// ===== UPDATE CLOCKING TYPE =====
-.addCase(updateClockingType.pending, (state) => {
-  state.clockingLoading = true;
-  state.clockingError = null;
-  state.clockingSuccess = false;
-})
-.addCase(updateClockingType.fulfilled, (state, action: PayloadAction<any>) => {
-  state.clockingLoading = false;
-  state.clockingSuccess = true;
+      // ===== UPDATE CLOCKING TYPE =====
+      .addCase(updateClockingType.pending, (state) => {
+        state.clockingLoading = true;
+        state.clockingError = null;
+        state.clockingSuccess = false;
+      })
+      .addCase(
+        updateClockingType.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.clockingLoading = false;
+          state.clockingSuccess = true;
 
-  const index = state.clockingTypes.findIndex(c => c.id === action.payload.id);
-  if (index !== -1) {
-    state.clockingTypes[index] = action.payload;
-  }
-})
-.addCase(updateClockingType.rejected, (state, action) => {
-  state.clockingLoading = false;
-  state.clockingError = (action.payload as string) ?? "Failed to update clocking type";
-})
+          const index = state.clockingTypes.findIndex(
+            (c) => c.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.clockingTypes[index] = action.payload;
+          }
+        }
+      )
+      .addCase(updateClockingType.rejected, (state, action) => {
+        state.clockingLoading = false;
+        state.clockingError =
+          (action.payload as string) ?? "Failed to update clocking type";
+      })
 
-// ===== DELETE CLOCKING TYPE =====
-.addCase(deleteClockingType.pending, (state) => {
-  state.clockingLoading = true;
-  state.clockingError = null;
-})
-.addCase(deleteClockingType.fulfilled, (state, action: PayloadAction<string>) => {
-  state.clockingLoading = false;
-  state.clockingSuccess = true;
+      // ===== DELETE CLOCKING TYPE =====
+      .addCase(deleteClockingType.pending, (state) => {
+        state.clockingLoading = true;
+        state.clockingError = null;
+      })
+      .addCase(
+        deleteClockingType.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.clockingLoading = false;
+          state.clockingSuccess = true;
 
-  state.clockingTypes = state.clockingTypes.filter(c => c.id !== action.payload);
-})
-.addCase(deleteClockingType.rejected, (state, action) => {
-  state.clockingLoading = false;
-  state.clockingError = (action.payload as string) ?? "Failed to delete clocking type";
-})
+          state.clockingTypes = state.clockingTypes.filter(
+            (c) => c.id !== action.payload
+          );
+        }
+      )
+      .addCase(deleteClockingType.rejected, (state, action) => {
+        state.clockingLoading = false;
+        state.clockingError =
+          (action.payload as string) ?? "Failed to delete clocking type";
+      })
 
- .addCase(getRoles.pending, (state) => {
+      .addCase(getRoles.pending, (state) => {
         state.loading = true;
       })
       .addCase(getRoles.fulfilled, (state, action) => {
@@ -444,11 +497,9 @@ const appSlice = createSlice({
         state.loading = false;
         state.roles = [];
       });
-
-
-
   },
 });
 
-export const { setUserFromLocal, logout, resetSuccess, setError } = appSlice.actions;
+export const { setUserFromLocal, logout, resetSuccess, setError } =
+  appSlice.actions;
 export default appSlice.reducer;

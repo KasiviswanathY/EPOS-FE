@@ -1,43 +1,34 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { apiRoutes } from "../constants/api_routes";
-import axios from 'axios';
-
+import axios from "axios";
 
 export const getClockingTypes = createAsyncThunk(
-  'clocking/getClockingTypes',
+  "clocking/getClockingTypes",
   async ({ token }: any, thunkAPI) => {
-     try {
-       const response = await axios.get(
-         apiRoutes.getClock,
-         {
-           headers: {
-             Authorization: `Bearer ${token}`
-             
-           },
-         }
-       );
-       return response.data;
-     } catch (error: any) {
-       console.error("Backend Error:", error.response?.data || error.message);
-       return thunkAPI.rejectWithValue(error.response?.data);
-     }
-   }
- );
-export const createClocking = createAsyncThunk(
-  'clocking/createClockingType',
-  async ({ payload, token }: any, thunkAPI) => {
-    console.log("clock"+ token);
     try {
-      const response = await axios.post(
-        apiRoutes.createClock,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(apiRoutes.clockingTypes, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Backend Error:", error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
+  }
+);
+export const createClocking = createAsyncThunk(
+  "clocking/createClockingType",
+  async ({ payload, token }: any, thunkAPI) => {
+    console.log("clock" + token);
+    try {
+      const response = await axios.post(apiRoutes.clockingTypes, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       return response.data;
     } catch (error: any) {
       console.error("Backend Error:", error.response?.data || error.message);
@@ -47,11 +38,11 @@ export const createClocking = createAsyncThunk(
 );
 
 export const updateClockingType = createAsyncThunk(
-  'clocking/updateClockingType',
-  async ({id, payload, token }: any, thunkAPI) => {
+  "clocking/updateClockingType",
+  async ({ id, payload, token }: any, thunkAPI) => {
     try {
       const response = await axios.put(
-        apiRoutes.updateClock(id),
+        `${apiRoutes.clockingTypes}/${id}`,
         payload,
         {
           headers: {
@@ -69,8 +60,8 @@ export const updateClockingType = createAsyncThunk(
 );
 
 export const deleteClockingType = createAsyncThunk(
-  'clocking/deleteClockingType',
-   async ({id,  token }: any, thunkAPI) => {
+  "clocking/deleteClockingType",
+  async ({ id, token }: any, thunkAPI) => {
     try {
       const response = await axios.delete(
         apiRoutes.deletClock(id),
@@ -91,7 +82,7 @@ export const deleteClockingType = createAsyncThunk(
 );
 export const getClockingTypeById = createAsyncThunk(
   "clocking/getClockingType",
-  async ({ id,token }: { id: string; token: string }, thunkAPI) => {
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     try {
       const res = await axios.get(
         `https://epos-be.onrender.com/api/v1/clocking-types/${id}`,
@@ -107,4 +98,3 @@ export const getClockingTypeById = createAsyncThunk(
     }
   }
 );
-

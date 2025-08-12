@@ -1,7 +1,7 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { apiRoutes } from '../constants/api_routes';
-import { fetchUsersList } from './getallusersAction';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { apiRoutes } from "../constants/api_routes";
+import { fetchUsersList } from "./getallusersAction";
 
 interface PatchUserPayload {
   id: string;
@@ -18,23 +18,26 @@ interface PatchUserPayload {
 }
 
 export const patchUser = createAsyncThunk(
-  'app/patchUser',
-  async ({ id, updatedData }: PatchUserPayload, { getState, rejectWithValue, dispatch }) => {
+  "app/patchUser",
+  async (
+    { id, updatedData }: PatchUserPayload,
+    { getState, rejectWithValue, dispatch }
+  ) => {
     try {
       const state = getState() as { app: { token: string | null } };
       const token = state.app.token;
 
       if (!token) {
-        return rejectWithValue('Authorization token is missing');
+        return rejectWithValue("Authorization token is missing");
       }
 
       const response = await axios.patch(
-        apiRoutes.updateUser(id),
+        `${apiRoutes.users}/${id}`,
         updatedData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
@@ -48,7 +51,7 @@ export const patchUser = createAsyncThunk(
         err?.response?.data?.message ||
         err?.response?.data?.error ||
         err?.message ||
-        'User update failed';
+        "User update failed";
       return rejectWithValue(errorMsg);
     }
   }
