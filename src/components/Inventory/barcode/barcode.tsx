@@ -1,7 +1,11 @@
 "use client";
 import CommonFooter from "@/core/common/footer/commonFooter";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
-import { PaperSize, Store, WareHouse } from "@/core/common/selectOption/selectOption";
+import {
+  PaperSize,
+  Store,
+  WareHouse,
+} from "@/core/common/selectOption/selectOption";
 /* eslint-disable @next/next/no-img-element */
 
 import CollapesIcon from "@/core/common/tooltip-content/collapes";
@@ -22,6 +26,11 @@ export default function BarcodeComponent() {
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
+  };
+
+  const handleDelete = () => {
+    // Logic for delete action
+    console.log("Item deleted");
   };
   return (
     <>
@@ -142,7 +151,10 @@ export default function BarcodeComponent() {
                         <td>HG3FK</td>
                         <td>
                           <div className="product-quantity border-secondary-transparent">
-                            <span className="quantity-btn" onClick={handleDecrement}>
+                            <span
+                              className="quantity-btn"
+                              onClick={handleDecrement}
+                            >
                               <MinusCircle className="feather-search" />
                             </span>
                             <input
@@ -150,7 +162,10 @@ export default function BarcodeComponent() {
                               className="quntity-input"
                               defaultValue={4}
                             />
-                            <span className="quantity-btn" onClick={handleIncrement}>
+                            <span
+                              className="quantity-btn"
+                              onClick={handleIncrement}
+                            >
                               +
                               <PlusCircle className="plus-circle" />
                             </span>
@@ -188,7 +203,10 @@ export default function BarcodeComponent() {
                         <td>TEUIU7</td>
                         <td>
                           <div className="product-quantity border-secondary-transparent">
-                            <span className="quantity-btn" onClick={handleDecrement}>
+                            <span
+                              className="quantity-btn"
+                              onClick={handleDecrement}
+                            >
                               <MinusCircle className="feather-search" />
                             </span>
                             <input
@@ -196,7 +214,10 @@ export default function BarcodeComponent() {
                               className="quntity-input"
                               defaultValue={4}
                             />
-                            <span className="quantity-btn" onClick={handleIncrement}>
+                            <span
+                              className="quantity-btn"
+                              onClick={handleIncrement}
+                            >
                               +
                               <PlusCircle className="plus-circle" />
                             </span>
@@ -311,7 +332,10 @@ export default function BarcodeComponent() {
                 </span>
                 Generate Barcode
               </Link>
-              <Link href="#" className="btn btn-cancel btn-secondary fs-13 me-2">
+              <Link
+                href="#"
+                className="btn btn-cancel btn-secondary fs-13 me-2"
+              >
                 <span>
                   <i className="fas fa-power-off me-2" />
                 </span>
@@ -434,7 +458,7 @@ export default function BarcodeComponent() {
       </div>
       {/* /Print Barcode */}
 
-      <CommonDeleteModal />
+      <CommonDeleteModal onConfirm={handleDelete} />
     </>
   );
 }

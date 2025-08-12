@@ -6,16 +6,12 @@ export const createReceipt = createAsyncThunk(
   "receipt/createReceipt",
   async ({ payload, token }: any, thunkAPI) => {
     try {
-      const response = await axios.post(
-        apiRoutes.createReceipts,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(apiRoutes.createReceipts, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       return response.data;
     } catch (error: any) {
       console.error("Backend Error:", error.response?.data || error.message);
@@ -27,10 +23,10 @@ export const createReceipt = createAsyncThunk(
 // GET Company
 export const getReceipt = createAsyncThunk(
   "receipt/getReceipt",
-  async ({ id,token }: { id: string; token: string }, thunkAPI) => {
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     try {
       const res = await axios.get(
-        `https://epos-be.onrender.com/api/v1/company-receipts/company/${id}`,
+        `${apiRoutes.companyReceipts}/company/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -47,11 +43,13 @@ export const getReceipt = createAsyncThunk(
 // UPDATE Company
 export const updateReceipt = createAsyncThunk(
   "receipt/updateReceipt",
-  async ({ id, payload, token }: { id: string; payload: any; token: string }, thunkAPI) => {
+  async (
+    { id, payload, token }: { id: string; payload: any; token: string },
+    thunkAPI
+  ) => {
     try {
-      
       const res = await axios.patch(
-        `https://epos-be.onrender.com/api/v1/company-receipts/${id}`,
+        `${apiRoutes.companyReceipts}/${id}`,
         payload,
         {
           headers: {

@@ -5,14 +5,14 @@ import { all_routes } from "@/data/all_routes";
 import Link from "next/link";
 import React, { useState } from "react";
 
-
-export default function SigninTwoComponent () {
+export default function SigninTwoComponent() {
   const route = all_routes;
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prevState) => !prevState);
   };
+
   return (
     <>
       {/* Main Wrapper */}
@@ -21,18 +21,22 @@ export default function SigninTwoComponent () {
           <div className="row login-wrapper m-0">
             <div className="col-lg-6 p-0">
               <div className="login-content">
-                <form >
+                <form>
                   <div className="login-userset">
                     <div className="login-logo logo-normal">
                       <img src="assets/img/logo.png" alt="img" />
                     </div>
-                    <Link href={route.dashboard} className="login-logo logo-white">
+                    <Link
+                      href={route.dashboard}
+                      className="login-logo logo-white"
+                    >
                       <img src="assets/img/logo-white.png" alt="Img" />
                     </Link>
                     <div className="login-userheading">
                       <h3>Sign In</h3>
                       <h4>
-                        Access the Dreamspos panel using your email and passcode.
+                        Access the Dreamspos panel using your email and
+                        passcode.
                       </h4>
                     </div>
                     <div className="mb-3">
@@ -56,8 +60,9 @@ export default function SigninTwoComponent () {
                           className="pass-input form-control"
                         />
                         <span
-                          className={`ti toggle-password ${isPasswordVisible ? "ti-eye" : "ti-eye-off"
-                            }`}
+                          className={`ti toggle-password ${
+                            isPasswordVisible ? "ti-eye" : "ti-eye-off"
+                          }`}
                           onClick={togglePasswordVisibility}
                         ></span>
                       </div>
@@ -74,7 +79,10 @@ export default function SigninTwoComponent () {
                           </div>
                         </div>
                         <div className="col-6 text-end">
-                          <Link className="forgot-link" href={route.forgotPasswordTwo}>
+                          <Link
+                            className="forgot-link"
+                            href={route.forgotPasswordTwo}
+                          >
                             Forgot Password?
                           </Link>
                         </div>
@@ -157,8 +165,5 @@ export default function SigninTwoComponent () {
       </div>
       {/* /Main Wrapper */}
     </>
-
   );
-};
-
-
+}

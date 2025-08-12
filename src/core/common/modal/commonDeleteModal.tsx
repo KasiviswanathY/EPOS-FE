@@ -4,7 +4,7 @@ import React from "react";
 interface Props {
   title?: string;
   description?: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
 }
 
 const CommonDeleteModal: React.FC<Props> = ({
