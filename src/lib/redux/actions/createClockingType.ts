@@ -63,8 +63,8 @@ export const deleteClockingType = createAsyncThunk(
   "clocking/deleteClockingType",
   async ({ id, token }: any, thunkAPI) => {
     try {
-      const response = await axios.delete(
-        apiRoutes.deletClock(id),
+      await axios.delete(
+        `${apiRoutes.clockingTypes}/${id}`,
 
         {
           headers: {
@@ -73,7 +73,7 @@ export const deleteClockingType = createAsyncThunk(
           },
         }
       );
-      return response.data;
+      return id;
     } catch (error: any) {
       console.error("Backend Error:", error.response?.data || error.message);
       return thunkAPI.rejectWithValue(error.response?.data);

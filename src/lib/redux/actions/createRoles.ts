@@ -59,7 +59,7 @@ export const deleteRole = createAsyncThunk(
   "Role/deleteRole",
   async ({ id, token }: any, thunkAPI) => {
     try {
-      const response = axios.delete(
+      await axios.delete(
         `${apiRoutes.roles}/${id}`,
 
         {
@@ -69,7 +69,7 @@ export const deleteRole = createAsyncThunk(
           },
         }
       );
-      return response.data;
+      return id;
     } catch (error: any) {
       console.error("Backend Error:", error.response?.data || error.message);
       return thunkAPI.rejectWithValue(error.response?.data);
