@@ -24,6 +24,12 @@ export const apiRoutes = {
   createLocation: `${BASE_URL}/api/v1/locations`,
   getLocations: `${BASE_URL}/api/v1/locations`,
   updateLocations: (id: string) =>  `${BASE_URL}/api/v1/locations/${id}`,
-  deleteLocations: (id: string) =>  `${BASE_URL}/api/v1/locations/${id}`
+  deleteLocations: (id: string) =>  `${BASE_URL}/api/v1/locations/${id}`,
+
+
+  createStaffs: `${BASE_URL}/api/v1/staff/create`,
+  getStaffs: `${BASE_URL}/api/v1/staff`,
+  updateStaffs:(id: string) =>  `${BASE_URL}/api/v1/staff/${id}`,
+  deleteStaffs:(id: string) =>  `${BASE_URL}/api/v1/staff/${id}`
   
 };

@@ -21,7 +21,7 @@ export default function EmployeesGridComponent  ()  {
         className="form-control me-2"
         style={{ maxWidth: "300px" }}
       />
-      <a href="/addstaff" className="btn btn-sm btn-success"> Add Staff</a>
+      <a href="editstaff" className="btn btn-sm btn-success"> Add Staff</a>
 
     </div>
     <div className="table-responsive">

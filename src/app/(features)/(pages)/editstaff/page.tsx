@@ -72,7 +72,7 @@ export default function EditStaff() {
         <div className="page-header d-flex align-items-center justify-content-between">
           <div>
             <h4>Edit a Member of Staff</h4>
-            <h6 className="text-muted">Update staff details</h6>
+            <h6 className="text-muted">Add staff details</h6>
           </div>
 
           <div className="page-btn">
