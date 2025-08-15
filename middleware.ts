@@ -1,24 +1,26 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("auth-token")?.value; 
-  const pathname = req.nextUrl.pathname;
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get('token')?.value;
 
- 
-  if (!token && pathname !== "/signin") {
-    return NextResponse.redirect(new URL("/signin", req.url));
+  const { pathname } = request.nextUrl;
+
+  // Allow requests to public routes like /signin or static files
+  if (pathname.startsWith('/signin') || pathname.startsWith('/_next') || pathname.startsWith('/favicon.ico')) {
+    return NextResponse.next();
   }
 
-  // If user IS logged in and tries to access /signin → redirect to /
-  if (token && pathname === "/signin") {
-    return NextResponse.redirect(new URL("/", req.url));
+  // If no token → redirect to /signin
+  if (!token) {
+    return NextResponse.redirect(new URL('/signin', request.url));
   }
 
+  // Otherwise → allow
   return NextResponse.next();
 }
 
-// Apply middleware to all pages except static files & API
+// Apply middleware to all routes except static files
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api).*)"],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
