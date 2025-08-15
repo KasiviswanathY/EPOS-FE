@@ -22,6 +22,7 @@ import {
   updateClockingType,
 } from "../actions/createClockingType";
 import { getRoles } from "../actions/createRoles";
+import { getLocations } from "../actions/createLocation";
 
 interface User {
   id: number;
