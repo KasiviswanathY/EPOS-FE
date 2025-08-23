@@ -12,6 +12,7 @@ import { createReceipt, getReceipt, updateReceipt } from "../actions/createRecei
 import { createClocking, deleteClockingType, getClockingTypes, updateClockingType } from '../actions/createClockingType';
 import { getRoles } from '../actions/createRoles';
 import { getLocations } from '../actions/createLocation';
+import { deletStaff, getStaff, updateStaff } from '../actions/createStaff';
 
 
 interface User {
@@ -77,6 +78,14 @@ export interface Locations {
   companyId: string;
 }
 
+interface Staff {
+  id: string | number;
+  name: string;
+  role: string;
+  email?: string;
+  phone?: string;
+  status?: "ACTIVE" | "INACTIVE";
+}
 interface AppState {
   id: string | null;
   user: User | null;
@@ -103,6 +112,10 @@ clockingSuccess: boolean;
 setClockingTypes: any | null;
 roles: Role[];
  Locations:any[];
+ staff: { data: Staff[] };
+ staffLoading: boolean;    // loading state
+  staffError: string | null;// error state
+  staffSuccess: boolean;
 
 }
 
@@ -161,7 +174,12 @@ const initialState: AppState = {
   clockingSuccess: false,
   setClockingTypes: undefined,
   roles: [],
-  Locations: []
+  Locations: [],
+staff: { data: [] },
+  staffLoading: false,
+  staffError: null,
+  staffSuccess: false,
+ 
 };
 
 const appSlice = createSlice({
@@ -198,9 +216,24 @@ const appSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    addStaffLocal: (state, action: PayloadAction<Staff>) => {
+  state.staff.data.push(action.payload);
+},
+updateStaffLocal: (state, action: PayloadAction<Staff>) => {
+  state.staff.data = state.staff.data.map(s =>
+    s.id === action.payload.id ? action.payload : s
+  );
+},
+deleteStaffLocal: (state, action: PayloadAction<string | number>) => {
+  state.staff.data = state.staff.data.filter(s => s.id !== action.payload);
+},
  
 
   },
+
+
+
+
   extraReducers: (builder) => {
     builder
 
@@ -484,7 +517,32 @@ const appSlice = createSlice({
       .addCase(getLocations.rejected, (state) => {
         state.loading = false;
         state.Locations = [];
-      });
+      })
+       .addCase(getStaff.pending, (state) => {
+    state.staffLoading = true;
+    state.staffError = null;
+  })
+  .addCase(getStaff.fulfilled, (state, action) => {
+    state.staffLoading = false;
+    state.staff = action.payload;   
+  })
+  .addCase(getStaff.rejected, (state, action) => {
+    state.staffLoading = false;
+    state.staffError = action.payload as string;
+  });
+
+  // === Update Staff ===
+  // .addCase(updateStaff.fulfilled, (state, action) => {
+  //   state.staff = state.staff.map((s) =>
+  //     s.id === action.payload.id ? action.payload : s
+  //   );
+  // })
+
+  // // === Delete Staff ===
+  // .addCase(deletStaff.fulfilled, (state, action) => {
+  //   state.staff = state.staff.filter((s) => s.id !== action.meta.arg.id);
+  // });
+      
 
   },
 });
