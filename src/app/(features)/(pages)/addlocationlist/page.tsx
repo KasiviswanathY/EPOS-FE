@@ -6,9 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { useRouter } from "next/navigation";
 import { createLocations } from "@/lib/redux/actions/createLocation";
-import { getCompany } from "@/lib/redux/actions/createCompany";
+
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import {
+  getAllCompanies,
+  getCompany,
+} from "@/lib/redux/actions/companiesActions";
+import { updateCompanyState } from "@/lib/redux/slices/companySlice";
 
 interface Country {
   name: string;
@@ -63,7 +68,9 @@ export default function AddLocationPage() {
   // Fetch company info if missing
   useEffect(() => {
     if (!company && token) {
-      dispatch(getCompany({ token }));
+      dispatch(getAllCompanies()).then((res) => {
+        dispatch(updateCompanyState(res.payload[0]));
+      });
     }
   }, [dispatch, token, company]);
 
@@ -151,10 +158,7 @@ export default function AddLocationPage() {
             <Link href="/locationslist" className="btn btn-light me-2">
               Cancel
             </Link>
-            <button
-              className="btn btn-dark"
-              onClick={handleSubmit(onSubmit)}
-            >
+            <button className="btn btn-dark" onClick={handleSubmit(onSubmit)}>
               Save
             </button>
           </div>
@@ -192,11 +196,18 @@ export default function AddLocationPage() {
               </div>
               <div className="col-md-6">
                 <label className="form-label">Description</label>
-                <input type="text" className="form-control" {...register("description")} />
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("description")}
+                />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Country *</label>
-                <select className="form-select" {...register("country", { required: true })}>
+                <select
+                  className="form-select"
+                  {...register("country", { required: true })}
+                >
                   {countries.map((c) => (
                     <option key={c.iso2} value={c.name}>
                       {c.name}
@@ -209,12 +220,18 @@ export default function AddLocationPage() {
                 <input
                   type="text"
                   className="form-control"
-                  {...register("addressLine1", { required: "Address is required" })}
+                  {...register("addressLine1", {
+                    required: "Address is required",
+                  })}
                 />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Address Line 2</label>
-                <input type="text" className="form-control" {...register("addressLine2")} />
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("addressLine2")}
+                />
               </div>
               <div className="col-md-4">
                 <label className="form-label">City *</label>
@@ -226,7 +243,10 @@ export default function AddLocationPage() {
               </div>
               <div className="col-md-4">
                 <label className="form-label">County / Region *</label>
-                <select className="form-select" {...register("region", { required: true })}>
+                <select
+                  className="form-select"
+                  {...register("region", { required: true })}
+                >
                   {states.map((s, idx) => (
                     <option key={idx} value={s.name}>
                       {s.name}
@@ -251,11 +271,20 @@ export default function AddLocationPage() {
             <div className="card-body row g-3">
               <div className="col-md-6">
                 <label className="form-label">Email Address</label>
-                <input type="email" className="form-control" {...register("email")} />
+                <input
+                  type="email"
+                  className="form-control"
+                  {...register("email")}
+                />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Phone Number</label>
-                <input type="text" className="form-control" {...register("phone")} placeholder="+91" />
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("phone")}
+                  placeholder="+91"
+                />
               </div>
             </div>
           </div>
