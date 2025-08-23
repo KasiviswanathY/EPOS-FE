@@ -18,6 +18,7 @@ import {
 } from "../actions/createClockingType";
 import { getRoles } from "../actions/createRoles";
 import { Company } from "../../../core/interfaces/Company";
+import { getLocations } from "../actions/createLocation";
 
 interface User {
   id: number;
@@ -50,6 +51,22 @@ interface Role {
   permissions: string[];
 }
 
+export interface Locations {
+  id: string; // Assuming each location has a unique ID
+  name: string;
+  address: string;
+  city: string;
+  country: string;
+  pincode: string;
+  description: string;
+  status: "ACTIVE" | "INACTIVE"; // Enum-like restriction
+  email: string;
+  phone: string;
+  language: string;
+  timeZone: string;
+  companyId: string;
+}
+
 interface AppState {
   id: string | null;
   user: User | null;
@@ -75,6 +92,7 @@ interface AppState {
   clockingSuccess: boolean;
   setClockingTypes: any | null;
   roles: Role[];
+  Locations: any[];
 }
 
 // --- Helpers to load from localStorage safely ---
@@ -132,6 +150,7 @@ const initialState: AppState = {
   clockingSuccess: false,
   setClockingTypes: undefined,
   roles: [],
+  Locations: [],
 };
 
 const appSlice = createSlice({
@@ -155,6 +174,16 @@ const appSlice = createSlice({
     },
     resetSuccess: (state) => {
       state.success = false;
+    },
+    updateLocationSuccess: (state, action) => {
+      state.Locations = state.Locations.map((loc) =>
+        loc.id === action.payload.id ? action.payload : loc
+      );
+    },
+    deleteLocationSuccess: (state, action) => {
+      state.Locations = state.Locations.filter(
+        (loc) => loc.id !== action.payload
+      );
     },
 
     setError: (state, action: PayloadAction<string | null>) => {
@@ -392,7 +421,7 @@ const appSlice = createSlice({
         state.clockingError =
           (action.payload as string) ?? "Failed to delete clocking type";
       })
-
+      ///roles
       .addCase(getRoles.pending, (state) => {
         state.loading = true;
       })
@@ -403,9 +432,24 @@ const appSlice = createSlice({
       .addCase(getRoles.rejected, (state) => {
         state.loading = false;
         state.roles = [];
+      })
+      ////locations
+      .addCase(getLocations.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getLocations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Locations = action.payload;
+      })
+      .addCase(getLocations.rejected, (state) => {
+        state.loading = false;
+        state.Locations = [];
       });
   },
 });
+
+export const { updateLocationSuccess, deleteLocationSuccess } =
+  appSlice.actions;
 
 export const { setUserFromLocal, logout, resetSuccess, setError } =
   appSlice.actions;

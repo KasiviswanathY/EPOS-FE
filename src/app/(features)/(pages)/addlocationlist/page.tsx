@@ -1,26 +1,145 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { useRouter } from "next/navigation";
+import { createLocations } from "@/lib/redux/actions/createLocation";
+import { getCompany } from "@/lib/redux/actions/createCompany";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+
+interface Country {
+  name: string;
+  iso2: string;
+}
+
+interface State {
+  name: string;
+}
+
+interface LocationFormValues {
+  name: string;
+  description: string;
+  country: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  region: string;
+  zipCode: string;
+  email?: string;
+  phone?: string;
+  language: string;
+  timezone: string;
+}
 
 export default function AddLocationPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    country: "United States",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    region: "Alabama",
-    zipCode: "",
-    email: "",
-    phone: "",
-    language: "English (US)",
-    timezone: "Default",
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+
+  const company = useSelector((state: RootState) => state.app.company);
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [states, setStates] = useState<State[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<LocationFormValues>({
+    defaultValues: {
+      language: "English (US)",
+      timezone: "Default",
+    },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const selectedCountry = watch("country");
+
+  // Fetch company info if missing
+  useEffect(() => {
+    if (!company && token) {
+      dispatch(getCompany({ token }));
+    }
+  }, [dispatch, token, company]);
+
+  // Fetch countries
+  useEffect(() => {
+    async function fetchCountries() {
+      try {
+        const res = await axios.get(
+          "https://countriesnow.space/api/v0.1/countries/positions"
+        );
+        if (res.data?.data) {
+          const countryList = res.data.data.map((c: any) => ({
+            name: c.name,
+            iso2: c.iso2,
+          }));
+          setCountries(countryList);
+          if (countryList.length > 0) {
+            setValue("country", countryList[0].name);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching countries:", err);
+      }
+    }
+    fetchCountries();
+  }, [setValue]);
+
+  // Fetch states when country changes
+  useEffect(() => {
+    async function fetchStates() {
+      if (!selectedCountry) return;
+      try {
+        const res = await axios.post(
+          "https://countriesnow.space/api/v0.1/countries/states",
+          { country: selectedCountry }
+        );
+        if (res.data?.data?.states) {
+          setStates(res.data.data.states);
+          if (res.data.data.states.length > 0) {
+            setValue("region", res.data.data.states[0].name);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching states:", err);
+      }
+    }
+    fetchStates();
+  }, [selectedCountry, setValue]);
+
+  const onSubmit = async (data: LocationFormValues) => {
+    if (!token || !company) {
+      alert("Missing authentication or company information.");
+      return;
+    }
+
+    const payload = {
+      name: data.name,
+      address: `${data.addressLine1} ${data.addressLine2 || ""}`.trim(),
+      city: data.city,
+      country: data.country,
+      pincode: data.zipCode,
+      description: data.description,
+      status: "ACTIVE",
+      email: data.email,
+      phone: data.phone,
+      language: data.language,
+      timeZone: data.timezone,
+      companyId: company.id,
+    };
+
+    try {
+      await dispatch(createLocations({ payload, token })).unwrap();
+      router.push("/locationslist");
+    } catch (err) {
+      console.error("Error creating location:", err);
+    }
   };
 
   return (
@@ -32,104 +151,148 @@ export default function AddLocationPage() {
             <Link href="/locationslist" className="btn btn-light me-2">
               Cancel
             </Link>
-            <button className="btn btn-dark">Save</button>
+            <button
+              className="btn btn-dark"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Save
+            </button>
           </div>
         </div>
+
+        {/* Info Banner */}
         <div className="alert alert-primary d-flex justify-content-between align-items-center">
           <div>
-            <strong>Add a billable location</strong><br />
-            You've reached your limit of 1 of 1 billable locations. Contact support to add more.
+            <strong>Add a billable location</strong>
+            <br />
+            You've reached your limit of 1 of 1 billable locations. Contact
+            support to add more.
           </div>
           <div>
             <button className="btn btn-link">Dismiss</button>
             <button className="btn btn-link">Support</button>
           </div>
         </div>
-        <div className="card mb-4">
-          <div className="card-header fw-bold">Address</div>
-          <div className="card-body row g-3">
-            <div className="col-md-6">
-              <label className="form-label">Name *</label>
-              <input type="text" name="name" className="form-control" onChange={handleChange} />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Description</label>
-              <input type="text" name="description" className="form-control" onChange={handleChange} />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Country *</label>
-              <select name="country" className="form-select" onChange={handleChange} value={formData.country}>
-                <option>United States</option>
-                <option>India</option>
-                <option>UK</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Address Line 1 *</label>
-              <input type="text" name="addressLine1" className="form-control" onChange={handleChange} />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Address Line 2</label>
-              <input type="text" name="addressLine2" className="form-control" onChange={handleChange} />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">City *</label>
-              <input type="text" name="city" className="form-control" onChange={handleChange} />
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">County / Region *</label>
-              <select name="region" className="form-select" onChange={handleChange} value={formData.region}>
-                <option>Alabama</option>
-                <option>California</option>
-                <option>Karnataka</option>
-              </select>
-            </div>
-            <div className="col-md-4">
-              <label className="form-label">Postcode / Zip Code *</label>
-              <input type="text" name="zipCode" className="form-control" onChange={handleChange} />
-            </div>
-          </div>
-        </div>
-        <div className="card mb-4">
-          <div className="card-header fw-bold">Contact Information</div>
-          <div className="card-body row g-3">
-            <div className="col-md-6">
-              <label className="form-label">Email Address</label>
-              <input type="email" name="email" className="form-control" onChange={handleChange} />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Phone Number</label>
-              <input type="text" name="phone" className="form-control" onChange={handleChange} placeholder="+91" />
-            </div>
-          </div>
-        </div>
-        <div className="card mb-4">
-          <div className="card-header fw-bold">Locale</div>
-          <div className="card-body row g-3">
-            <div className="col-md-6">
-              <label className="form-label">Language</label>
-              <select name="language" className="form-select" onChange={handleChange} value={formData.language}>
-                <option>English (US)</option>
-                <option>English (UK)</option>
-                <option>Hindi</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Time Zone</label>
-              <select name="timezone" className="form-select" onChange={handleChange} value={formData.timezone}>
-                <option>Default</option>
-                <option>Asia/Kolkata</option>
-                <option>America/New_York</option>
-              </select>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Address Section */}
+          <div className="card mb-4">
+            <div className="card-header fw-bold">Address</div>
+            <div className="card-body row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Name *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("name", { required: "Name is required" })}
+                />
+                {errors.name && (
+                  <small className="text-danger">{errors.name.message}</small>
+                )}
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Description</label>
+                <input type="text" className="form-control" {...register("description")} />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Country *</label>
+                <select className="form-select" {...register("country", { required: true })}>
+                  {countries.map((c) => (
+                    <option key={c.iso2} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Address Line 1 *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("addressLine1", { required: "Address is required" })}
+                />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Address Line 2</label>
+                <input type="text" className="form-control" {...register("addressLine2")} />
+              </div>
+              <div className="col-md-4">
+                <label className="form-label">City *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("city", { required: "City is required" })}
+                />
+              </div>
+              <div className="col-md-4">
+                <label className="form-label">County / Region *</label>
+                <select className="form-select" {...register("region", { required: true })}>
+                  {states.map((s, idx) => (
+                    <option key={idx} value={s.name}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-4">
+                <label className="form-label">Postcode / Zip Code *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("zipCode", { required: "Zip code is required" })}
+                />
+              </div>
             </div>
           </div>
-        </div>
- <div className="d-flex justify-content-end mb-5">
-          <Link href="/locationslist" className="btn btn-light me-2">
-            Cancel
-          </Link>
-          <button className="btn btn-dark">Save</button>
-        </div>
+
+          {/* Contact Section */}
+          <div className="card mb-4">
+            <div className="card-header fw-bold">Contact Information</div>
+            <div className="card-body row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Email Address</label>
+                <input type="email" className="form-control" {...register("email")} />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Phone Number</label>
+                <input type="text" className="form-control" {...register("phone")} placeholder="+91" />
+              </div>
+            </div>
+          </div>
+
+          {/* Locale Section */}
+          <div className="card mb-4">
+            <div className="card-header fw-bold">Locale</div>
+            <div className="card-body row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Language</label>
+                <select className="form-select" {...register("language")}>
+                  <option>English (US)</option>
+                  <option>English (UK)</option>
+                  <option>Hindi</option>
+                </select>
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Time Zone</label>
+                <select className="form-select" {...register("timezone")}>
+                  <option>Default</option>
+                  <option>Asia/Kolkata</option>
+                  <option>America/New_York</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Save Buttons */}
+          <div className="d-flex justify-content-end mb-5">
+            <Link href="/locationslist" className="btn btn-light me-2">
+              Cancel
+            </Link>
+            <button type="submit" className="btn btn-dark">
+              Save
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
