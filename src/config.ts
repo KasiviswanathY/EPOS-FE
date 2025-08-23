@@ -1,3 +1,4 @@
 export const config = {
-  API_URL: process.env.API_URL || "http://localhost:5000/api/v1",
+  API_URL: process.env.API_URL || "https://epos-be.onrender.com/api/v1",
+  BASEPATH: process.env.BASEPATH || "/",
 };

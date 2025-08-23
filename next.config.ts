@@ -1,19 +1,9 @@
+// next.config.js
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Set the basePath to /nextjs */
-  basePath: process.env.BASEPATH,
-
-  redirects: async () => {
-    return [
-      {
-        source: "/",
-        destination: "/signin", // Include the basePath in the destination
-        permanent: true,
-        locale: false,
-      },
-    ];
-  },
+  /* Set the basePath - only use if deploying to a subdirectory */
+  basePath: process.env.BASEPATH || "", // Default to empty for local dev
 
   eslint: {
     ignoreDuringBuilds: true,
