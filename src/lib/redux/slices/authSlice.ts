@@ -1,15 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loginUser } from "../actions/loginAction";
+
 import { createUser } from "../actions/createUserAction";
 import { fetchUsersList } from "../actions/getallusersAction";
 import { patchUser } from "@/lib/redux/actions/updateAction";
 import { deleteUser } from "../actions/deleteUserAction";
 
-import {
-  createCompany,
-  getCompany,
-  updateCompany,
-} from "../actions/createCompany";
 import {
   createReceipt,
   getReceiptByCompanyId,
@@ -22,6 +17,7 @@ import {
   updateClockingType,
 } from "../actions/createClockingType";
 import { getRoles } from "../actions/createRoles";
+import { Company } from "../../../core/interfaces/Company";
 
 interface User {
   id: number;
@@ -35,21 +31,6 @@ interface User {
   description?: string;
 }
 
-interface Company {
-  id: string;
-  name: string;
-  taxNumber: string;
-  customCurrency: string;
-  language: string;
-  updateCostPriceOnMasterUpdate: boolean;
-  explicitConsent: boolean;
-  eraseCustomerData: boolean;
-  runReportsOnPageLoad: boolean;
-  showIncExTaxOption: boolean;
-  maxNoOfDevices: number;
-  maxNoOfLocations: number;
-  showInstructionsOnStartup: boolean;
-}
 interface Receipt {
   id: string;
   companyId: string;
@@ -182,28 +163,6 @@ const appSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
-        const { token, user } = action.payload;
-        state.token = token;
-        state.user = user;
-        state.isLoggedIn = true;
-        state.loading = false;
-
-        if (typeof window !== "undefined") {
-          localStorage.setItem("authToken", token);
-          localStorage.setItem("user", JSON.stringify(user));
-        }
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = (action.payload as string) ?? "Login failed";
-      })
-
       // ===== CREATE USER =====
       .addCase(createUser.pending, (state) => {
         state.loadingCreate = true;
@@ -294,58 +253,6 @@ const appSlice = createSlice({
         state.error = (action.payload as string) ?? null;
       })
 
-      // ===== CREATE COMPANY =====
-      .addCase(createCompany.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.success = false;
-      })
-      .addCase(
-        createCompany.fulfilled,
-        (state, action: PayloadAction<Company>) => {
-          state.loading = false;
-          state.success = true;
-          state.company = action.payload;
-        }
-      )
-      .addCase(createCompany.rejected, (state, action) => {
-        state.loading = false;
-        state.error = (action.payload as string) ?? "Create company failed";
-      })
-
-      // ===== GET COMPANY =====
-      .addCase(getCompany.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getCompany.fulfilled,
-        (state, action: PayloadAction<Company>) => {
-          state.loading = false;
-          state.company = action.payload;
-        }
-      )
-      .addCase(getCompany.rejected, (state, action) => {
-        state.loading = false;
-        state.error = (action.payload as string) ?? "Get company failed";
-      })
-
-      // ===== UPDATE COMPANY =====
-      .addCase(updateCompany.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        updateCompany.fulfilled,
-        (state, action: PayloadAction<Company>) => {
-          state.loading = false;
-          state.company = action.payload;
-        }
-      )
-      .addCase(updateCompany.rejected, (state, action) => {
-        state.loading = false;
-        state.error = (action.payload as string) ?? "Update company failed";
-      })
       // ===== CREATE RECEIPT =====
       .addCase(createReceipt.pending, (state) => {
         state.receiptLoading = true;

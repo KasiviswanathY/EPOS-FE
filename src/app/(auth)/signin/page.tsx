@@ -1,37 +1,24 @@
 "use client";
-{/* eslint-disable-next-line @next/next/no-img-element */}
+
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { all_routes } from "../../../data/all_routes";
-import { useRouter } from "next/navigation";
-import { loginUser } from "@/lib/redux/actions/loginAction"; // Your action
+
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AppDispatch, RootState } from "@/lib/redux/store";
-import { useDispatch, useSelector } from "react-redux";
 
+import axios from "axios";
 
-export default function Login() {
-  const isLoggedIn = useSelector((state: RootState) => state.app.isLoggedIn);
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.replace("/signin"); // 👈 replace prevents back navigation
-    }
-  }, [isLoggedIn]);
-
-  const router = useRouter();
-  const route = all_routes;
-  const dispatch = useDispatch<AppDispatch>();
 type LoginFormInputs = {
   email: string;
   password: string;
 };
 
-  const {
-  register,
-  handleSubmit,
-  formState: { errors },
-} = useForm<LoginFormInputs>();
+export default function Login() {
+  const route = all_routes;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { register, handleSubmit } = useForm<LoginFormInputs>();
 
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
@@ -39,19 +26,28 @@ type LoginFormInputs = {
     setPasswordVisible((prevState) => !prevState);
   };
 
-  const { token, loading, error } = useSelector(
-    (state: RootState) => state.app // make sure auth is added in reducer
-  );
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    setLoading(true);
+    setError(null);
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-  dispatch(loginUser(data));
-};
+    try {
+      const response = await axios.post("/api/login", data);
 
-  useEffect(() => {
-    if (token) {
-      router.push(route.newdashboard); // Redirect after successful login
+      if (response.status === 200) {
+        window.location.href = "/dashboard";
+        return;
+      }
+
+      if (response.status !== 200) {
+        setError(response.data.message || "Login failed");
+      }
+    } catch (err: Error | unknown) {
+      console.error("Login error:", err);
+      setError((err as Error).message || "Login failed");
+    } finally {
+      setLoading(false);
     }
-  }, [token]);
+  };
 
   return (
     <div className="main-wrapper">
@@ -103,11 +99,14 @@ type LoginFormInputs = {
                     <input
                       type={isPasswordVisible ? "text" : "password"}
                       className="pass-input form-control"
-                      {...register("password", { required: "Password is required" })}
+                      {...register("password", {
+                        required: "Password is required",
+                      })}
                     />
                     <span
-                      className={`text-gray-9 ti toggle-password ${isPasswordVisible ? "ti-eye" : "ti-eye-off"
-                        }`}
+                      className={`text-gray-9 ti toggle-password ${
+                        isPasswordVisible ? "ti-eye" : "ti-eye-off"
+                      }`}
                       onClick={togglePasswordVisibility}
                     />
                   </div>
@@ -116,7 +115,11 @@ type LoginFormInputs = {
                 {error && <p className="text-danger">{error}</p>}
 
                 <div className="form-login">
-                  <button type="submit" className="btn btn-login" disabled={loading}>
+                  <button
+                    type="submit"
+                    className="btn btn-login"
+                    disabled={loading}
+                  >
                     {loading ? "Signing In..." : "Sign In"}
                   </button>
                 </div>

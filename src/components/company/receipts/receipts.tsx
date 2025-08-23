@@ -9,8 +9,9 @@ import {
   getReceiptByCompanyId,
   updateReceipt,
 } from "@/lib/redux/actions/createReceiptsAction";
-import { getCompany } from "@/lib/redux/actions/createCompany";
+
 import { useRouter } from "next/navigation";
+import { getCompany } from "@/lib/redux/actions/companiesActions";
 
 type ReceiptFormValues = {
   name: string;
@@ -64,7 +65,7 @@ export default function ReceiptsComponent() {
   // Fetch company details if not already in Redux
   useEffect(() => {
     if (!company && token) {
-      dispatch(getCompany({ token }));
+      dispatch(getCompany());
     }
   }, [dispatch, token, company]);
 
