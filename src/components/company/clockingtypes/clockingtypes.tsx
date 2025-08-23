@@ -3,20 +3,19 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import {
-  createClocking,
-  getClockingTypes,
+  createClockingType,
+  getAllClockingTypes,
   updateClockingType,
   deleteClockingType,
-} from "@/lib/redux/actions/createClockingType";
+} from "@/lib/redux/actions/clockingTypesActions";
+import { ClockingType } from "@/core/interfaces/ClockingType";
+import { getErrorMessage } from "@/core/utils";
 
 export default function ClockingTypes() {
   const dispatch = useDispatch<AppDispatch>();
   const { clockingTypes, loading, error } = useSelector(
-    (state: RootState) => state.app
+    (state: RootState) => state.clockingTypes
   );
-
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
   const [newName, setNewName] = useState("");
   const [newMultiplier, setNewMultiplier] = useState("");
@@ -33,47 +32,46 @@ export default function ClockingTypes() {
 
   // Load clocking types on page load
   useEffect(() => {
-    if (token) {
-      dispatch(getClockingTypes({ token }));
-    }
-  }, [dispatch, token]);
+    dispatch(getAllClockingTypes());
+  }, [dispatch]);
 
   const handleAdd = () => {
     if (!newName.trim()) return;
-    const payload = {
+    const payload: Partial<ClockingType> = {
       name: newName,
       payMultiplier: parseInt(newMultiplier, 10),
+      isActive: true,
     };
-    dispatch(createClocking({ token, payload }))
+    dispatch(createClockingType(payload))
       .unwrap()
       .then(() => {
         setNewName("");
         setNewMultiplier("");
-        dispatch(getClockingTypes({ token }));
+        dispatch(getAllClockingTypes());
       })
       .catch((err) => {
         console.error("Error adding clocking type:", err);
       });
   };
 
-  const handleEditClick = (item: any) => {
+  const handleEditClick = (item: ClockingType) => {
     setSelectedId(item.id);
     setEditName(item.name);
-    setEditMultiplier(item.payMultiplier.toString());
+    setEditMultiplier((item.payMultiplier || 0).toString());
     setShowEditModal(true);
   };
 
   const handleSaveEdit = () => {
     if (!selectedId) return;
-    const payload = {
+    const data: Partial<ClockingType> = {
       name: editName,
       payMultiplier: parseInt(editMultiplier, 10),
     };
-    dispatch(updateClockingType({ id: selectedId, token, payload }))
+    dispatch(updateClockingType({ id: selectedId, data }))
       .unwrap()
       .then(() => {
         setShowEditModal(false);
-        dispatch(getClockingTypes({ token }));
+        dispatch(getAllClockingTypes());
       })
       .catch((err) => console.error("Error updating:", err));
   };
@@ -85,11 +83,11 @@ export default function ClockingTypes() {
 
   const handleConfirmDelete = () => {
     if (!selectedId) return;
-    dispatch(deleteClockingType({ id: selectedId, token }))
+    dispatch(deleteClockingType(selectedId))
       .unwrap()
       .then(() => {
         setShowDeleteModal(false);
-        dispatch(getClockingTypes({ token }));
+        dispatch(getAllClockingTypes());
       })
       .catch((err) => console.error("Error deleting:", err));
   };
@@ -105,6 +103,11 @@ export default function ClockingTypes() {
         <div className="card mb-4">
           <div className="card-header fw-semibold">Clocking Types</div>
           <div className="card-body">
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                <strong>Error:</strong> {getErrorMessage(error)}
+              </div>
+            )}
             <h6 className="mb-3">Add Clocking Type</h6>
             <div className="row mb-3 align-items-center">
               <label className="col-sm-2 col-form-label text-end">Name:</label>
@@ -165,7 +168,6 @@ export default function ClockingTypes() {
         {/* Table */}
         <div className="card">
           <div className="card-body p-0">
-            {error && <p className="text-danger p-3">{error}</p>}
             <table className="table mb-0">
               <thead className="table-light">
                 <tr>
@@ -181,33 +183,58 @@ export default function ClockingTypes() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((item, index) => (
-                  <tr key={index}>
-                    <td className="text-center align-middle">{item.name}</td>
-                    <td className="text-center align-middle">
-                      {parseFloat(item.payMultiplier).toFixed(2)}
-                    </td>
-                    <td className="text-end align-middle">
-                      <div className="d-flex justify-content-end gap-2">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
-                          onClick={() => handleEditClick(item)}
-                        >
-                          EDIT
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => handleDeleteClick(item.id)}
-                        >
-                          X
-                        </button>
+                {loading ? (
+                  <tr>
+                    <td colSpan={3} className="text-center p-4">
+                      <div
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      >
+                        <span className="visually-hidden">Loading...</span>
                       </div>
+                      Loading clocking types...
                     </td>
                   </tr>
-                ))}
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="text-center p-4 text-muted">
+                      {clockingTypes.length === 0
+                        ? "No clocking types found. Add one above."
+                        : "No clocking types match your search."}
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((item, index) => (
+                    <tr key={item.id || index}>
+                      <td className="text-center align-middle">{item.name}</td>
+                      <td className="text-center align-middle">
+                        {item.payMultiplier
+                          ? parseFloat(item.payMultiplier.toString()).toFixed(2)
+                          : "0.00"}
+                      </td>
+                      <td className="text-end align-middle">
+                        <div className="d-flex justify-content-end gap-2">
+                          <button
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => handleEditClick(item)}
+                            disabled={loading}
+                          >
+                            EDIT
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => handleDeleteClick(item.id)}
+                            disabled={loading}
+                          >
+                            X
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
-            {loading && <p className="p-3">Loading...</p>}
           </div>
         </div>
       </div>
@@ -248,11 +275,16 @@ export default function ClockingTypes() {
                 <button
                   className="btn btn-secondary"
                   onClick={() => setShowEditModal(false)}
+                  disabled={loading}
                 >
                   Cancel
                 </button>
-                <button className="btn btn-primary" onClick={handleSaveEdit}>
-                  Save
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSaveEdit}
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>
@@ -280,14 +312,16 @@ export default function ClockingTypes() {
                 <button
                   className="btn btn-secondary"
                   onClick={() => setShowDeleteModal(false)}
+                  disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   className="btn btn-danger"
                   onClick={handleConfirmDelete}
+                  disabled={loading}
                 >
-                  Delete
+                  {loading ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>

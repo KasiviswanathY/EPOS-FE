@@ -13,6 +13,7 @@ import {
   getAllCompanies,
   updateCompany,
 } from "@/lib/redux/actions/companiesActions";
+import { getErrorMessage } from "@/core/utils";
 
 export default function CompanySettings() {
   const dispatch = useDispatch<AppDispatch>();
@@ -106,7 +107,7 @@ export default function CompanySettings() {
               </div>
             ) : company.error ? (
               <div className="alert alert-danger" role="alert">
-                <strong>Error:</strong> {company.error}
+                <strong>Error:</strong> {getErrorMessage(company.error)}
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)}>
