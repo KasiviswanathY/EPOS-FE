@@ -63,11 +63,11 @@ export default function ReceiptsComponent() {
   }, [reduxToken]);
 
   // Fetch company details if not already in Redux
-  useEffect(() => {
-    if (!company && token) {
-      dispatch(getCompany());
-    }
-  }, [dispatch, token, company]);
+  // useEffect(() => {
+  //   if (!company && token) {
+  //     dispatch(getCompany());
+  //   }
+  // }, [dispatch, token, company]);
 
   // Load receipt data if company ID exists
   useEffect(() => {
