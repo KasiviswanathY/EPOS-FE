@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { PlusCircle } from 'feather-icons-react';
+import { PlusCircle, User } from 'feather-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
@@ -9,21 +9,24 @@ import { AppDispatch, RootState } from '@/lib/redux/store';
 import { createUser } from '@/lib/redux/actions/createUserAction';
 import { resetSuccess } from '@/lib/redux/slices/authSlice';
 
+
 const AddUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const success = useSelector((state: RootState) => state.app.success);
+  const success = useSelector((state: RootState) => state.user.success);
 
   const [showPassword, setShowPassword] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState<{ value: string; label: string } | null>(null);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'warning' } | null>(null);
-
+  const user= useSelector((state: RootState) => state.user);
   const {
     register,
+     setValue,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
-
+  } = useForm<User>({
+      defaultValues: user.user || {},
+    });
   const permissionOptions = [
     { value: 'USER_RIGHTS', label: 'User Rights' },
     { value: 'PRODUCT_RIGHTS', label: 'Product Rights' },
@@ -37,12 +40,19 @@ const AddUsers = () => {
     setTimeout(() => setMessage(null), 3000);
   };
 
-  const onSubmit = (data: any) => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      showMessage('Token not found!', 'error');
-      return;
-    }
+   useEffect(() => {
+      if (user.user) {
+        Object.keys(user.user).forEach((key) => {
+          const value = user.user![key as keyof User];
+          if (value !== null && value !== undefined) {
+            setValue(key as keyof User, value);
+          }
+        });
+      }
+    }, [user.user, setValue]);
+
+  const onSubmit = (data: User) => {
+    
 
     if (!selectedPermission) {
       showMessage('Please select a permission.', 'warning');
@@ -52,13 +62,14 @@ const AddUsers = () => {
     const userPayload = {
       username: data.username,
       email: data.email,
-      password: data.password,
       status: data.status,
       permissions: [selectedPermission.value],
+      description: data.description,
+      password: data.password,
     };
 
-    dispatch(createUser({ payload: userPayload, token }));
-  };
+    
+    dispatch(createUser(userPayload));
 
   useEffect(() => {
   if (success) {
@@ -223,5 +234,5 @@ const AddUsers = () => {
     </div>
   );
 };
-
+}
 export default AddUsers;

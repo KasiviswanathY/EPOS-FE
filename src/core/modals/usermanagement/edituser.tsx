@@ -1,263 +1,173 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/redux/store";
-import { patchUser } from "@/lib/redux/actions/updateAction";
-import { resetSuccess } from "@/lib/redux/slices/authSlice"; // <-- Make sure this exists
 
-const roleOptions = [
-  { value: "Choose", label: "Choose" },
-  { value: "Manager", label: "Manager" },
-  { value: "Admin", label: "Admin" },
-];
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
-const permissionOptions = [
-  { value: "USER_RIGHTS", label: "User Rights" },
-  { value: "PRODUCT_RIGHTS", label: "Product Rights" },
-  { value: "SALES_RIGHTS", label: "Sales Rights" },
-];
-
-interface EditUserProps {
-  user: any;
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  username?: string;
+  phone?: string;
+  role?: string;
+  createdon?: string;
+  status?: string;
+  description?: string;
+  password?: string;
+  permissions?: string[];
 }
 
-const EditUser: React.FC<EditUserProps> = ({ user }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const success = useSelector((state: RootState) => state.app.success);
+type EditUserForm = Omit<User, "id"> & {
+  confirmPassword?: string;
+};
 
-  const [formValues, setFormValues] = useState({
-    username: "",
-    phone: "",
-    email: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
-    description: "",
-    status: "ACTIVE",
-    permissions: [] as string[],
+export default function EditUserFormComponent() {
+  const [submittedData, setSubmittedData] = useState<EditUserForm | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditUserForm>({
+    defaultValues: {
+      name: "", // 👈 Added this (mandatory field in User)
+      username: "",
+      phone: "",
+      email: "",
+      role: "",
+      password: "",
+      confirmPassword: "",
+      description: "",
+      status: "",
+      permissions: [], // 👈 Added permissions
+    },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      setFormValues({
-        username: user.username || "",
-        phone: user.phone || "",
-        email: user.email || "",
-        role: user.role || "",
-        password: "",
-        confirmPassword: "",
-        description: user.description || "",
-        status: user.status || "ACTIVE",
-        permissions: user.permissions || [],
-      });
-    }
-  }, [user]);
-
-  // ✅ Handle modal close after success
-  useEffect(() => {
-    if (success) {
-      alert("User updated successfully!");
-      const closeBtn = document.querySelector('#edit-units .close') as HTMLElement;
-      closeBtn?.click();
-      dispatch(resetSuccess());
-    }
-  }, [success, dispatch]);
-
-  const handleInputChange = (field: string, value: any) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async () => {
-    if (!user?.id) return;
-
-    if (formValues.password && formValues.password !== formValues.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-
-    const updatedData = {
-      username: formValues.username,
-      phone: formValues.phone,
-      email: formValues.email,
-      password: formValues.password || user.password,
-      role: formValues.role,
-      status: formValues.status,
-      permissions: formValues.permissions,
-      description: formValues.description,
-    };
-
-    dispatch(patchUser({ id: user.id, updatedData }));
+  const onSubmit = (data: EditUserForm) => {
+    setSubmittedData(data);
+    console.log("Form submitted:", data);
   };
 
   return (
-    <div className="modal fade" id="edit-units">
-      <div className="modal-dialog modal-dialog-centered custom-modal-two">
-        <div className="modal-content">
-          <div className="page-wrapper-new p-0">
-            <div className="content">
-              <div className="modal-header border-0 custom-modal-header">
-                <div className="page-title">
-                  <h4>Edit User</h4>
-                </div>
-                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body custom-modal-body">
-                <form>
-                  <div className="row">
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>User Name</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={formValues.username}
-                          onChange={(e) => handleInputChange("username", e.target.value)}
-                        />
-                      </div>
-                    </div>
+    <div className="max-w-2xl mx-auto p-4 border rounded-lg shadow">
+      <h2 className="text-xl font-bold mb-4">Edit User</h2>
 
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Phone</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={formValues.phone}
-                          onChange={(e) => handleInputChange("phone", e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Email</label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          value={formValues.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Role</label>
-                        <Select
-                          classNamePrefix="react-select"
-                          options={roleOptions}
-                          value={roleOptions.find((opt) => opt.value === formValues.role)}
-                          onChange={(option) => handleInputChange("role", option?.value || "")}
-                          placeholder="Choose Role"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Password</label>
-                        <div className="pass-group">
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            className="pass-input form-control"
-                            value={formValues.password}
-                            onChange={(e) => handleInputChange("password", e.target.value)}
-                          />
-                          <span
-                            className={`ti toggle-password ${showPassword ? "ti-eye" : "ti-eye-off"}`}
-                            onClick={() => setShowPassword(!showPassword)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Confirm Password</label>
-                        <div className="pass-group">
-                          <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            className="pass-input form-control"
-                            value={formValues.confirmPassword}
-                            onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                          />
-                          <span
-                            className={`ti toggle-password ${showConfirmPassword ? "ti-eye" : "ti-eye-off"}`}
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Status</label>
-                        <select
-                          className="form-control"
-                          value={formValues.status}
-                          onChange={(e) => handleInputChange("status", e.target.value)}
-                        >
-                          <option value="ACTIVE">Active</option>
-                          <option value="INACTIVE">Inactive</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Permissions</label>
-                        <Select
-                          classNamePrefix="react-select"
-                          isMulti
-                          options={permissionOptions}
-                          value={permissionOptions.filter((opt) =>
-                            formValues.permissions.includes(opt.value)
-                          )}
-                          onChange={(selected) =>
-                            handleInputChange(
-                              "permissions",
-                              selected.map((opt) => opt.value)
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-lg-12">
-                      <div className="input-blocks">
-                        <label>Descriptions</label>
-                        <textarea
-                          className="form-control"
-                          value={formValues.description}
-                          onChange={(e) => handleInputChange("description", e.target.value)}
-                        />
-                        <p>Maximum 600 Characters</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="modal-footer-btn">
-                    <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
-                      Cancel
-                    </button>
-                    <button type="button" className="btn btn-submit" onClick={handleSubmit}>
-                      Submit
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Name */}
+        <div>
+          <label className="block mb-1 font-medium">Name</label>
+          <input
+            {...register("name", { required: "Name is required" })}
+            className="w-full border px-3 py-2 rounded"
+          />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
         </div>
-      </div>
+
+        {/* Username */}
+        <div>
+          <label className="block mb-1 font-medium">Username</label>
+          <input
+            {...register("username")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className="block mb-1 font-medium">Phone</label>
+          <input
+            {...register("phone")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block mb-1 font-medium">Email</label>
+          <input
+            {...register("email", { required: "Email is required" })}
+            className="w-full border px-3 py-2 rounded"
+          />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+        </div>
+
+        {/* Role */}
+        <div>
+          <label className="block mb-1 font-medium">Role</label>
+          <input
+            {...register("role")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Password */}
+        <div>
+          <label className="block mb-1 font-medium">Password</label>
+          <input
+            type="password"
+            {...register("password")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Confirm Password */}
+        <div>
+          <label className="block mb-1 font-medium">Confirm Password</label>
+          <input
+            type="password"
+            {...register("confirmPassword")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block mb-1 font-medium">Description</label>
+          <textarea
+            {...register("description")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Status */}
+        <div>
+          <label className="block mb-1 font-medium">Status</label>
+          <select {...register("status")} className="w-full border px-3 py-2 rounded">
+            <option value="">Select status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+
+        {/* Permissions */}
+        <div>
+          <label className="block mb-1 font-medium">Permissions</label>
+          <select
+            multiple
+            {...register("permissions")}
+            className="w-full border px-3 py-2 rounded"
+          >
+            <option value="read">Read</option>
+            <option value="write">Write</option>
+            <option value="delete">Delete</option>
+            <option value="update">Update</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Save
+        </button>
+      </form>
+
+      {submittedData && (
+        <div className="mt-6 p-4 border rounded bg-gray-100">
+          <h3 className="font-semibold mb-2">Submitted Data:</h3>
+          <pre className="text-sm">{JSON.stringify(submittedData, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
-};
-
-export default EditUser;
+}

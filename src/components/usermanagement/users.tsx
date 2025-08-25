@@ -29,7 +29,7 @@ const handlerefresh = () => {
 
   const handleDeleteConfirm = () => {
     if (userToDelete) {
-      dispatch(deleteUser({ id: userToDelete.id }));
+      // dispatch(deleteUser({ id: userToDelete.id }));
       setUserToDelete(null);
     }
   };
@@ -141,8 +141,8 @@ const handlerefresh = () => {
         </div>
       </div>
 
-      <AddUsers />
-      <EditUser user={selectedUser} />
+      {/* <AddUsers />
+      <EditUser user={selectedUser} /> */}
       <CommonDeleteModal
         title="Delete User"
         description={`Are you sure you want to delete "${userToDelete?.username}"?`}

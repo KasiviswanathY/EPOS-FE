@@ -1,26 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { apiRoutes } from "../constants/api_routes";
-import { fetchUsersList } from "./getallusersAction";
+
 
 export const createUser = createAsyncThunk(
-  "user/create",
-  async ({ payload, token }: any, { dispatch, rejectWithValue }) => {
+  "User/create",
+  async (payload: Partial<User>, thunkAPI) => {
     try {
-      const response = await axios.post(apiRoutes.users, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      // ✅ Refresh list after creation
-      dispatch(fetchUsersList());
-
+      const response = await axios.post("/api/companies", payload);
       return response.data;
-    } catch (error: any) {
-      console.error("Backend Error:", error.response?.data || error.message);
-      return rejectWithValue(error.response?.data);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      return thunkAPI.rejectWithValue(
+        axiosError.response?.data || "Failed to create User"
+      );
     }
   }
 );

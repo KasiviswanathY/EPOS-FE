@@ -249,54 +249,7 @@ const appSlice = createSlice({
       })
 
       // ===== DELETE USER =====
-      .addCase(deleteUser.pending, (state) => {
-        state.loadingDelete = true;
-        state.error = null;
-      })
-      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
-        state.loadingDelete = false;
-        state.success = true;
-
-        state.usersList = state.usersList.filter(
-          (u) => u.id.toString() !== action.payload
-        );
-
-        if (state.user?.id?.toString() === action.payload) {
-          state.user = null;
-          state.token = null;
-          state.isLoggedIn = false;
-
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("user");
-          }
-        }
-      })
-      .addCase(deleteUser.rejected, (state, action) => {
-        state.loadingDelete = false;
-        state.error = (action.payload as string) ?? null;
-      })
-
-      // ===== CREATE RECEIPT =====
-      .addCase(createReceipt.pending, (state) => {
-        state.receiptLoading = true;
-        state.receiptError = null;
-        state.receiptSuccess = false;
-      })
-      .addCase(
-        createReceipt.fulfilled,
-        (state, action: PayloadAction<Receipt>) => {
-          state.receiptLoading = false;
-          state.receipt = action.payload;
-          state.receiptSuccess = true;
-        }
-      )
-      .addCase(createReceipt.rejected, (state, action) => {
-        state.receiptLoading = false;
-        state.receiptError =
-          (action.payload as string) ?? "Create receipt failed";
-      })
-
+      
       // ===== GET RECEIPT =====
       .addCase(getReceiptByCompanyId.pending, (state) => {
         state.receiptLoading = true;

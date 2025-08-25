@@ -1,58 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { apiRoutes } from "../constants/api_routes";
-import { fetchUsersList } from "./getallusersAction";
+import axios, { AxiosError } from "axios";
 
-interface PatchUserPayload {
+
+interface UpdateUserload {
   id: string;
-  updatedData: {
-    username?: string;
-    email?: string;
-    password?: string;
-    phone?: string;
-    role?: string;
-    description?: string;
-    status?: string;
-    permissions?: string[];
-  };
+  data: Partial<User>;
 }
-
 export const patchUser = createAsyncThunk(
-  "app/patchUser",
-  async (
-    { id, updatedData }: PatchUserPayload,
-    { getState, rejectWithValue, dispatch }
-  ) => {
+  "company/updateCompany",
+  async ({ id, data }: UpdateUserload, { rejectWithValue }) => {
     try {
-      const state = getState() as { app: { token: string | null } };
-      const token = state.app.token;
-
-      if (!token) {
-        return rejectWithValue("Authorization token is missing");
-      }
-
-      const response = await axios.patch(
-        `${apiRoutes.users}/${id}`,
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // ✅ Refresh list after update
-      dispatch(fetchUsersList());
-
+      const response = await axios.patch(`/api/users/${id}`, data);
       return response.data;
-    } catch (err: any) {
-      const errorMsg =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        err?.message ||
-        "User update failed";
-      return rejectWithValue(errorMsg);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      return rejectWithValue(
+        axiosError.response?.data || "Failed to update company"
+      );
     }
   }
 );
