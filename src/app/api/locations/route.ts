@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../axiosInstanceServer";
-import { AxiosError } from "axios";
 import { apiRoutes } from "@/lib/redux/constants/api_routes";
+import { AxiosError } from "axios";
 
-// CREATE Company
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const response = await axiosInstanceServer.post(apiRoutes.companies, body);
+    const response = await axiosInstanceServer.post(apiRoutes.locations, body);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
@@ -24,10 +23,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET Companies
+
 export async function GET() {
   try {
-    const response = await axiosInstanceServer.get(apiRoutes.companies);
+    const response = await axiosInstanceServer.get(apiRoutes.locations);
 
     // console.log("response", response);
 

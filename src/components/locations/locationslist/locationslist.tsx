@@ -10,13 +10,17 @@ import {
   getLocations,
   updateLocation,
 } from "@/lib/redux/actions/createLocation";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function LocationsListComponent() {
   const dispatch = useDispatch<AppDispatch>();
-  const { Locations = [], loading, token, company } = useSelector(
+  const router = useRouter();
+
+  // ✅ Pull locations & company from redux
+  const { Locations = [], loading } = useSelector(
     (state: RootState) => state.app
   );
+  const company = useSelector((state: RootState) => state.company.company);
 
   const [filter, setFilter] = useState("");
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -25,17 +29,10 @@ export default function LocationsListComponent() {
 
   const { register, handleSubmit, reset } = useForm();
 
-
-
   
-
-  // Fetch locations on mount
   useEffect(() => {
-    if (token) {
-      dispatch(getLocations({ token }));
-    }
-  }, [ token, dispatch]);
-
+    dispatch(getLocations()); // ✅ no companyId needed
+  }, [dispatch]);
   // Filtered locations for search
   const filteredData = Locations.filter((item: any) =>
     filter.trim() === ""
@@ -52,11 +49,31 @@ export default function LocationsListComponent() {
   };
 
   const handleUpdate = async (data: any) => {
-    if (!token || !selectedLocation?.id) return;
+    if (!selectedLocation?.id) return;
+
+    const allowedPayload = {
+      name: data.name,
+      address: data.address,
+      city: data.city,
+      country: data.country,
+      pincode: data.pincode,
+      description: data.description,
+      status: data.status,
+      email: data.email,
+      phone: data.phone,
+      language: data.language,
+      timeZone: data.timeZone,
+      companyId: company?.id, 
+    };
+
     await dispatch(
-      updateLocation({ id: selectedLocation.id, payload: data, token })
+      updateLocation({
+        id: selectedLocation.id,
+        data: allowedPayload,
+      })
     );
     setEditModalOpen(false);
+    router.push("/locationslist");
   };
 
   // Delete
@@ -66,10 +83,9 @@ export default function LocationsListComponent() {
   };
 
   const confirmDelete = async () => {
-    if (!token || !selectedLocation?.id) return;
-    await dispatch(deleteLocation({ id: selectedLocation.id, token }));
+    if (!selectedLocation?.id) return;
+    await dispatch(deleteLocation(selectedLocation.id));
     setDeleteModalOpen(false);
-    
   };
 
   return (
@@ -151,88 +167,60 @@ export default function LocationsListComponent() {
                 </tbody>
               </table>
             )}
-
-            {/* Pagination info */}
-            <div className="d-flex justify-content-between align-items-center mt-3">
-              <div>
-                <select className="form-select w-auto">
-                  <option>10 items per page</option>
-                  <option>25 items per page</option>
-                  <option>50 items per page</option>
-                </select>
-              </div>
-              <div>
-                {filteredData.length} of {Locations.length} Locations
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Edit Modal */}
-      {/* Edit Modal */}
-{editModalOpen && (
-  <div className="modal show fade d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
-    <div className="modal-dialog">
-      <form
-        onSubmit={handleSubmit((data) => {
-          if (!token || !selectedLocation?.id) return;
-          // Merge unchanged fields from selectedLocation
-         const allowedPayload = {
-  name: data.name,
-  address: data.address,
-  city: data.city,
-  country: data.country,
-  pincode: data.pincode,
-  description: data.description,
-  status: data.status,
-  email: data.email,
-  phone: data.phone,
-  language: data.language,
-  timeZone: data.timeZone,
-  companyId: data.companyId
-};
-          dispatch(updateLocation({
-            id: selectedLocation.id,
-            payload: allowedPayload,
-            token
-          }));
-          setEditModalOpen(false);
-          router.push("/locationslist");
-
-        })}
-      >
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5>Edit Location</h5>
-            <button type="button" className="btn-close" onClick={() => setEditModalOpen(false)} />
-          </div>
-          <div className="modal-body">
-            <input {...register("name")} placeholder="Name" className="form-control mb-2" />
-            <input {...register("description")} placeholder="Description" className="form-control mb-2" />
-            <input {...register("address")} placeholder="Address" className="form-control mb-2" />
-            <input {...register("city")} placeholder="City" className="form-control mb-2" />
-            <input {...register("country")} placeholder="Country" className="form-control mb-2" />
-            <input {...register("pincode")} placeholder="Pincode" className="form-control mb-2" />
-            <input {...register("email")} placeholder="Email" className="form-control mb-2" />
-            <input {...register("phone")} placeholder="Phone" className="form-control mb-2" />
-            <input {...register("language")} placeholder="Language" className="form-control mb-2" />
-            <input {...register("timeZone")} placeholder="Time Zone" className="form-control mb-2" />
-            <input {...register("companyId")} placeholder="Company ID" className="form-control mb-2" />
-            <select {...register("status")} className="form-select mb-2">
-              <option value="ACTIVE">Active</option>
-              <option value="INACTIVE">Inactive</option>
-            </select>
-          </div>
-          <div className="modal-footer">
-            <button type="submit" className="btn btn-primary">Update</button>
-            <button type="button" className="btn btn-secondary" onClick={() => setEditModalOpen(false)}>Cancel</button>
+      {editModalOpen && (
+        <div
+          className="modal show fade d-block"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog">
+            <form onSubmit={handleSubmit(handleUpdate)}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5>Edit Location</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setEditModalOpen(false)}
+                  />
+                </div>
+                <div className="modal-body">
+                  <input {...register("name")} placeholder="Name" className="form-control mb-2" />
+                  <input {...register("description")} placeholder="Description" className="form-control mb-2" />
+                  <input {...register("address")} placeholder="Address" className="form-control mb-2" />
+                  <input {...register("city")} placeholder="City" className="form-control mb-2" />
+                  <input {...register("country")} placeholder="Country" className="form-control mb-2" />
+                  <input {...register("pincode")} placeholder="Pincode" className="form-control mb-2" />
+                  <input {...register("email")} placeholder="Email" className="form-control mb-2" />
+                  <input {...register("phone")} placeholder="Phone" className="form-control mb-2" />
+                  <input {...register("language")} placeholder="Language" className="form-control mb-2" />
+                  <input {...register("timeZone")} placeholder="Time Zone" className="form-control mb-2" />
+                  <select {...register("status")} className="form-select mb-2">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                  </select>
+                </div>
+                <div className="modal-footer">
+                  <button type="submit" className="btn btn-primary">
+                    Update
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setEditModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
+      )}
 
       {/* Delete Modal */}
       {deleteModalOpen && (

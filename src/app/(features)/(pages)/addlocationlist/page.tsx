@@ -9,11 +9,9 @@ import { createLocations } from "@/lib/redux/actions/createLocation";
 
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import {
-  getAllCompanies,
-  getCompany,
-} from "@/lib/redux/actions/companiesActions";
+import { getAllCompanies } from "@/lib/redux/actions/companiesActions";
 import { updateCompanyState } from "@/lib/redux/slices/companySlice";
+import { Locations } from "@/core/interfaces/Locations";
 
 interface Country {
   name: string;
@@ -24,28 +22,18 @@ interface State {
   name: string;
 }
 
-interface LocationFormValues {
-  name: string;
-  description: string;
-  country: string;
+type LocationFormValues = Omit<Locations, "id" | "companyId" | "status" | "address"> & {
   addressLine1: string;
   addressLine2?: string;
-  city: string;
   region: string;
   zipCode: string;
-  email?: string;
-  phone?: string;
-  language: string;
-  timezone: string;
-}
+};
 
 export default function AddLocationPage() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const company = useSelector((state: RootState) => state.app.company);
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+  const company = useSelector((state: RootState) => state.company.company);
 
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
@@ -59,28 +47,28 @@ export default function AddLocationPage() {
   } = useForm<LocationFormValues>({
     defaultValues: {
       language: "English (US)",
-      timezone: "Default",
+      timeZone: "Default",
     },
   });
 
   const selectedCountry = watch("country");
 
-  // Fetch company info if missing
+  // Ensure company is loaded
   useEffect(() => {
-    if (!company && token) {
+    if (!company) {
       dispatch(getAllCompanies()).then((res) => {
-        dispatch(updateCompanyState(res.payload[0]));
+        if (res.payload && res.payload.length > 0) {
+          dispatch(updateCompanyState(res.payload[0])); // ✅ store first company
+        }
       });
     }
-  }, [dispatch, token, company]);
+  }, [dispatch, company]);
 
   // Fetch countries
   useEffect(() => {
     async function fetchCountries() {
       try {
-        const res = await axios.get(
-          "https://countriesnow.space/api/v0.1/countries/positions"
-        );
+        const res = await axios.get("https://countriesnow.space/api/v0.1/countries/positions");
         if (res.data?.data) {
           const countryList = res.data.data.map((c: any) => ({
             name: c.name,
@@ -103,10 +91,9 @@ export default function AddLocationPage() {
     async function fetchStates() {
       if (!selectedCountry) return;
       try {
-        const res = await axios.post(
-          "https://countriesnow.space/api/v0.1/countries/states",
-          { country: selectedCountry }
-        );
+        const res = await axios.post("https://countriesnow.space/api/v0.1/countries/states", {
+          country: selectedCountry,
+        });
         if (res.data?.data?.states) {
           setStates(res.data.data.states);
           if (res.data.data.states.length > 0) {
@@ -121,28 +108,29 @@ export default function AddLocationPage() {
   }, [selectedCountry, setValue]);
 
   const onSubmit = async (data: LocationFormValues) => {
-    if (!token || !company) {
-      alert("Missing authentication or company information.");
+    if (!company) {
+      console.error("❌ No company found, cannot assign companyId");
       return;
     }
 
-    const payload = {
+    const payload: Locations = {
+      id: "", // backend will generate
       name: data.name,
+      description: data.description,
       address: `${data.addressLine1} ${data.addressLine2 || ""}`.trim(),
       city: data.city,
       country: data.country,
       pincode: data.zipCode,
-      description: data.description,
       status: "ACTIVE",
       email: data.email,
       phone: data.phone,
       language: data.language,
-      timeZone: data.timezone,
-      companyId: company.id,
+      timeZone: data.timeZone,
+      companyId: company.id, // ✅ auto-attached from companySlice
     };
 
     try {
-      await dispatch(createLocations({ payload, token })).unwrap();
+      await dispatch(createLocations(payload)).unwrap();
       router.push("/locationslist");
     } catch (err) {
       console.error("Error creating location:", err);
@@ -164,20 +152,6 @@ export default function AddLocationPage() {
           </div>
         </div>
 
-        {/* Info Banner */}
-        <div className="alert alert-primary d-flex justify-content-between align-items-center">
-          <div>
-            <strong>Add a billable location</strong>
-            <br />
-            You've reached your limit of 1 of 1 billable locations. Contact
-            support to add more.
-          </div>
-          <div>
-            <button className="btn btn-link">Dismiss</button>
-            <button className="btn btn-link">Support</button>
-          </div>
-        </div>
-
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Address Section */}
           <div className="card mb-4">
@@ -190,24 +164,15 @@ export default function AddLocationPage() {
                   className="form-control"
                   {...register("name", { required: "Name is required" })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
+                {errors.name && <small className="text-danger">{errors.name.message}</small>}
               </div>
               <div className="col-md-6">
                 <label className="form-label">Description</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  {...register("description")}
-                />
+                <input type="text" className="form-control" {...register("description")} />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Country *</label>
-                <select
-                  className="form-select"
-                  {...register("country", { required: true })}
-                >
+                <select className="form-select" {...register("country", { required: true })}>
                   {countries.map((c) => (
                     <option key={c.iso2} value={c.name}>
                       {c.name}
@@ -220,18 +185,12 @@ export default function AddLocationPage() {
                 <input
                   type="text"
                   className="form-control"
-                  {...register("addressLine1", {
-                    required: "Address is required",
-                  })}
+                  {...register("addressLine1", { required: "Address is required" })}
                 />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Address Line 2</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  {...register("addressLine2")}
-                />
+                <input type="text" className="form-control" {...register("addressLine2")} />
               </div>
               <div className="col-md-4">
                 <label className="form-label">City *</label>
@@ -243,10 +202,7 @@ export default function AddLocationPage() {
               </div>
               <div className="col-md-4">
                 <label className="form-label">County / Region *</label>
-                <select
-                  className="form-select"
-                  {...register("region", { required: true })}
-                >
+                <select className="form-select" {...register("region", { required: true })}>
                   {states.map((s, idx) => (
                     <option key={idx} value={s.name}>
                       {s.name}
@@ -271,20 +227,11 @@ export default function AddLocationPage() {
             <div className="card-body row g-3">
               <div className="col-md-6">
                 <label className="form-label">Email Address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  {...register("email")}
-                />
+                <input type="email" className="form-control" {...register("email")} />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Phone Number</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  {...register("phone")}
-                  placeholder="+91"
-                />
+                <input type="text" className="form-control" {...register("phone")} placeholder="+91" />
               </div>
             </div>
           </div>
@@ -303,7 +250,7 @@ export default function AddLocationPage() {
               </div>
               <div className="col-md-6">
                 <label className="form-label">Time Zone</label>
-                <select className="form-select" {...register("timezone")}>
+                <select className="form-select" {...register("timeZone")}>
                   <option>Default</option>
                   <option>Asia/Kolkata</option>
                   <option>America/New_York</option>

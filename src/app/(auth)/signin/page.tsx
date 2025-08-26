@@ -34,7 +34,7 @@ export default function Login() {
       const response = await axios.post("/api/login", data);
 
       if (response.status === 200) {
-        window.location.href = "/dashboard";
+        window.location.href = "/index";
         return;
       }
 
@@ -42,7 +42,7 @@ export default function Login() {
         setError(response.data.message || "Login failed");
       }
     } catch (err: Error | unknown) {
-      console.error("Login error:", err);
+     
       setError((err as Error).message || "Login failed");
     } finally {
       setLoading(false);
