@@ -33,7 +33,7 @@ export const getAllPopups = createAsyncThunk(
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || "Failed to fetch companies"
+        axiosError.response?.data || "Failed to fetch popup"
       );
     }
   }
@@ -47,7 +47,7 @@ export const getPopups = createAsyncThunk(
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || "Failed to fetch company"
+        axiosError.response?.data || "Failed to fetch popup"
       );
     }
   }
