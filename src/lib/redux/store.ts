@@ -2,13 +2,24 @@ import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./slices/authSlice";
 import companyReducer from "./slices/companySlice";
 import clockingTypesReducer from "./slices/clockingTypesSlice";
+
 import RefundReasonsReducer from "./slices/refundreasonSlice";
+
+import popupReducer from "./slices/PopupSlice";
+import categoryReducer from "./slices/cateogrySlice";
+import taxratesReducer from "./slices/taxratesSlice";
+
 export const store = configureStore({
   reducer: {
     app: appReducer,
     company: companyReducer,
     clockingTypes: clockingTypesReducer,
+
     RefundReasons: RefundReasonsReducer,
+    popup: popupReducer,
+    categories: categoryReducer,
+    taxrates: taxratesReducer,
+
   },
 });
 
