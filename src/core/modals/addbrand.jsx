@@ -27,7 +27,7 @@ const AddBrand = () => {
                 </div>
                 <div className="modal-body custom-modal-body">
                   <div className="mb-3">
-                    <label className="form-label">Brand</label>
+                    <label className="form-label">Brands</label>
                     <input type="text" className="form-control" />
                   </div>
                   
