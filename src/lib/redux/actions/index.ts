@@ -1,3 +1,5 @@
+
+
 // Export all company-related actions
 export {
   createCompany,
@@ -15,3 +17,12 @@ export {
   updateClockingType,
   deleteClockingType,
 } from "./clockingTypesActions";
+
+
+
+export {
+  createPopup,
+   getAllPopups,
+    updatePopups,
+    deletePopups,
+}from "./popupAction";
