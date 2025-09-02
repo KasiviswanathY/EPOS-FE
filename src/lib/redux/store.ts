@@ -6,6 +6,8 @@ import popupReducer from "./slices/PopupSlice";
 import categoryReducer from "./slices/cateogrySlice";
 import brandsReducer from "./slices/brandslice";
 import taxratesReducer from "./slices/taxratesSlice";
+import stockmovementreasonsReducer from "./slices/stockmovementreasonSlice";
+import customertypesReducer from "./slices/customertypesSlice";
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -15,6 +17,8 @@ export const store = configureStore({
     categories: categoryReducer,
     brand:brandsReducer,
     taxrates: taxratesReducer,
+    stockmovementreasons: stockmovementreasonsReducer,
+    customertypes: customertypesReducer,
   },
 });
 
