@@ -7,6 +7,8 @@ import categoryReducer from "./slices/cateogrySlice";
 import brandsReducer from "./slices/brandslice";
 import taxratesReducer from "./slices/taxratesSlice";
 import productsReducer from "./slices/productSlice";
+import receiptsReducer from "./slices/receiptsSlice";
+
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -14,9 +16,10 @@ export const store = configureStore({
     clockingTypes: clockingTypesReducer,
     popup: popupReducer,
     categories: categoryReducer,
-    brand:brandsReducer,
+    brand: brandsReducer,
     taxrates: taxratesReducer,
     products: productsReducer,
+    receipts: receiptsReducer,
   },
 });
 

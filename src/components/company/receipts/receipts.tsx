@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import {
   createReceipt,
-  getReceiptByCompanyId,
+  fetchReceiptByCompanyId,
   updateReceipt,
-} from "@/lib/redux/actions/createReceiptsAction";
+} from "@/lib/redux/actions/receiptsActions";
+import { getAllCompanies } from "@/lib/redux/actions/companiesActions";
+import { Receipt } from "@/core/interfaces/Receipt";
+import { getErrorMessage } from "@/core/utils/errorUtils";
 
 import { useRouter } from "next/navigation";
-import { getCompany } from "@/lib/redux/actions/companiesActions";
+import { updateCompanyState } from "@/lib/redux/slices/companySlice";
 
 type ReceiptFormValues = {
   name: string;
@@ -37,17 +40,24 @@ type ReceiptFormValues = {
   qrCodeLink: string;
   qrCodeDescription: string;
   guid: string;
+  companyId: string;
 };
 
 export default function ReceiptsComponent() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const reduxToken = useSelector((state: RootState) => state.app.token);
-  const company = useSelector((state: RootState) => state.app.company);
+  const { company, loading: companyLoading } = useSelector(
+    (state: RootState) => state.company
+  );
+  const { loading, error, success } = useSelector(
+    (state: RootState) => state.receipts
+  );
 
-  const [token, setToken] = useState<string | null>(null);
   const [receiptId, setReceiptId] = useState<string | null>(null);
+  const hasFetchedCompanies = useRef(false);
+
+  console.log("company", company);
 
   const {
     register,
@@ -56,37 +66,52 @@ export default function ReceiptsComponent() {
     formState: { errors },
   } = useForm<ReceiptFormValues>();
 
-  // Get token from localStorage or Redux
   useEffect(() => {
-    const localToken = localStorage.getItem("authToken");
-    setToken(localToken || reduxToken || null);
-  }, [reduxToken]);
+    if (!company && !companyLoading && !hasFetchedCompanies.current) {
+      dispatch(getAllCompanies())
+        .unwrap()
+        .then((companies) => {
+          if (companies && companies.length > 0) {
+            const firstCompany = companies[0];
+            dispatch(updateCompanyState(firstCompany));
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch companies:", getErrorMessage(error));
+          hasFetchedCompanies.current = false;
+        });
+    }
+  }, []);
 
-  // Fetch company details if not already in Redux
-  // useEffect(() => {
-  //   if (!company && token) {
-  //     dispatch(getCompany());
-  //   }
-  // }, [dispatch, token, company]);
-
-  // Load receipt data if company ID exists
   useEffect(() => {
-    if (token && company?.id) {
-      dispatch(getReceiptByCompanyId({ token, companyId: company.id })).then(
-        (res: any) => {
-          if (res?.payload) {
-            const receipt = res.payload;
-            Object.keys(receipt).forEach((key) => {
-              if (receipt[key] !== null && receipt[key] !== undefined) {
-                setValue(key as keyof ReceiptFormValues, receipt[key]);
+    if (company?.id) {
+      dispatch(fetchReceiptByCompanyId({ companyId: company.id }))
+        .unwrap()
+        .then((fetchedReceipt) => {
+          if (fetchedReceipt) {
+            Object.keys(fetchedReceipt).forEach((key) => {
+              if (
+                fetchedReceipt[key as keyof Receipt] !== null &&
+                fetchedReceipt[key as keyof Receipt] !== undefined
+              ) {
+                setValue(
+                  key as keyof ReceiptFormValues,
+                  fetchedReceipt[key as keyof Receipt] as
+                    | string
+                    | number
+                    | boolean
+                );
               }
             });
-            setReceiptId(receipt.id);
+            setReceiptId(fetchedReceipt.id || null);
           }
-        }
-      );
+        })
+        .catch((error) => {
+          console.error("Failed to fetch receipt:", getErrorMessage(error));
+        });
     }
-  }, [dispatch, token, company?.id, setValue]);
+  }, [dispatch, company?.id, setValue]);
+
   // Pre-fill company details
   useEffect(() => {
     if (company) {
@@ -96,11 +121,6 @@ export default function ReceiptsComponent() {
   }, [company, setValue]);
 
   const onSubmit = (data: ReceiptFormValues) => {
-    if (!token) {
-      alert("Token missing!");
-      return;
-    }
-
     if (!company || !company.id) {
       alert("Company ID is missing or company not loaded yet!");
       return;
@@ -156,21 +176,68 @@ export default function ReceiptsComponent() {
       qrCodeLink,
       qrCodeDescription,
       guid,
-      companyId: company.id,
+      companyId: company?.id,
     };
 
     if (receiptId) {
-      dispatch(updateReceipt({ id: receiptId, payload, token }));
+      dispatch(updateReceipt({ id: receiptId, data: payload }))
+        .unwrap()
+        .then(() => {
+          console.log("Receipt updated successfully");
+        })
+        .catch((error) => {
+          console.error("Failed to update receipt:", getErrorMessage(error));
+        });
     } else {
-      dispatch(createReceipt({ payload, token })).then((res: any) => {
-        if (res?.payload?.id) setReceiptId(res.payload.id);
-      });
+      dispatch(createReceipt(payload))
+        .unwrap()
+        .then((newReceipt) => {
+          if (newReceipt?.id) setReceiptId(newReceipt.id);
+          console.log("Receipt created successfully");
+        })
+        .catch((error) => {
+          console.error("Failed to create receipt:", getErrorMessage(error));
+        });
     }
   };
 
   const handleCancel = () => {
     router.push("/index");
   };
+
+  if (companyLoading || (!company && !hasFetchedCompanies.current)) {
+    return (
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="text-center mt-5">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="mt-2">Loading company details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!company?.id && hasFetchedCompanies.current && !companyLoading) {
+    return (
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="alert alert-warning text-center mt-5">
+            <h5>No Company Found</h5>
+            <p>Please create a company first before setting up receipts.</p>
+            <button
+              className="btn btn-primary"
+              onClick={() => router.push("/company-details")}
+            >
+              Go to Companies
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!company?.id) {
     return <p className="text-center mt-5">Loading company details...</p>;
@@ -179,9 +246,20 @@ export default function ReceiptsComponent() {
   return (
     <div className="page-wrapper">
       <div className="content">
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {getErrorMessage(error)}
+          </div>
+        )}
+        {success && (
+          <div className="alert alert-success" role="alert">
+            Receipt saved successfully!
+          </div>
+        )}
         <div className="card">
           <div className="card-header fw-bold">Receipt Settings</div>
           <div className="card-body">
+            {loading && <div className="text-center">Loading...</div>}
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Text Fields */}
               {[
@@ -200,10 +278,20 @@ export default function ReceiptsComponent() {
                   </label>
                   <div className="col-sm-6">
                     <input
-                      {...register(field.name as keyof ReceiptFormValues)}
+                      {...register(field.name as keyof ReceiptFormValues, {
+                        required:
+                          field.name === "name"
+                            ? "Company name is required"
+                            : false,
+                      })}
                       className="form-control"
                       type="text"
                     />
+                    {errors[field.name as keyof ReceiptFormValues] && (
+                      <div className="text-danger small mt-1">
+                        {errors[field.name as keyof ReceiptFormValues]?.message}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -303,7 +391,7 @@ export default function ReceiptsComponent() {
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-success">
-                  SAVE
+                  {receiptId ? "SAVE" : "CREATE"}
                 </button>
               </div>
             </form>

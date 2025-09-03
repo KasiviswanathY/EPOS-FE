@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../../axiosInstanceServer";
 import { AxiosError } from "axios";
+import { apiRoutes } from "@/lib/redux/constants/api_routes";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -11,7 +12,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
 
-    const response = await axiosInstanceServer.get(`/companies/${id}`);
+    const response = await axiosInstanceServer.get(
+      `${apiRoutes.companies}/${id}`
+    );
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
@@ -33,7 +36,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const body = await request.json();
 
-    const response = await axiosInstanceServer.patch(`/companies/${id}`, body);
+    const response = await axiosInstanceServer.patch(
+      `${apiRoutes.companies}/${id}`,
+      body
+    );
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {

@@ -5,12 +5,6 @@ import { fetchUsersList } from "../actions/getallusersAction";
 import { patchUser } from "@/lib/redux/actions/updateAction";
 import { deleteUser } from "../actions/deleteUserAction";
 
-import {
-  createReceipt,
-  getReceiptByCompanyId,
-  updateReceipt,
-} from "../actions/createReceiptsAction";
-
 import { getRoles } from "../actions/createRoles";
 import { Company } from "../../../core/interfaces/Company";
 import { getLocations } from "../actions/createLocation";
@@ -275,61 +269,6 @@ const appSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loadingDelete = false;
         state.error = (action.payload as string) ?? null;
-      })
-
-      // ===== CREATE RECEIPT =====
-      .addCase(createReceipt.pending, (state) => {
-        state.receiptLoading = true;
-        state.receiptError = null;
-        state.receiptSuccess = false;
-      })
-      .addCase(
-        createReceipt.fulfilled,
-        (state, action: PayloadAction<Receipt>) => {
-          state.receiptLoading = false;
-          state.receipt = action.payload;
-          state.receiptSuccess = true;
-        }
-      )
-      .addCase(createReceipt.rejected, (state, action) => {
-        state.receiptLoading = false;
-        state.receiptError =
-          (action.payload as string) ?? "Create receipt failed";
-      })
-
-      // ===== GET RECEIPT =====
-      .addCase(getReceiptByCompanyId.pending, (state) => {
-        state.receiptLoading = true;
-        state.receiptError = null;
-      })
-      .addCase(
-        getReceiptByCompanyId.fulfilled,
-        (state, action: PayloadAction<Receipt>) => {
-          state.receiptLoading = false;
-          state.receipt = action.payload;
-        }
-      )
-      .addCase(getReceiptByCompanyId.rejected, (state, action) => {
-        state.receiptLoading = false;
-        state.receiptError = (action.payload as string) ?? "Get receipt failed";
-      })
-
-      // ===== UPDATE RECEIPT =====
-      .addCase(updateReceipt.pending, (state) => {
-        state.receiptLoading = true;
-        state.receiptError = null;
-      })
-      .addCase(
-        updateReceipt.fulfilled,
-        (state, action: PayloadAction<Receipt>) => {
-          state.receiptLoading = false;
-          state.receipt = action.payload;
-        }
-      )
-      .addCase(updateReceipt.rejected, (state, action) => {
-        state.receiptLoading = false;
-        state.receiptError =
-          (action.payload as string) ?? "Update receipt failed";
       })
 
       ///roles
