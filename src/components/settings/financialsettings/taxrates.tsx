@@ -18,11 +18,11 @@ export default function TaxRatesComponent() {
   const [taxToDelete, setTaxToDelete] = useState<TaxRate | null>(null);
 
   useEffect(() => {
-    dispatch(getAllTaxRates({ page: 1, pageSize: 10 }));
+    dispatch(getAllTaxRates());
   }, [dispatch]);
 
   const refetchData = (pageNum = page) => {
-    dispatch(getAllTaxRates({ page: pageNum, pageSize: 10 }));
+    dispatch(getAllTaxRates());
   };
 
   const handleDeleteConfirm = () => {

@@ -4,13 +4,13 @@ import { AxiosError } from "axios";
 import axiosInstanceServer from "../../axiosInstanceServer";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // UPDATE a tax rate
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Optional: Add server-side validation for percentage if needed
@@ -29,10 +29,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+
 // DELETE a tax rate
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const response = await axiosInstanceServer.delete(`/tax-rates/${id}`);
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
