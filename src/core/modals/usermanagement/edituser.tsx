@@ -3,94 +3,99 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
-import { patchUser } from "@/lib/redux/actions/updateAction";
-import { resetSuccess } from "@/lib/redux/slices/authSlice"; // <-- Make sure this exists
-
-const roleOptions = [
-  { value: "Choose", label: "Choose" },
-  { value: "Manager", label: "Manager" },
-  { value: "Admin", label: "Admin" },
-];
-
-const permissionOptions = [
-  { value: "USER_RIGHTS", label: "User Rights" },
-  { value: "PRODUCT_RIGHTS", label: "Product Rights" },
-  { value: "SALES_RIGHTS", label: "Sales Rights" },
-];
+import { updateUser, getAllUsers } from "@/lib/redux/actions/userActions";
+import { User, UserPermissionType, Status } from "@/core/interfaces/User";
+import { PERMISSION_OPTIONS } from "@/core/constants/permissionOptions";
 
 interface EditUserProps {
-  user: any;
+  user: User | null;
 }
 
 const EditUser: React.FC<EditUserProps> = ({ user }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const success = useSelector((state: RootState) => state.app.success);
+  const { success } = useSelector((state: RootState) => state.users);
 
   const [formValues, setFormValues] = useState({
     username: "",
-    phone: "",
     email: "",
-    role: "",
     password: "",
     confirmPassword: "",
-    description: "",
-    status: "ACTIVE",
-    permissions: [] as string[],
+    status: "ACTIVE" as Status,
+    permissions: [] as UserPermissionType[],
   });
+
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    UserPermissionType[]
+  >([]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "warning";
+  } | null>(null);
 
   useEffect(() => {
     if (user) {
       setFormValues({
         username: user.username || "",
-        phone: user.phone || "",
         email: user.email || "",
-        role: user.role || "",
         password: "",
         confirmPassword: "",
-        description: user.description || "",
         status: user.status || "ACTIVE",
         permissions: user.permissions || [],
       });
+
+      // Set selected permissions for the multi-select
+      setSelectedPermissions(user.permissions || []);
     }
   }, [user]);
 
   // ✅ Handle modal close after success
   useEffect(() => {
-    if (success) {
-      alert("User updated successfully!");
-      const closeBtn = document.querySelector('#edit-units .close') as HTMLElement;
-      closeBtn?.click();
-      dispatch(resetSuccess());
-    }
+    // Handle success/error feedback here if needed
   }, [success, dispatch]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const showMessage = (text: string, type: "success" | "error" | "warning") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 3000);
+  };
+
+  const handleInputChange = (field: string, value: unknown) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
     if (!user?.id) return;
 
-    if (formValues.password && formValues.password !== formValues.confirmPassword) {
-      alert("Passwords do not match");
+    if (
+      formValues.password &&
+      formValues.password !== formValues.confirmPassword
+    ) {
+      showMessage("Passwords do not match", "error");
       return;
     }
 
     const updatedData = {
       username: formValues.username,
-      phone: formValues.phone,
       email: formValues.email,
-      password: formValues.password || user.password,
-      role: formValues.role,
       status: formValues.status,
-      permissions: formValues.permissions,
-      description: formValues.description,
+      permissions: selectedPermissions,
+      ...(formValues.password && { password: formValues.password }),
     };
 
-    dispatch(patchUser({ id: user.id, updatedData }));
+    try {
+      await dispatch(updateUser({ id: user.id, data: updatedData })).unwrap();
+      showMessage("User updated successfully!", "success");
+      dispatch(getAllUsers());
+
+      const closeBtn = document.querySelector(
+        "#edit-units .close"
+      ) as HTMLElement;
+      closeBtn?.click();
+    } catch {
+      showMessage("Failed to update user. Please try again.", "error");
+    }
   };
 
   return (
@@ -103,11 +108,26 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                 <div className="page-title">
                   <h4>Edit User</h4>
                 </div>
-                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
               <div className="modal-body custom-modal-body">
+                {/* Inline Feedback Message */}
+                {message && (
+                  <div
+                    className={`alert alert-${message.type} mb-3`}
+                    role="alert"
+                  >
+                    {message.text}
+                  </div>
+                )}
+
                 <form>
                   <div className="row">
                     <div className="col-lg-6">
@@ -117,19 +137,9 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                           type="text"
                           className="form-control"
                           value={formValues.username}
-                          onChange={(e) => handleInputChange("username", e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Phone</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={formValues.phone}
-                          onChange={(e) => handleInputChange("phone", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("username", e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -141,20 +151,9 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                           type="email"
                           className="form-control"
                           value={formValues.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-lg-6">
-                      <div className="input-blocks">
-                        <label>Role</label>
-                        <Select
-                          classNamePrefix="react-select"
-                          options={roleOptions}
-                          value={roleOptions.find((opt) => opt.value === formValues.role)}
-                          onChange={(option) => handleInputChange("role", option?.value || "")}
-                          placeholder="Choose Role"
+                          onChange={(e) =>
+                            handleInputChange("email", e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -167,10 +166,15 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                             type={showPassword ? "text" : "password"}
                             className="pass-input form-control"
                             value={formValues.password}
-                            onChange={(e) => handleInputChange("password", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("password", e.target.value)
+                            }
+                            placeholder="Leave blank to keep current password"
                           />
                           <span
-                            className={`ti toggle-password ${showPassword ? "ti-eye" : "ti-eye-off"}`}
+                            className={`ti toggle-password ${
+                              showPassword ? "ti-eye" : "ti-eye-off"
+                            }`}
                             onClick={() => setShowPassword(!showPassword)}
                           />
                         </div>
@@ -185,11 +189,21 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                             type={showConfirmPassword ? "text" : "password"}
                             className="pass-input form-control"
                             value={formValues.confirmPassword}
-                            onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "confirmPassword",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Leave blank to keep current password"
                           />
                           <span
-                            className={`ti toggle-password ${showConfirmPassword ? "ti-eye" : "ti-eye-off"}`}
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className={`ti toggle-password ${
+                              showConfirmPassword ? "ti-eye" : "ti-eye-off"
+                            }`}
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
                           />
                         </div>
                       </div>
@@ -201,7 +215,12 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         <select
                           className="form-control"
                           value={formValues.status}
-                          onChange={(e) => handleInputChange("status", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "status",
+                              e.target.value as Status
+                            )
+                          }
                         >
                           <option value="ACTIVE">Active</option>
                           <option value="INACTIVE">Inactive</option>
@@ -215,38 +234,39 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                         <Select
                           classNamePrefix="react-select"
                           isMulti
-                          options={permissionOptions}
-                          value={permissionOptions.filter((opt) =>
-                            formValues.permissions.includes(opt.value)
+                          options={PERMISSION_OPTIONS}
+                          value={PERMISSION_OPTIONS.filter((opt) =>
+                            selectedPermissions.includes(
+                              opt.value as UserPermissionType
+                            )
                           )}
                           onChange={(selected) =>
-                            handleInputChange(
-                              "permissions",
-                              selected.map((opt) => opt.value)
+                            setSelectedPermissions(
+                              selected
+                                ? selected.map(
+                                    (opt) => opt.value as UserPermissionType
+                                  )
+                                : []
                             )
                           }
                         />
                       </div>
                     </div>
-
-                    <div className="col-lg-12">
-                      <div className="input-blocks">
-                        <label>Descriptions</label>
-                        <textarea
-                          className="form-control"
-                          value={formValues.description}
-                          onChange={(e) => handleInputChange("description", e.target.value)}
-                        />
-                        <p>Maximum 600 Characters</p>
-                      </div>
-                    </div>
                   </div>
 
                   <div className="modal-footer-btn">
-                    <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
+                    <button
+                      type="button"
+                      className="btn btn-cancel me-2"
+                      data-bs-dismiss="modal"
+                    >
                       Cancel
                     </button>
-                    <button type="button" className="btn btn-submit" onClick={handleSubmit}>
+                    <button
+                      type="button"
+                      className="btn btn-submit"
+                      onClick={handleSubmit}
+                    >
                       Submit
                     </button>
                   </div>

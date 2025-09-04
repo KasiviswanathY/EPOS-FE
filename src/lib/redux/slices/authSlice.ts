@@ -1,58 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { createUser } from "../actions/createUserAction";
-import { fetchUsersList } from "../actions/getallusersAction";
-import { patchUser } from "@/lib/redux/actions/updateAction";
-import { deleteUser } from "../actions/deleteUserAction";
-
 import { getRoles } from "../actions/createRoles";
 import { Company } from "../../../core/interfaces/Company";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  username?: string;
-  phone?: string;
-  role?: string;
-  createdon?: string;
-  status?: string;
-  description?: string;
-}
-
-interface Receipt {
-  id: string;
-  companyId: string;
-  footerText: string;
-  headerText: string;
-  printCopies: number;
-  showTaxSummary: boolean;
-  displayQRCode: boolean;
-  termsAndConditions: string;
-  guid: BigInteger;
-}
+import { User } from "@/core/interfaces/User";
 
 interface Role {
   id: string | number;
   name: string;
   description: string;
   permissions: string[];
-}
-
-export interface Locations {
-  id: string; // Assuming each location has a unique ID
-  name: string;
-  address: string;
-  city: string;
-  country: string;
-  pincode: string;
-  description: string;
-  status: "ACTIVE" | "INACTIVE"; // Enum-like restriction
-  email: string;
-  phone: string;
-  language: string;
-  timeZone: string;
-  companyId: string;
 }
 
 interface AppState {
@@ -66,11 +22,10 @@ interface AppState {
   loadingDelete: boolean;
   error: string | null;
   success: boolean;
-  usersList: User[];
+
   usersListLoading: boolean;
   usersListError: string | null;
   company: Company | null;
-  receipt: Receipt | null;
   receiptLoading: boolean;
   receiptError: string | null;
   receiptSuccess: boolean;
@@ -121,12 +76,12 @@ const initialState: AppState = {
   loadingDelete: false,
   error: null,
   success: false,
-  usersList: [],
+
   usersListLoading: false,
   usersListError: null,
 
   company: null,
-  receipt: null,
+
   receiptLoading: false,
   receiptError: null,
   receiptSuccess: false,
@@ -166,95 +121,6 @@ const appSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // ===== CREATE USER =====
-      .addCase(createUser.pending, (state) => {
-        state.loadingCreate = true;
-        state.error = null;
-        state.success = false;
-      })
-      .addCase(createUser.fulfilled, (state) => {
-        state.loadingCreate = false;
-        state.success = true;
-      })
-      .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loadingCreate = false;
-        state.error = action.payload;
-      })
-
-      // ===== FETCH USERS LIST =====
-      .addCase(fetchUsersList.pending, (state) => {
-        state.usersListLoading = true;
-        state.usersListError = null;
-      })
-      .addCase(
-        fetchUsersList.fulfilled,
-        (state, action: PayloadAction<User[]>) => {
-          state.usersList = action.payload;
-          state.usersListLoading = false;
-        }
-      )
-      .addCase(fetchUsersList.rejected, (state, action) => {
-        state.usersListLoading = false;
-        state.usersListError =
-          action.error.message || "Failed to load user list";
-      })
-
-      // ===== UPDATE USER =====
-      .addCase(patchUser.pending, (state) => {
-        state.loadingUpdate = true;
-        state.error = null;
-      })
-      .addCase(patchUser.fulfilled, (state, action: PayloadAction<User>) => {
-        state.loadingUpdate = false;
-        state.success = true;
-
-        const index = state.usersList.findIndex(
-          (u) => u.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.usersList[index] = action.payload;
-        }
-
-        if (state.user?.id === action.payload.id) {
-          state.user = { ...state.user, ...action.payload };
-          if (typeof window !== "undefined") {
-            localStorage.setItem("user", JSON.stringify(state.user));
-          }
-        }
-      })
-      .addCase(patchUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loadingUpdate = false;
-        state.error = action.payload;
-      })
-
-      // ===== DELETE USER =====
-      .addCase(deleteUser.pending, (state) => {
-        state.loadingDelete = true;
-        state.error = null;
-      })
-      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
-        state.loadingDelete = false;
-        state.success = true;
-
-        state.usersList = state.usersList.filter(
-          (u) => u.id.toString() !== action.payload
-        );
-
-        if (state.user?.id?.toString() === action.payload) {
-          state.user = null;
-          state.token = null;
-          state.isLoggedIn = false;
-
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("user");
-          }
-        }
-      })
-      .addCase(deleteUser.rejected, (state, action) => {
-        state.loadingDelete = false;
-        state.error = (action.payload as string) ?? null;
-      })
 
       ///roles
       .addCase(getRoles.pending, (state) => {

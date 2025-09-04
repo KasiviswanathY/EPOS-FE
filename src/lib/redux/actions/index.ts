@@ -27,6 +27,15 @@ export {
   deleteLocation,
 } from "./locationsActions";
 
+// Export all user actions
+export {
+  createUser,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} from "./userActions";
+
 export {
   createPopup,
    getAllPopups,
