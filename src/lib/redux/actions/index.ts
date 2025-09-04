@@ -18,7 +18,14 @@ export {
   deleteClockingType,
 } from "./clockingTypesActions";
 
-
+// Export all location actions
+export {
+  createLocation,
+  getAllLocations,
+  getLocation,
+  updateLocation,
+  deleteLocation,
+} from "./locationsActions";
 
 export {
   createPopup,

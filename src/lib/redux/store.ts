@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./slices/authSlice";
 import companyReducer from "./slices/companySlice";
 import clockingTypesReducer from "./slices/clockingTypesSlice";
+import locationsReducer from "./slices/locationsSlice";
 import popupReducer from "./slices/PopupSlice";
 import categoryReducer from "./slices/cateogrySlice";
 import brandsReducer from "./slices/brandslice";
@@ -14,6 +15,7 @@ export const store = configureStore({
     app: appReducer,
     company: companyReducer,
     clockingTypes: clockingTypesReducer,
+    locations: locationsReducer,
     popup: popupReducer,
     categories: categoryReducer,
     brand: brandsReducer,

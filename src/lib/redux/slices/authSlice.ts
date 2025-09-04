@@ -7,7 +7,6 @@ import { deleteUser } from "../actions/deleteUserAction";
 
 import { getRoles } from "../actions/createRoles";
 import { Company } from "../../../core/interfaces/Company";
-import { getLocations } from "../actions/createLocation";
 
 interface User {
   id: number;
@@ -75,13 +74,11 @@ interface AppState {
   receiptLoading: boolean;
   receiptError: string | null;
   receiptSuccess: boolean;
-  clockingTypes: any[]; // You can define a proper ClockingType interface if needed
+
   clockingLoading: boolean;
   clockingError: string | null;
   clockingSuccess: boolean;
-  setClockingTypes: any | null;
   roles: Role[];
-  Locations: any[];
 }
 
 // --- Helpers to load from localStorage safely ---
@@ -133,13 +130,11 @@ const initialState: AppState = {
   receiptLoading: false,
   receiptError: null,
   receiptSuccess: false,
-  clockingTypes: [],
   clockingLoading: false,
   clockingError: null,
   clockingSuccess: false,
-  setClockingTypes: undefined,
+
   roles: [],
-  Locations: [],
 };
 
 const appSlice = createSlice({
@@ -163,16 +158,6 @@ const appSlice = createSlice({
     },
     resetSuccess: (state) => {
       state.success = false;
-    },
-    updateLocationSuccess: (state, action) => {
-      state.Locations = state.Locations.map((loc) =>
-        loc.id === action.payload.id ? action.payload : loc
-      );
-    },
-    deleteLocationSuccess: (state, action) => {
-      state.Locations = state.Locations.filter(
-        (loc) => loc.id !== action.payload
-      );
     },
 
     setError: (state, action: PayloadAction<string | null>) => {
@@ -282,24 +267,9 @@ const appSlice = createSlice({
       .addCase(getRoles.rejected, (state) => {
         state.loading = false;
         state.roles = [];
-      })
-      ////locations
-      .addCase(getLocations.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getLocations.fulfilled, (state, action) => {
-        state.loading = false;
-        state.Locations = action.payload;
-      })
-      .addCase(getLocations.rejected, (state) => {
-        state.loading = false;
-        state.Locations = [];
       });
   },
 });
-
-export const { updateLocationSuccess, deleteLocationSuccess } =
-  appSlice.actions;
 
 export const { setUserFromLocal, logout, resetSuccess, setError } =
   appSlice.actions;

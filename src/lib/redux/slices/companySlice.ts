@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   createCompany,
+  getAllCompanies,
   getCompany,
   updateCompany,
 } from "../actions/companiesActions";
@@ -9,6 +10,7 @@ import { Company } from "../../../core/interfaces/Company";
 interface CompanyState {
   companyId: string | null;
   company: Company | null;
+  companies: Company[];
   loading: boolean;
   error: string | null;
   success: boolean;
@@ -17,6 +19,7 @@ interface CompanyState {
 const initialState: CompanyState = {
   companyId: null,
   company: null,
+  companies: [],
   loading: false,
   error: null,
   success: false,
@@ -31,6 +34,9 @@ const companySlice = createSlice({
     },
     updateCompanyState(state, action: PayloadAction<Company>) {
       state.company = action.payload;
+    },
+    setCompanies(state, action: PayloadAction<Company[]>) {
+      state.companies = action.payload;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
@@ -65,7 +71,6 @@ const companySlice = createSlice({
         state.error = (action.payload as string) ?? "Create company failed";
       })
 
-      // ===== GET COMPANY =====
       .addCase(getCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -81,7 +86,7 @@ const companySlice = createSlice({
         state.loading = false;
         state.error = (action.payload as string) ?? "Get company failed";
       })
-      // ===== UPDATE COMPANY =====
+
       .addCase(updateCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -96,6 +101,22 @@ const companySlice = createSlice({
       .addCase(updateCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "Update company failed";
+      })
+
+      .addCase(getAllCompanies.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllCompanies.fulfilled,
+        (state, action: PayloadAction<Company[]>) => {
+          state.loading = false;
+          state.companies = action.payload;
+        }
+      )
+      .addCase(getAllCompanies.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Get companies failed";
       });
   },
 });
@@ -103,6 +124,7 @@ const companySlice = createSlice({
 export const {
   setCompanyId,
   updateCompanyState,
+  setCompanies,
   setLoading,
   setError,
   clearError,
