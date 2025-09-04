@@ -7,6 +7,7 @@ import categoryReducer from "./slices/cateogrySlice";
 import brandsReducer from "./slices/brandslice";
 import taxratesReducer from "./slices/taxratesSlice";
 import productsReducer from "./slices/productSlice";
+import stockReducer from "./slices/stockSlice";
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -17,6 +18,7 @@ export const store = configureStore({
     brand:brandsReducer,
     taxrates: taxratesReducer,
     products: productsReducer,
+    stock: stockReducer,
   },
 });
 
