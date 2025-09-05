@@ -1,29 +1,35 @@
 "use client";
-{/* eslint-disable-next-line @next/next/no-img-element */}
+{
+  /* eslint-disable-next-line @next/next/no-img-element */
+}
 
 import { all_routes } from "@/data/all_routes";
 import FeatherIcon, { Search } from "feather-icons-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
 
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
-import { useDispatch } from 'react-redux';
-import { logout } from '@/lib/redux/slices/authSlice';
-import { useRouter } from 'next/navigation';
+import { useDispatch } from "react-redux";
+import { logout } from "@/lib/redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 import { RootState } from "@/lib/redux/store";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 export default function Header() {
   const route = all_routes;
+  const pathname = usePathname();
   const [toggle, SetToggle] = useState(false);
-  const [flagImage, setFlagImage] = useState("assets/img/flags/us-flag.svg");
-  const [pathname, setPathname] = useState(""); // State to store the pathname
+  const [flagImage] = useState("assets/img/flags/us-flag.svg");
   const [expandMenus, setExpandMenus] = useState(false); // Local state for expandMenus
-  const [dataLayout, setDataLayout] = useState("default"); // Local state for dataLayout
+  const [dataLayout] = useState("default"); // Local state for dataLayout
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-const user = useSelector((state: RootState) => state.app.user);
- 
+  const user = useSelector((state: RootState) => state.app.user);
+  const { currentUser } = useCurrentUser();
 
+  // Don't automatically fetch user on header load - only after login
 
   const handlesidebar = (): void => {
     document.body.classList.toggle("mini-sidebar");
@@ -34,9 +40,9 @@ const user = useSelector((state: RootState) => state.app.user);
   const router = useRouter();
 
   const handleLogout = () => {
-  dispatch(logout()); // 🧠 clear Redux state
-  router.replace('/signin'); // ⛔ back button won't go to dashboard
-};
+    dispatch(logout());
+    router.replace("/signin");
+  };
   const sidebarOverlay = (): void => {
     document?.querySelector(".main-wrapper")?.classList?.toggle("slide-nav");
     document?.querySelector(".sidebar-overlay")?.classList?.toggle("opened");
@@ -62,19 +68,16 @@ const user = useSelector((state: RootState) => state.app.user);
     document.body.classList.add("expand-menu");
   };
 
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const toggleFullscreen = () => {
     if (!isFullscreen) {
       if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch((err) => {
-        });
+        document.documentElement.requestFullscreen().catch(() => {});
         setIsFullscreen(true);
       }
     } else {
       if (document.exitFullscreen) {
         if (document.fullscreenElement) {
-          document.exitFullscreen().catch((err) => {
-          });
+          document.exitFullscreen().catch(() => {});
         }
         setIsFullscreen(false);
       }
@@ -83,7 +86,7 @@ const user = useSelector((state: RootState) => state.app.user);
 
   return (
     <>
-      <div className="header"style={{backgroundColor: 'skyblue'}}>
+      <div className="header" style={{ backgroundColor: "skyblue" }}>
         {/* Logo */}
         <div className="main-header">
           <div
@@ -550,8 +553,19 @@ const user = useSelector((state: RootState) => state.app.user);
                     <img src="assets/img/profiles/avator1.jpg" alt="Img" />
                   </span>
                   <div>
-                    <h6 className="fw-medium">Welcome,  {user?.name || user?.email || 'Guest'}</h6>
-                    <p>Admin</p>
+                    <h6 className="fw-medium">
+                      Welcome,
+                      {currentUser?.username ||
+                        currentUser?.email ||
+                        user?.username ||
+                        user?.email ||
+                        "Guest"}
+                    </h6>
+                    <p>
+                      {currentUser?.status === "ACTIVE"
+                        ? "Active User"
+                        : "Admin"}
+                    </p>
                   </div>
                 </div>
                 <Link className="dropdown-item" href={route.profile}>
@@ -571,7 +585,7 @@ const user = useSelector((state: RootState) => state.app.user);
                   <i className="ti ti-logout me-2" />
                   Logout
                 </a>
-              </div> 
+              </div>
             </li>
           </ul>
           {/* /Header Menu */}

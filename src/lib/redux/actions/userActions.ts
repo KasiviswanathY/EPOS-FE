@@ -22,6 +22,21 @@ export const createUser = createAsyncThunk(
   }
 );
 
+export const getCurrentUser = createAsyncThunk(
+  "user/getCurrentUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/api/users/me");
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      return rejectWithValue(
+        axiosError.response?.data || "Failed to fetch current user"
+      );
+    }
+  }
+);
+
 export const getAllUsers = createAsyncThunk(
   "user/getAllUsers",
   async (_, { rejectWithValue }) => {

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   createUser,
+  getCurrentUser,
   getAllUsers,
   getUser,
   updateUser,
@@ -11,6 +12,7 @@ import { User } from "../../../core/interfaces/User";
 interface UserState {
   userId: string | null;
   user: User | null;
+  currentUser: User | null; // Add current user state
   users: User[];
   loading: boolean;
   error: string | null;
@@ -20,6 +22,7 @@ interface UserState {
 const initialState: UserState = {
   userId: null,
   user: null,
+  currentUser: null,
   users: [],
   loading: false,
   error: null,
@@ -35,6 +38,9 @@ const userSlice = createSlice({
     },
     updateUserState(state, action: PayloadAction<User>) {
       state.user = action.payload;
+    },
+    setCurrentUser(state, action: PayloadAction<User | null>) {
+      state.currentUser = action.payload;
     },
     setUsers(state, action: PayloadAction<User[]>) {
       state.users = action.payload;
@@ -72,6 +78,22 @@ const userSlice = createSlice({
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "Create user failed";
+      })
+
+      .addCase(getCurrentUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getCurrentUser.fulfilled,
+        (state, action: PayloadAction<User>) => {
+          state.loading = false;
+          state.currentUser = action.payload;
+        }
+      )
+      .addCase(getCurrentUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Get current user failed";
       })
 
       .addCase(getUser.pending, (state) => {
@@ -154,6 +176,7 @@ const userSlice = createSlice({
 export const {
   setUserId,
   updateUserState,
+  setCurrentUser,
   setUsers,
   setLoading,
   setError,
