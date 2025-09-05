@@ -14,7 +14,6 @@ interface Role {
 interface AppState {
   id: string | null;
   user: User | null;
-  token: string | null;
   isLoggedIn: boolean;
   loading: boolean;
   loadingCreate: boolean;
@@ -37,14 +36,6 @@ interface AppState {
 }
 
 // --- Helpers to load from localStorage safely ---
-const getInitialToken = (): string | null => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("authToken");
-    return token && token !== "undefined" ? token : null;
-  }
-  return null;
-};
-
 const getInitialUser = (): User | null => {
   if (typeof window !== "undefined") {
     const user = localStorage.getItem("user");
@@ -64,11 +55,9 @@ const getInitialUser = (): User | null => {
 const initialState: AppState = {
   id: null,
   user: getInitialUser(),
-  token: getInitialToken(),
-  isLoggedIn: !!getInitialToken(),
+  isLoggedIn: !!getInitialUser(),
 
   // user: null,
-  // token: null,
   // isLoggedIn: false,
   loading: false,
   loadingCreate: false,
@@ -98,17 +87,16 @@ const appSlice = createSlice({
   reducers: {
     setUserFromLocal: (
       state,
-      action: PayloadAction<{ token: string; user: User }>
+      action: PayloadAction<{ user: User }>
     ) => {
-      state.token = action.payload.token;
       state.user = action.payload.user;
       state.isLoggedIn = true;
     },
     logout: (state) => {
-      state.token = null;
       state.user = null;
       state.isLoggedIn = false;
-      localStorage.removeItem("authToken");
+      
+      // Clear localStorage only (cookies are httpOnly and handled server-side)
       localStorage.removeItem("user");
     },
     resetSuccess: (state) => {

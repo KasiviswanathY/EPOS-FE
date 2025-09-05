@@ -1,6 +1,10 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { deleteRole, getRoles, updateRole } from "@/lib/redux/actions/createRoles";
+import {
+  deleteRole,
+  getRoles,
+  updateRole,
+} from "@/lib/redux/actions/createRoles";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +30,9 @@ export default function DesignationComponent() {
 
   // --- Delete modal state ---
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedRoleForDelete, setSelectedRoleForDelete] = useState<any | null>(null);
+  const [selectedRoleForDelete, setSelectedRoleForDelete] = useState<
+    any | null
+  >(null);
   const [deleting, setDeleting] = useState(false);
 
   // Fetch roles on mount / token change
@@ -50,7 +56,9 @@ export default function DesignationComponent() {
     setEditRoleId(role.id);
     setEditName(role.name ?? "");
     setEditDescription(role.description ?? "");
-    setEditPermissions(Array.isArray(role.permissions) ? [...role.permissions] : []);
+    setEditPermissions(
+      Array.isArray(role.permissions) ? [...role.permissions] : []
+    );
     setModalOpen(true);
   };
 
@@ -156,7 +164,9 @@ export default function DesignationComponent() {
                       <td key={perm}>
                         <input
                           type="checkbox"
-                          checked={Boolean(role.permissions && role.permissions.includes(perm))}
+                          checked={Boolean(
+                            role.permissions && role.permissions.includes(perm)
+                          )}
                           readOnly
                         />
                       </td>
@@ -190,7 +200,10 @@ export default function DesignationComponent() {
           </div>
 
           <div className="d-flex justify-content-start mt-4">
-            <Link href="/employees-grid" className="btn btn-success flex items-center gap-1">
+            <Link
+              href="/employees-grid"
+              className="btn btn-success flex items-center gap-1"
+            >
               <span className="text-lg leading-none"></span>Edit Staff
             </Link>
           </div>
@@ -248,7 +261,10 @@ export default function DesignationComponent() {
                             checked={editPermissions.includes(perm)}
                             onChange={() => handlePermissionToggle(perm)}
                           />
-                          <label className="form-check-label" htmlFor={`perm-edit-${perm}`}>
+                          <label
+                            className="form-check-label"
+                            htmlFor={`perm-edit-${perm}`}
+                          >
                             {perm.replace(/_/g, " ")}
                           </label>
                         </div>
@@ -259,10 +275,17 @@ export default function DesignationComponent() {
               </div>
 
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setModalOpen(false)}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setModalOpen(false)}
+                >
                   Cancel
                 </button>
-                <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSave}
+                  disabled={saving}
+                >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
@@ -273,23 +296,45 @@ export default function DesignationComponent() {
 
       {/* ===== Delete Confirmation Modal ===== */}
       {deleteModalOpen && selectedRoleForDelete && (
-        <div className="modal-backdrop" style={{
+        <div
+          className="modal-backdrop"
+          style={{
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,0.5)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1050
-          }}>
-          <div style={{ background: "#fff", borderRadius: 8, padding: 20, maxWidth: 480, width: "95%" }}>
+            zIndex: 1050,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 8,
+              padding: 20,
+              maxWidth: 480,
+              width: "95%",
+            }}
+          >
             <h5>Confirm Delete</h5>
-            <p>Are you sure you want to delete the role <strong>{selectedRoleForDelete.name}</strong>?</p>
+            <p>
+              Are you sure you want to delete the role{" "}
+              <strong>{selectedRoleForDelete.name}</strong>?
+            </p>
             <div className="d-flex justify-content-end gap-2 mt-3">
-              <button className="btn btn-secondary" onClick={() => setDeleteModalOpen(false)} disabled={deleting}>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setDeleteModalOpen(false)}
+                disabled={deleting}
+              >
                 Cancel
               </button>
-              <button className="btn btn-danger" onClick={confirmDelete} disabled={deleting}>
+              <button
+                className="btn btn-danger"
+                onClick={confirmDelete}
+                disabled={deleting}
+              >
                 {deleting ? "Deleting..." : "Yes, Delete"}
               </button>
             </div>

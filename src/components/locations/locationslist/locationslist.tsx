@@ -18,7 +18,6 @@ export default function LocationsListComponent() {
   const { locations = [], loading } = useSelector(
     (state: RootState) => state.locations
   );
-  const { token } = useSelector((state: RootState) => state.app);
 
   const [filter, setFilter] = useState("");
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -30,10 +29,8 @@ export default function LocationsListComponent() {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
-    if (token) {
-      dispatch(getAllLocations());
-    }
-  }, [token, dispatch]);
+    dispatch(getAllLocations());
+  }, [dispatch]);
 
   const filteredData = locations.filter((item: Location) =>
     filter.trim() === ""

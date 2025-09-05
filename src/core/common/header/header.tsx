@@ -26,7 +26,7 @@ export default function Header() {
   const [dataLayout] = useState("default"); // Local state for dataLayout
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const user = useSelector((state: RootState) => state.app.user);
+  const user = useSelector((state: RootState) => state.users.currentUser);
   const { currentUser } = useCurrentUser();
 
   // Don't automatically fetch user on header load - only after login
@@ -39,7 +39,19 @@ export default function Header() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+
+    // Clear Redux state and localStorage
     dispatch(logout());
     router.replace("/signin");
   };
