@@ -10,6 +10,7 @@ import taxratesReducer from "./slices/taxratesSlice";
 import productsReducer from "./slices/productSlice";
 import receiptsReducer from "./slices/receiptsSlice";
 import userReducer from "./slices/userSlice";
+import rolesReducer from "./slices/rolesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     products: productsReducer,
     receipts: receiptsReducer,
     users: userReducer,
+    roles: rolesReducer,
   },
 });
 

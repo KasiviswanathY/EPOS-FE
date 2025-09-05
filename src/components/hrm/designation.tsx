@@ -2,10 +2,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   deleteRole,
-  getRoles,
+  getAllRoles,
   updateRole,
-} from "@/lib/redux/actions/createRoles";
+} from "@/lib/redux/actions/rolesActions";
 import { AppDispatch, RootState } from "@/lib/redux/store";
+import { Role, Staff_Role_Permissions } from "@/core/interfaces/Role";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -14,45 +15,44 @@ export default function DesignationComponent() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  // keep your original selector (roles stored on state.app)
-  const { roles = [], loading } = useSelector((state: RootState) => state.app);
-
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+  const { roles = [], loading } = useSelector(
+    (state: RootState) => state.roles
+  );
 
   // --- Edit modal state ---
   const [modalOpen, setModalOpen] = useState(false);
   const [editRoleId, setEditRoleId] = useState<string | number | null>(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const [editPermissions, setEditPermissions] = useState<string[]>([]);
+  const [editPermissions, setEditPermissions] = useState<
+    Staff_Role_Permissions[]
+  >([]);
   const [saving, setSaving] = useState(false);
 
   // --- Delete modal state ---
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedRoleForDelete, setSelectedRoleForDelete] = useState<
-    any | null
-  >(null);
+  const [selectedRoleForDelete, setSelectedRoleForDelete] =
+    useState<Role | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch roles on mount / token change
+  // Fetch roles on mount
   useEffect(() => {
-    if (token) {
-      dispatch(getRoles({ token }));
-    }
-  }, [token, dispatch]);
+    dispatch(getAllRoles());
+  }, [dispatch]);
 
   // Collect all unique permissions to render columns and checkboxes
   const allPermissions = useMemo(() => {
-    const perms = new Set<string>();
-    (roles || []).forEach((role: any) => {
-      (role.permissions || []).forEach((p: string) => perms.add(p));
+    const perms = new Set<Staff_Role_Permissions>();
+    (roles || []).forEach((role: Role) => {
+      (role.permissions || []).forEach((p: Staff_Role_Permissions) =>
+        perms.add(p)
+      );
     });
     return Array.from(perms).sort();
   }, [roles]);
 
   // --- Edit handlers ---
-  const handleEditClick = (role: any) => {
+  const handleEditClick = (role: Role) => {
     setEditRoleId(role.id);
     setEditName(role.name ?? "");
     setEditDescription(role.description ?? "");
@@ -62,27 +62,26 @@ export default function DesignationComponent() {
     setModalOpen(true);
   };
 
-  const handlePermissionToggle = (perm: string) => {
+  const handlePermissionToggle = (perm: Staff_Role_Permissions) => {
     setEditPermissions((prev) =>
       prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
     );
   };
 
   const handleSave = async () => {
-    if (!editRoleId || !token) return;
+    if (!editRoleId) return;
     setSaving(true);
     try {
-      const payload = {
+      const data = {
         name: editName,
         description: editDescription,
         permissions: editPermissions,
       };
-      // dispatch PATCH (your updateRole thunk)
-      await dispatch(updateRole({ id: editRoleId, payload, token }));
-      // refresh and navigate back to designation page
-      await dispatch(getRoles({ token }));
+
+      await dispatch(updateRole({ id: editRoleId.toString(), data }));
+      await dispatch(getAllRoles());
       setModalOpen(false);
-      // navigate to designation (if you want explicit navigation)
+
       router.push("/designation");
     } catch (err) {
       console.error("Update failed", err);
@@ -91,18 +90,17 @@ export default function DesignationComponent() {
     }
   };
 
-  // --- Delete handlers ---
-  const handleDeleteClick = (role: any) => {
+  const handleDeleteClick = (role: Role) => {
     setSelectedRoleForDelete(role);
     setDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (!selectedRoleForDelete || !token) return;
+    if (!selectedRoleForDelete) return;
     setDeleting(true);
     try {
-      await dispatch(deleteRole({ id: selectedRoleForDelete.id, token }));
-      await dispatch(getRoles({ token }));
+      await dispatch(deleteRole(selectedRoleForDelete.id));
+      await dispatch(getAllRoles());
       setDeleteModalOpen(false);
       setSelectedRoleForDelete(null);
       // navigate back to designation (optional)
@@ -155,7 +153,7 @@ export default function DesignationComponent() {
               </thead>
 
               <tbody>
-                {roles.map((role: any) => (
+                {roles.map((role: Role) => (
                   <tr key={role.id}>
                     <td>{role.name}</td>
                     <td>{role.description}</td>

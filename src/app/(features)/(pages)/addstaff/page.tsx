@@ -3,47 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/redux/store";
-import { createRole } from "@/lib/redux/actions/createRoles";
+import { createRole } from "@/lib/redux/actions/rolesActions";
+import { Staff_Role_Permissions } from "@/core/interfaces/Role";
 
 export default function AddRolePage() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
-  const PERMISSIONS = [
-    "BACK_OFFICE",
-    "TILL",
-    "ADMIN_ACCESS_ON_TILL",
-    "TILL_SETTINGS",
-    "QUICK_ADD_SETTINGS",
-    "CLOCK_IN_CLOCK_OUT_INFO",
-    "MANAGER_OVERRIDE",
-    "NO_SALES",
-    "PETTY_CASH",
-    "FLOAT_ADJUSTMENT",
-    "STOCK_SEND",
-    "STOCK_RECEIVE",
-    "STOCK_TAKE",
-    "PAYOUTS",
-    "HOLD",
-    "CLOSE_TILL",
-    "BLIND_END_OF_DAY",
-    "VOID_ANY_ITEM",
-    "DELETE_UNORDERED_ITEMS",
-    "CLEAR_TRANSACTION",
-    "REMOVE_FROM_TABLE",
-    "ITEM_DISCOUNT",
-    "ITEM_DISCOUNT_LIMIT",
-    "ITEM_DISCOUNT_LIMIT_PERCENTAGE",
-    "BASKET_DISCOUNT",
-  ];
+  const PERMISSIONS = Object.values(Staff_Role_Permissions);
 
   const [form, setForm] = useState({
     name: "",
     description: "",
-    permissions: [] as string[],
+    permissions: [] as Staff_Role_Permissions[],
   });
   // Keep track of the last visited page using localStorage
   const lastVisited =
@@ -71,7 +43,7 @@ export default function AddRolePage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const togglePermission = (perm: string) => {
+  const togglePermission = (perm: Staff_Role_Permissions) => {
     setForm((prev) => {
       const selected = prev.permissions.includes(perm)
         ? prev.permissions.filter((p) => p !== perm)
@@ -83,13 +55,13 @@ export default function AddRolePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
+    const roleData = {
       name: form.name,
       description: form.description,
       permissions: form.permissions,
     };
 
-    dispatch(createRole({ payload, token }));
+    dispatch(createRole(roleData));
     router.push("/designation");
   };
 

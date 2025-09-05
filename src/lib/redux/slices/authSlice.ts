@@ -1,15 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { getRoles } from "../actions/createRoles";
 import { Company } from "../../../core/interfaces/Company";
 import { User } from "@/core/interfaces/User";
-
-interface Role {
-  id: string | number;
-  name: string;
-  description: string;
-  permissions: string[];
-}
 
 interface AppState {
   id: string | null;
@@ -32,7 +24,6 @@ interface AppState {
   clockingLoading: boolean;
   clockingError: string | null;
   clockingSuccess: boolean;
-  roles: Role[];
 }
 
 // --- Helpers to load from localStorage safely ---
@@ -77,25 +68,20 @@ const initialState: AppState = {
   clockingLoading: false,
   clockingError: null,
   clockingSuccess: false,
-
-  roles: [],
 };
 
 const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setUserFromLocal: (
-      state,
-      action: PayloadAction<{ user: User }>
-    ) => {
+    setUserFromLocal: (state, action: PayloadAction<{ user: User }>) => {
       state.user = action.payload.user;
       state.isLoggedIn = true;
     },
     logout: (state) => {
       state.user = null;
       state.isLoggedIn = false;
-      
+
       // Clear localStorage only (cookies are httpOnly and handled server-side)
       localStorage.removeItem("user");
     },
@@ -106,22 +92,6 @@ const appSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-
-      ///roles
-      .addCase(getRoles.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getRoles.fulfilled, (state, action) => {
-        state.loading = false;
-        state.roles = action.payload;
-      })
-      .addCase(getRoles.rejected, (state) => {
-        state.loading = false;
-        state.roles = [];
-      });
   },
 });
 
