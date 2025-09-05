@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 
 import { useDispatch } from "react-redux";
-import { logout } from "@/lib/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/lib/redux/store";
 import useCurrentUser from "@/hooks/useCurrentUser";
@@ -51,8 +50,6 @@ export default function Header() {
       console.error("Error during logout:", error);
     }
 
-    // Clear Redux state and localStorage
-    dispatch(logout());
     router.replace("/signin");
   };
   const sidebarOverlay = (): void => {
