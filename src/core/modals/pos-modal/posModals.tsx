@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Edit, Eye, Trash2 } from "feather-icons-react";
 
 type PosModalsProps = {
-  payingAmount: number;
+  payingAmount?: number;
 };
 
 const PosModals = ({ payingAmount }: PosModalsProps) => {
