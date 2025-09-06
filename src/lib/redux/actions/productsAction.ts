@@ -1,17 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import axios, { AxiosError } from "axios";
-import { Company } from "../../../core/interfaces/Company";
-import { Products } from "@/core/interfaces/Products";
+
+import { Product } from "@/core/interfaces/Products";
 
 interface UpdateproductsPayload {
   id: string;
-  data: Partial<Products>;
+  data: Partial<Product>;
 }
 
 export const createproducts = createAsyncThunk(
   "products/create",
-  async (payload: Partial<Products>, thunkAPI) => {
+  async (payload: Partial<Product>, thunkAPI) => {
     try {
       const response = await axios.post("/api/products", payload);
       return response.data;
@@ -29,6 +29,7 @@ export const getAllproducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("/api/products");
+
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -48,7 +49,7 @@ export const getproducts = createAsyncThunk(
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || "Failed to fetch comproductspany"
+        axiosError.response?.data || "Failed to fetch products"
       );
     }
   }

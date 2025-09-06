@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Products } from "@/core/interfaces/Products";
+import { Product } from "@/core/interfaces/Products";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { getAllCateogry } from "@/lib/redux/actions/categoryActions";
 import { getAllBrands } from "@/lib/redux/actions/brandAction";
@@ -24,7 +24,7 @@ export default function AddProduct() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Products>();
+  } = useForm<Product>();
 
   // fetch dropdown data
   useEffect(() => {
@@ -33,8 +33,8 @@ export default function AddProduct() {
     dispatch(getAllTaxRates());
   }, [dispatch]);
 
-  const onSubmit = (data: Products) => {
-    const payload: Products = {
+  const onSubmit = (data: Product) => {
+    const payload: Product = {
       ...data,
       costPrice: Number(data.costPrice),
       salePrice: Number(data.salePrice),
