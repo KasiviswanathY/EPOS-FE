@@ -57,8 +57,6 @@ export default function ReceiptsComponent() {
   const [receiptId, setReceiptId] = useState<string | null>(null);
   const hasFetchedCompanies = useRef(false);
 
-  console.log("company", company);
-
   const {
     register,
     handleSubmit,
