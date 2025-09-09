@@ -1,75 +1,96 @@
-// redux/slices/productSlice.ts
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  createproducts,
-  getproducts,
   getAllproducts,
+  createproducts,
+  updateproducts,
+  deleteproducts,
+  Products,
 } from "../actions/productsAction";
-import { Product } from "@/core/interfaces/Products";
 
-interface ProductState {
-  products: Product[]; // 👈 properly type this
+interface ProductsState {
+  products: Products[];
   loading: boolean;
   error: string | null;
+  success: boolean;
 }
 
-const initialState: ProductState = {
+const initialState: ProductsState = {
   products: [],
   loading: false,
   error: null,
+  success: false,
 };
 
-const productSlice = createSlice({
+const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    resetProductsState: (state) => {
+      state.loading = false;
+      state.error = null;
+      state.success = false;
+    },
+  },
   extraReducers: (builder) => {
-    // Create Product
+    // ✅ Create
     builder.addCase(createproducts.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(createproducts.fulfilled, (state, action) => {
-      state.loading = false;
-      state.products.push(action.payload as Product); // 👈 tell TS the payload is Product
-    });
-    builder.addCase(createproducts.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+        state.loading = true;
+      })
+      .addCase(createproducts.fulfilled, (state, action: PayloadAction<Products>) => {
+        state.loading = false;
+        state.success = true;
+        state.products.unshift(action.payload);
+      })
+      .addCase(createproducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
-    // Get Products
-    builder.addCase(getproducts.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(getproducts.fulfilled, (state, action) => {
-      state.loading = false;
-      // if backend returns { data: Product[] }
-      state.products = action.payload.data as Product[];
-    });
-    builder.addCase(getproducts.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // Get All Products
+    // ✅ Get All
     builder.addCase(getAllproducts.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(getAllproducts.fulfilled, (state, action) => {
-      state.loading = false;
+        state.loading = true;
+      })
+      .addCase(getAllproducts.fulfilled, (state, action: PayloadAction<{ data: Products[] }>) => {
+        state.loading = false;
+        state.products = action.payload.data;
+      })
+      .addCase(getAllproducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
-      state.products = Array.isArray(action.payload)
-        ? (action.payload as Product[])
-        : (action.payload.data as Product[]) || [];
-    });
-    builder.addCase(getAllproducts.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+    // ✅ Update
+    builder.addCase(updateproducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateproducts.fulfilled, (state, action: PayloadAction<Products>) => {
+        state.loading = false;
+        state.success = true;
+        const index = state.products.findIndex((p) => p.id === action.payload.id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+      })
+      .addCase(updateproducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    // ✅ Delete
+    builder.addCase(deleteproducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteproducts.fulfilled, (state, action: PayloadAction<{ id: string }>) => {
+        state.loading = false;
+        state.success = true;
+        state.products = state.products.filter((p) => p.id !== action.payload.id);
+      })
+      .addCase(deleteproducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
-export default productSlice.reducer;
+export const { resetProductsState } = productsSlice.actions;
+export default productsSlice.reducer;
