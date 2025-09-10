@@ -7,8 +7,9 @@ import { Product } from "@/core/interfaces/Products";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { getAllCateogry } from "@/lib/redux/actions/categoryActions";
 import { getAllBrands } from "@/lib/redux/actions/brandAction";
-import { createproducts } from "@/lib/redux/actions/productsAction";
+
 import { getAllTaxRates } from "@/lib/redux/actions/taxratesAction";
+import { createproducts } from "@/lib/redux/actions/productsAction";
 
 export default function AddProduct() {
   const dispatch = useDispatch<AppDispatch>();
@@ -290,7 +291,13 @@ export default function AddProduct() {
               <button type="submit" className="btn btn-primary" disabled={productLoading}>
                 {productLoading ? "Saving..." : "Save Product"}
               </button>
-              {error && <p className="text-danger mt-2">{error}</p>}
+             {error && Object.keys(error).length > 0 && (
+  <p className="text-danger mt-2">
+    {typeof error === "string"
+      ? error
+      : error?.message || "Something went wrong"}
+  </p>
+)}
             </div>
           </div>
         </form>
