@@ -3,8 +3,13 @@ import CartCounter from "@/core/common/counter/counter";
 import { CartItems } from "@/core/interfaces/CartItems";
 import { Product } from "@/core/interfaces/Products";
 import Link from "next/link";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import Select from "react-select";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { createOrder } from "@/lib/redux/actions/orderActions";
+import { OrderItem } from "@/core/interfaces/Order";
+import { clearOrderState } from "@/lib/redux/slices/orderSlice";
 
 const options = [{ value: "1", label: "Walk in Customer" }];
 
@@ -14,15 +19,32 @@ const Orders = ({
   removeFromCart,
   orderTotal,
   setOrderTotal,
+  selectedLocationId,
+  selectedStaffId,
 }: {
   cartItems: CartItems[];
   setCartItems: React.Dispatch<React.SetStateAction<CartItems[]>>;
   removeFromCart: (id: string) => void;
   orderTotal: number;
   setOrderTotal: React.Dispatch<React.SetStateAction<number>>;
+  selectedLocationId: string;
+  selectedStaffId: string;
 }) => {
+  const [isClient, setIsClient] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    loading: orderLoading,
+    error: orderError,
+    success: orderSuccess,
+  } = useSelector((state: RootState) => state.orders);
+
   const shippingCost = 0;
   const couponDiscount = 0;
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const totalTaxRate = useMemo(() => {
     return cartItems.reduce((total, item) => {
@@ -45,7 +67,7 @@ const Orders = ({
   const roundedOff = Math.round(orderTotalRaw * 100) / 100;
   const hasRoundoff = Math.abs(roundedOff - orderTotalRaw) > 0.001;
 
-  const [useRoundoff, setUseRoundoff] = React.useState(hasRoundoff);
+  const [useRoundoff, setUseRoundoff] = React.useState(false);
 
   React.useEffect(() => {
     setUseRoundoff(hasRoundoff);
@@ -55,9 +77,105 @@ const Orders = ({
     setOrderTotal(useRoundoff ? roundedOff : orderTotalRaw);
   }, [useRoundoff, orderTotalRaw, roundedOff, setOrderTotal]);
 
+  React.useEffect(() => {
+    if (orderSuccess || orderError) {
+      const timer = setTimeout(() => {
+        dispatch(clearOrderState());
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [orderSuccess, orderError, dispatch]);
+
+  const handlePlaceOrder = async () => {
+    if (cartItems.length === 0) {
+      alert("Please add items to cart before placing order");
+      return;
+    }
+
+    if (!selectedLocationId) {
+      alert("Please select a location before placing order");
+      return;
+    }
+
+    try {
+      const subTotal = cartItems.reduce((total, item) => {
+        return total + (item.salePrice || 0) * item.quantity;
+      }, 0);
+
+      const orderItems: OrderItem[] = cartItems.map((item) => ({
+        productId: item.id || "",
+        quantity: item.quantity,
+        price: Math.round((item.salePrice || 0) * 100) / 100,
+        taxRate: Math.round((item.taxRate?.percentage || 0) * 10000) / 100,
+        totalPrice:
+          Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
+      }));
+
+      // Prepare order data
+      const orderData = {
+        orderNumber: `ORD${Date.now()}`,
+        status: "PENDING" as const,
+        orderDate: new Date().toISOString(),
+        totalAmount: Math.round(orderTotal * 100) / 100,
+        subTotal: Math.round(subTotal * 100) / 100,
+        taxAmount: Math.round(totalTaxRate * 100) / 100,
+        discountAmount: Math.round(couponDiscount * 100) / 100,
+        finalAmount: Math.round(orderTotal * 100) / 100,
+        paymentMethod: "CASH" as const,
+        paymentStatus: "PENDING" as const,
+        notes: "",
+        locationId: selectedLocationId,
+        processedByStaffId: selectedStaffId,
+        orderItems: orderItems,
+      };
+
+      // Dispatch the create order action
+      const result = await dispatch(createOrder(orderData)).unwrap();
+
+      if (result) {
+        alert(`Order placed successfully! Order ID: ${result.id}`);
+        // Clear cart after successful order
+        setCartItems([]);
+        setOrderTotal(0);
+      }
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      alert("Failed to place order. Please try again.");
+    }
+  };
+
   return (
     <div className="col-md-12 col-lg-5 col-xl-4 ps-0 theiaStickySidebar d-lg-flex">
       <aside className="product-order-list bg-secondary-transparent flex-fill">
+        {orderError && (
+          <div
+            className="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <strong>Order Error:</strong> {orderError}
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
+        {orderSuccess && (
+          <div
+            className="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            <strong>Success:</strong> Order placed successfully!
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
         <div className="card">
           <div className="card-body">
             <div className="order-head d-flex align-items-center justify-content-between w-100">
@@ -77,12 +195,14 @@ const Orders = ({
               <h5 className="mb-2">Customer Information</h5>
               <div className="d-flex align-items-center gap-2">
                 <div className="flex-grow-1">
-                  <Select
-                    options={options}
-                    classNamePrefix="react-select select"
-                    placeholder="Choose a Name"
-                    defaultValue={options[0]}
-                  />
+                  {isClient && (
+                    <Select
+                      options={options}
+                      classNamePrefix="react-select select"
+                      placeholder="Choose a Name"
+                      defaultValue={options[0]}
+                    />
+                  )}
                 </div>
                 <Link
                   href="#"
@@ -483,9 +603,17 @@ const Orders = ({
           <Link
             href="#"
             className="btn btn-secondary d-flex align-items-center justify-content-center flex-fill m-0"
+            onClick={(e) => {
+              e.preventDefault();
+              handlePlaceOrder();
+            }}
+            style={{
+              opacity: orderLoading ? 0.7 : 1,
+              cursor: orderLoading ? "not-allowed" : "pointer",
+            }}
           >
             <i className="ti ti-shopping-cart me-2" />
-            Place Order
+            {orderLoading ? "Processing..." : "Place Order"}
           </Link>
         </div>
       </aside>

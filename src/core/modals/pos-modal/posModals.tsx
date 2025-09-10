@@ -3099,7 +3099,7 @@ const PosModals = ({ payingAmount }: PosModalsProps) => {
                         <input
                           type="text"
                           className="form-control"
-                          value={payingAmount}
+                          readOnly
                           defaultValue={payingAmount}
                         />
                       </div>
