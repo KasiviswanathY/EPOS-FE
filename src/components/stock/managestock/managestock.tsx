@@ -1,99 +1,175 @@
-'use client';
-import React, { useState, useEffect, useMemo } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
-import Table from "@/core/common/pagination/datatable";
-import CommonFooter from "@/core/common/footer/commonFooter";
-import { deleteStock, getAllStock, Stock, updateStock } from "@/lib/redux/actions/stockActions";
+import { getAllstocks, deletestock } from "@/lib/redux/actions/stockActions";
 import AddStockModal from "@/core/modals/inventory/addstockmodal";
-
-const PAGE_SIZE = 10;
+import CommonFooter from "@/core/common/footer/commonFooter";
+import Table from "@/core/common/pagination/datatable";
+import { Edit, Trash2 } from "feather-icons-react";
+import Link from "next/link";
+import { Stock } from "@/core/interfaces/Stock";
 
 export default function ManageStockComponent() {
   const dispatch = useDispatch<AppDispatch>();
-  const { stockRecords, loading, page, total, totalPages } = useSelector((state: RootState) => state.stock);
+  const { stockRecords, loading } = useSelector(
+    (state: RootState) => state.stock
+  );
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStock, setSelectedStock] = useState<Stock | undefined>(undefined);
+
+  // delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentStock, setCurrentStock] = useState<Stock | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const [currentPage, setCurrentPage] = useState(1);
-
+  // Fetch all stocks on mount
   useEffect(() => {
-    dispatch(getAllStock({ page: currentPage, pageSize: PAGE_SIZE }));
-  }, [dispatch, currentPage]);
+    dispatch(getAllstocks());
+  }, [dispatch]);
 
-  const handleAddSuccess = () => {
-    dispatch(getAllStock({ page: currentPage, pageSize: PAGE_SIZE }));
+  const handleAdd = () => {
+    setSelectedStock(undefined);
+    setIsModalOpen(true);
   };
 
-  const handleEditClick = (record: Stock) => {
-    setCurrentStock(record);
-    setIsEditModalOpen(true);
+  const handleEdit = (stock: Stock) => {
+    setSelectedStock(stock);
+    setIsModalOpen(true);
   };
 
-  const handleDeleteClick = (record: Stock) => {
-    setCurrentStock(record);
-    setIsDeleteModalOpen(true);
-  };
-
-  const confirmDelete = async () => {
-    if (currentStock) {
-      await dispatch(deleteStock(currentStock.id));
+  const handleDelete = async () => {
+    if (deleteId) {
+      await dispatch(deletestock(deleteId));
       setIsDeleteModalOpen(false);
+      setDeleteId(null);
     }
   };
 
-  const handlePreviousPage = () => setCurrentPage(p => Math.max(p - 1, 1));
-  const handleNextPage = () => setCurrentPage(p => Math.min(p + 1, totalPages));
-
-  const columns = useMemo(() => [
-    { title: "Product Name", key: 'name', render: (record: Stock) => record.product?.name || '--' },
-    { title: "Location", key: 'location', render: (record: Stock) => record.location?.name || '--' },
-    { title: "Quantity", key: 'quantity', dataIndex: 'quantity' },
-    { title: "Min Stock", key: 'minStockLevel', dataIndex: 'minStockLevel' },
-    { title: "Max Stock", key: 'maxStockLevel', dataIndex: 'maxStockLevel' },
-    { title: "Reorder Level", key: 'reorderLevel', dataIndex: 'reorderLevel' },
-    { title: "Actions", key: 'action', render: (record: Stock) => (
-      <div className="dropdown">
-        <button className="btn p-0" data-bs-toggle="dropdown">⋮</button>
-        <ul className="dropdown-menu">
-          <li><button className="dropdown-item" onClick={() => handleEditClick(record)}>Edit</button></li>
-          <li><button className="dropdown-item text-danger" onClick={() => handleDeleteClick(record)}>Delete</button></li>
-        </ul>
-      </div>
-    )}
-  ], [stockRecords]);
+  const columns = [
+    {
+      title: "Product",
+      dataIndex: "product",
+      render: (product: any) => product?.name || "-",
+    },
+    {
+      title: "Location",
+      dataIndex: "location",
+      render: (location: any) => location?.name || "-",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+    },
+    {
+      title: "Min Level",
+      dataIndex: "minStockLevel",
+    },
+    {
+      title: "Max Level",
+      dataIndex: "maxStockLevel",
+    },
+    {
+      title: "Reorder Level",
+      dataIndex: "reorderLevel",
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      render: (_: any, record: Stock) => (
+        <div className="d-flex gap-2">
+          <Link href="#" onClick={() => handleEdit(record)}>
+            <Edit className="feather-edit" />
+          </Link>
+          <Link
+            href="#"
+            onClick={() => {
+              setDeleteId(record.id);
+              setIsDeleteModalOpen(true);
+            }}
+          >
+            <Trash2 className="feather-trash-2" />
+          </Link>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="page-wrapper">
-      <div className="content">
-        <div className="card shadow-sm border-0">
-          <div className="card-header d-flex justify-content-between align-items-center">
-            <h5>Manage Stock</h5>
-            <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>+ Add Stock</button>
+    <>
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="page-header d-flex justify-content-between">
+            <div>
+              <h4>Manage Stock</h4>
+              <h6>Manage your stock</h6>
+            </div>
+            <div className="page-btn">
+              <button className="btn btn-primary" onClick={handleAdd}>
+                <i className="ti ti-circle-plus me-1"></i>
+                Add Stock
+              </button>
+            </div>
           </div>
-          <div className="card-body px-4">
-            <Table columns={columns} dataSource={stockRecords} loading={loading} />
-            {!loading && total > 0 && (
-              <div className="d-flex justify-content-between mt-3">
-                <span>Showing {(page-1)*PAGE_SIZE+1}-{Math.min(page*PAGE_SIZE,total)} of {total}</span>
-                <div className="btn-group">
-                  <button className="btn btn-outline-secondary" onClick={handlePreviousPage} disabled={page<=1}>Previous</button>
-                  <button className="btn btn-outline-secondary" onClick={handleNextPage} disabled={page>=totalPages}>Next</button>
-                </div>
-              </div>
-            )}
+
+          <div className="card table-list-card manage-stock">
+            <div className="card-body">
+              {loading ? (
+                <p>Loading...</p>
+              ) : (
+                <Table columns={columns} dataSource={stockRecords} />
+              )}
+            </div>
           </div>
         </div>
-
-        <AddStockModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onAddSuccess={handleAddSuccess} />
-
-        {/* Edit/Delete modals similar to previous code */}
-
         <CommonFooter />
       </div>
-    </div>
+
+      {/* Add/Edit Modal */}
+      <AddStockModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => dispatch(getAllstocks())}
+        stock={selectedStock}
+      />
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="modal fade show d-block" tabIndex={-1} role="dialog">
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content p-3">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to delete this stock record?</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleDelete}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

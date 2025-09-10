@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Stock } from "../actions/stockActions";
+
 import {
-  getAllStock,
+  getAllstocks,
   createStock,
   updateStock,
-  deleteStock,
+  deletestock,
 } from "../actions/stockActions";
+import { Stock } from "@/core/interfaces/Stock";
 
 // --- STATE TYPE ---
 interface StockState {
@@ -46,10 +47,10 @@ const stockSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // GET ALL
-      .addCase(getAllStock.pending, (state) => {
+      .addCase(getAllstocks.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getAllStock.fulfilled, (state, action) => {
+      .addCase(getAllstocks.fulfilled, (state, action) => {
         state.loading = false;
         state.stockRecords = action.payload.data; // ✅ fixed
         state.page = action.payload.page;
@@ -57,7 +58,7 @@ const stockSlice = createSlice({
         state.total = action.payload.total;
         state.totalPages = action.payload.totalPages;
       })
-      .addCase(getAllStock.rejected, (state, action) => {
+      .addCase(getAllstocks.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -89,7 +90,7 @@ const stockSlice = createSlice({
       })
 
       // DELETE
-      .addCase(deleteStock.fulfilled, (state, action) => {
+      .addCase(deletestock.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
         state.stockRecords = state.stockRecords.filter(
