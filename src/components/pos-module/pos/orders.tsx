@@ -106,7 +106,7 @@ const Orders = ({
       const orderItems: OrderItem[] = cartItems.map((item) => ({
         productId: item.id || "",
         quantity: item.quantity,
-        price: Math.round((item.salePrice || 0) * 100) / 100,
+        unitPrice: Math.round((item.salePrice || 0) * 100) / 100,
         taxRate: Math.round((item.taxRate?.percentage || 0) * 10000) / 100,
         totalPrice:
           Math.round((item.salePrice || 0) * item.quantity * 100) / 100,

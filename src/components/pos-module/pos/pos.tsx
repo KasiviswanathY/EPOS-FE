@@ -1,16 +1,18 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
 
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
 import { getAllproducts } from "@/lib/redux/actions/productsAction";
 import { getAllCateogry } from "@/lib/redux/actions/categoryActions";
+import { getAllLocations } from "@/lib/redux/actions/locationsActions";
+import { getAllStaff } from "@/lib/redux/actions/staffActions";
 
 import Link from "next/link";
 
 import PosModals from "@/core/modals/pos-modal/posModals";
 import { CartItems } from "@/core/interfaces/CartItems";
+import { Staff } from "@/core/interfaces/Staff";
 import Orders from "./orders";
 import Products from "./Products";
 import CategorySidebar from "./Categories";
@@ -19,11 +21,21 @@ export default function PosComponent() {
   const [activeTab, setActiveTab] = useState("all");
   const [cartItems, setCartItems] = useState<Array<CartItems>>([]);
   const [orderTotal, setOrderTotal] = useState(0);
+  const [selectedLocationId, setSelectedLocationId] = useState<string>("");
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("");
+  const [isClient, setIsClient] = useState(false);
+
   const dispatch = useDispatch<AppDispatch>();
 
+  const { locations } = useSelector((state: RootState) => state.locations);
+  const { staff } = useSelector((state: RootState) => state.staff);
+
   useEffect(() => {
+    setIsClient(true);
     dispatch(getAllproducts());
     dispatch(getAllCateogry());
+    dispatch(getAllLocations());
+    dispatch(getAllStaff());
   }, [dispatch]);
 
   const removeFromCart = (productId: string) => {
@@ -50,6 +62,67 @@ export default function PosComponent() {
                         <h5 className="mb-1">Welcome</h5>
                       </div>
                     </div>
+
+                    {/* Location and Staff Selection */}
+                    <div className="row mb-3">
+                      <div className="col-md-6">
+                        <label className="form-label">
+                          Select Location <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className={`form-select ${
+                            !selectedLocationId ? "border-warning" : ""
+                          }`}
+                          value={selectedLocationId}
+                          onChange={(e) =>
+                            setSelectedLocationId(e.target.value)
+                          }
+                        >
+                          <option value="">Choose Location...</option>
+                          {isClient &&
+                            locations.map((location) => (
+                              <option key={location.id} value={location.id}>
+                                {location.name}
+                              </option>
+                            ))}
+                        </select>
+                        {!selectedLocationId && (
+                          <small className="text-warning">
+                            Please select a location
+                          </small>
+                        )}
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label">
+                          Select Staff <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className={`form-select ${
+                            !selectedStaffId ? "border-warning" : ""
+                          }`}
+                          value={selectedStaffId}
+                          onChange={(e) => setSelectedStaffId(e.target.value)}
+                        >
+                          <option value="">Choose Staff...</option>
+                          {isClient &&
+                            staff &&
+                            staff?.map((staffMember: Staff) => (
+                              <option
+                                key={staffMember.id}
+                                value={staffMember.id}
+                              >
+                                {staffMember.name}
+                              </option>
+                            ))}
+                        </select>
+                        {!selectedStaffId && (
+                          <small className="text-warning">
+                            Please select a staff member
+                          </small>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="pos-products">
                       <div className="tabs_container">
                         <div
@@ -73,6 +146,8 @@ export default function PosComponent() {
               removeFromCart={removeFromCart}
               orderTotal={orderTotal}
               setOrderTotal={setOrderTotal}
+              selectedLocationId={selectedLocationId}
+              selectedStaffId={selectedStaffId}
             />
           </div>
           <div className="pos-footer bg-white p-3 border-top">

@@ -1,10 +1,16 @@
 export interface OrderItem {
   id?: string;
-  productId: string;
   quantity: number;
-  price: number;
-  taxRate: number;
-  totalPrice?: number;
+  unitPrice: number;
+  totalPrice: number;
+  discountAmount?: number;
+  taxAmount?: number;
+  finalAmount?: number;
+  productId: string;
+  orderId?: string;
+  promotions?: any[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Order {

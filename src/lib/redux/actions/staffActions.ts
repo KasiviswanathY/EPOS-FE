@@ -19,9 +19,12 @@ export const getAllStaff = createAsyncThunk(
       }
 
       const data = await response.json();
-      return data as Staff[];
+      console.log("data", data);
+
+      return data?.data as Staff[];
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to fetch staff";
+      const message =
+        error instanceof Error ? error.message : "Failed to fetch staff";
       return rejectWithValue(message);
     }
   }
@@ -47,7 +50,8 @@ export const getStaffById = createAsyncThunk(
       const data = await response.json();
       return data as Staff;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to fetch staff";
+      const message =
+        error instanceof Error ? error.message : "Failed to fetch staff";
       return rejectWithValue(message);
     }
   }
@@ -56,7 +60,10 @@ export const getStaffById = createAsyncThunk(
 // Create Staff
 export const createStaff = createAsyncThunk(
   "staff/createStaff",
-  async (staffData: Omit<Staff, "id" | "createdAt" | "updatedAt">, { rejectWithValue }) => {
+  async (
+    staffData: Omit<Staff, "id" | "createdAt" | "updatedAt">,
+    { rejectWithValue }
+  ) => {
     try {
       const response = await fetch("/api/staff", {
         method: "POST",
@@ -74,7 +81,8 @@ export const createStaff = createAsyncThunk(
       const data = await response.json();
       return data as Staff;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to create staff";
+      const message =
+        error instanceof Error ? error.message : "Failed to create staff";
       return rejectWithValue(message);
     }
   }
@@ -83,7 +91,10 @@ export const createStaff = createAsyncThunk(
 // Update Staff
 export const updateStaff = createAsyncThunk(
   "staff/updateStaff",
-  async ({ id, data }: { id: string; data: Partial<Staff> }, { rejectWithValue }) => {
+  async (
+    { id, data }: { id: string; data: Partial<Staff> },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await fetch(`/api/staff/${id}`, {
         method: "PATCH",
@@ -101,7 +112,8 @@ export const updateStaff = createAsyncThunk(
       const updatedStaff = await response.json();
       return updatedStaff as Staff;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to update staff";
+      const message =
+        error instanceof Error ? error.message : "Failed to update staff";
       return rejectWithValue(message);
     }
   }
@@ -126,7 +138,8 @@ export const deleteStaff = createAsyncThunk(
 
       return staffId;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to delete staff";
+      const message =
+        error instanceof Error ? error.message : "Failed to delete staff";
       return rejectWithValue(message);
     }
   }

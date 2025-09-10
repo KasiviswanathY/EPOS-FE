@@ -1,30 +1,24 @@
-export interface Product {
-  id: string;
-  name: string;
-  salePrice: number;
-  costPrice: number;
-  category?: {
-    name: string;
-  };
-}
-
-export interface Location {
-  id: string;
-  name: string;
-}
+import { Product } from "./Products";
+import { Location } from "./Location";
+import { StockMovement } from "./StockMovement";
 
 export interface Stock {
   id: string;
   quantity: number;
-  minStockLevel: number;
-  maxStockLevel: number;
-  reorderLevel: number;
-  isLowStock: boolean;
   lastRestockDate: string | null;
   product: Product;
   location: Location;
   createdAt: string;
   updatedAt: string;
+
+  minStockLevel?: number;
+  maxStockLevel?: number;
+  reorderLevel?: number;
+
+  isLowStock: boolean;
+  productId: string;
+  locationId: string;
+  stockMovements?: StockMovement[];
 }
 
 export interface PaginatedStockResponse {
