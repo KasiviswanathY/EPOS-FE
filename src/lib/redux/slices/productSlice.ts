@@ -10,7 +10,7 @@ import { Product } from "@/core/interfaces/Products";
 interface ProductState {
   products: Product[]; // 👈 properly type this
   loading: boolean;
-  error: string | null;
+error: any;
 }
 
 const initialState: ProductState = {
@@ -35,7 +35,7 @@ const productSlice = createSlice({
     });
     builder.addCase(createproducts.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.error.message || "Something went wrong";
     });
 
     // Get Products
