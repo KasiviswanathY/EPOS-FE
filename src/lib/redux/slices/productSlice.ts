@@ -10,7 +10,7 @@ import { Product } from "@/core/interfaces/Products";
 interface ProductState {
   products: Product[]; // 👈 properly type this
   loading: boolean;
-error: any;
+  error: any;
 }
 
 const initialState: ProductState = {

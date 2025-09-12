@@ -39,7 +39,7 @@ export default function AddStockModal({
   // load products & locations on open
   useEffect(() => {
     if (isOpen) {
-      dispatch(getAllproducts({ page: 1, pageSize: 1000 }));
+      dispatch(getAllproducts());
       dispatch(getAllLocations());
     }
   }, [isOpen, dispatch]);
@@ -144,13 +144,23 @@ export default function AddStockModal({
   if (!isOpen) return null;
 
   return (
-    <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }} tabIndex={-1}>
+    <div
+      className="modal fade show d-block"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      tabIndex={-1}
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           {/* Header */}
           <div className="modal-header">
-            <h5 className="modal-title">{stock ? "Edit Stock" : "Add New Stock"}</h5>
-            <button type="button" className="btn-close" onClick={resetAndClose}></button>
+            <h5 className="modal-title">
+              {stock ? "Edit Stock" : "Add New Stock"}
+            </h5>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={resetAndClose}
+            ></button>
           </div>
 
           {/* Body */}
@@ -161,22 +171,39 @@ export default function AddStockModal({
               {/* Product */}
               <div className="col-lg-12 mb-3">
                 <label className="form-label">
-                  Product {stock ? <span className="text-muted">(read-only)</span> : <span className="text-danger">*</span>}
+                  Product{" "}
+                  {stock ? (
+                    <span className="text-muted">(read-only)</span>
+                  ) : (
+                    <span className="text-danger">*</span>
+                  )}
                 </label>
 
                 {stock ? (
-                  <input className="form-control" value={stock.product?.name || ""} disabled />
+                  <input
+                    className="form-control"
+                    value={stock.product?.name || ""}
+                    disabled
+                  />
                 ) : (
                   <Select
                     classNamePrefix="react-select"
                     options={
                       Array.isArray(products)
-                        ? products.map((p: any) => ({ value: p.id, label: p.name }))
+                        ? products.map((p: any) => ({
+                            value: p.id,
+                            label: p.name,
+                          }))
                         : []
                     }
                     value={
                       productId
-                        ? { value: productId, label: products?.find((p: any) => p.id === productId)?.name || "" }
+                        ? {
+                            value: productId,
+                            label:
+                              products?.find((p: any) => p.id === productId)
+                                ?.name || "",
+                          }
                         : null
                     }
                     onChange={(opt: any) => setProductId(opt?.value || "")}
@@ -188,21 +215,40 @@ export default function AddStockModal({
               {/* Location */}
               <div className="col-lg-12 mb-3">
                 <label className="form-label">
-                  Location {stock ? <span className="text-muted">(read-only)</span> : <span className="text-danger">*</span>}
+                  Location{" "}
+                  {stock ? (
+                    <span className="text-muted">(read-only)</span>
+                  ) : (
+                    <span className="text-danger">*</span>
+                  )}
                 </label>
 
                 {stock ? (
-                  <input className="form-control" value={stock.location?.name || ""} disabled />
+                  <input
+                    className="form-control"
+                    value={stock.location?.name || ""}
+                    disabled
+                  />
                 ) : (
                   <Select
                     classNamePrefix="react-select"
                     options={
                       Array.isArray(locations)
-                        ? locations.map((l: any) => ({ value: l.id, label: l.name }))
+                        ? locations.map((l: any) => ({
+                            value: l.id,
+                            label: l.name,
+                          }))
                         : []
                     }
                     value={
-                      locationId ? { value: locationId, label: locations?.find((l: any) => l.id === locationId)?.name || "" } : null
+                      locationId
+                        ? {
+                            value: locationId,
+                            label:
+                              locations?.find((l: any) => l.id === locationId)
+                                ?.name || "",
+                          }
+                        : null
                     }
                     onChange={(opt: any) => setLocationId(opt?.value || "")}
                     placeholder="Select Location"
@@ -213,10 +259,19 @@ export default function AddStockModal({
               {/* Quantity */}
               <div className="col-lg-12 mb-3">
                 <label className="form-label">
-                  Quantity {stock ? <span className="text-muted">(read-only)</span> : <span className="text-danger">*</span>}
+                  Quantity{" "}
+                  {stock ? (
+                    <span className="text-muted">(read-only)</span>
+                  ) : (
+                    <span className="text-danger">*</span>
+                  )}
                 </label>
                 {stock ? (
-                  <input className="form-control" value={stock.quantity ?? 0} disabled />
+                  <input
+                    className="form-control"
+                    value={stock.quantity ?? 0}
+                    disabled
+                  />
                 ) : (
                   <input
                     type="number"
@@ -264,11 +319,27 @@ export default function AddStockModal({
 
           {/* Footer */}
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={resetAndClose} disabled={saving}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={resetAndClose}
+              disabled={saving}
+            >
               Cancel
             </button>
-            <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
-              {saving ? (stock ? "Updating..." : "Creating...") : stock ? "Update" : "Create"}
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving
+                ? stock
+                  ? "Updating..."
+                  : "Creating..."
+                : stock
+                ? "Update"
+                : "Create"}
             </button>
           </div>
         </div>
