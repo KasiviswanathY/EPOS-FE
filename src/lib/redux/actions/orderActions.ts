@@ -48,7 +48,7 @@ export const getOrders = createAsyncThunk(
       }
 
       const data = await response.json();
-      return data as Order[];
+      return data?.data as Order[];
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to fetch orders";

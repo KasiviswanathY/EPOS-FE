@@ -16,6 +16,7 @@ import { Staff } from "@/core/interfaces/Staff";
 import Orders from "./orders";
 import Products from "./Products";
 import CategorySidebar from "./Categories";
+import OrdersModal from "@/core/modals/pos-modal/OrdersModal";
 
 export default function PosComponent() {
   const [activeTab, setActiveTab] = useState("all");
@@ -208,7 +209,8 @@ export default function PosComponent() {
           </div>
         </div>
       </div>
-      <PosModals payingAmount={orderTotal} />
+      {/* <PosModals payingAmount={orderTotal} /> */}
+      <OrdersModal />
     </div>
   );
 }
