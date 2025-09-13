@@ -42,8 +42,8 @@ export interface Product {
   description?: string;
   costPrice: number;
   salePrice: number;
-  manufactureDate?: string; // ISO date string
-  expiryDate?: string; // ISO date string
+  manufactureDate?: string | null;
+expiryDate?: string | null;
   unitOfSale?: string; // UnitOfSale enum value
   rating?: number;
   sellOnPos: boolean;
@@ -63,7 +63,7 @@ export interface Product {
 
   volumeOfSale?: number;
 
-  // Foreign key references
+
   taxRateId?: string;
   categoryId?: string;
   brandId?: string;

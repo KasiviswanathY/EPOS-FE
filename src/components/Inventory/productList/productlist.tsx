@@ -1,9 +1,6 @@
 "use client";
 import Table from "@/core/common/pagination/datatable";
-import Brand from "@/core/modals/inventory/brand";
-import { all_routes } from "@/data/all_routes";
-import Link from "next/link";
-import React, { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import {
@@ -15,13 +12,47 @@ import { Product } from "@/core/interfaces/Products";
 
 export default function ProductListComponent() {
   const dispatch = useDispatch<AppDispatch>();
-  const { products, loading } = useSelector(
-    (state: RootState) => state.products
-  );
+  const { products, loading } = useSelector((state: RootState) => state.products);
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState<Partial<Product>>({});
 
   useEffect(() => {
     dispatch(getAllproducts());
   }, [dispatch]);
+
+  const openModal = (product: Product) => {
+    setFormData({
+      ...product,
+      manufactureDate: product.manufactureDate ?? undefined,
+      expiryDate: product.expiryDate ?? undefined,
+    });
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setFormData({});
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    const parsedValue = type === "checkbox" ? checked : value;
+    setFormData({ ...formData, [name]: parsedValue });
+  };
+
+  const handleSubmit = () => {
+    if (!formData.id) return;
+
+    const payload: Partial<Product> = {
+      ...formData,
+      manufactureDate: formData.manufactureDate ?? undefined,
+      expiryDate: formData.expiryDate ?? undefined,
+    };
+
+    dispatch(updateproducts({ id: formData.id, data: payload }));
+    closeModal();
+  };
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
@@ -29,129 +60,63 @@ export default function ProductListComponent() {
     }
   };
 
-  const handleUpdate = (id: string, data: Partial<Product>) => {
-    dispatch(updateproducts({ id, data }));
-  };
-
   const columns = [
+    { title: "Name", dataIndex: "name" },
+    { title: "Category", dataIndex: "categoryId" },
+    { title: "Manufacturer", dataIndex: "manufacturer" },
     {
-      title: (
-        <span
-          style={{
-            color: "#1a237e",
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          Name
-        </span>
-      ),
-      dataIndex: "name",
+      title: "Cost Price",
+      dataIndex: "costPrice",
+      render: (val: number) => `$${val ?? 0}`,
     },
     {
-      title: (
-        <span
-          style={{
-            color: "#1a237e",
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          Category
-        </span>
-      ),
-      dataIndex: "categoryId",
-    },
-    {
-      title: (
-        <span
-          style={{
-            color: "#1a237e",
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          Sale Price (excTAX)
-        </span>
-      ),
+      title: "Sale Price",
       dataIndex: "salePrice",
-      render: (value: number) =>
-        typeof value === "number" ? `$${value.toFixed(2)}` : "$0.00",
+      render: (val: number) => `$${val ?? 0}`,
     },
     {
-      title: (
-        <span
-          style={{
-            color: "#1a237e",
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          Sale Price (incTAX)
-        </span>
-      ),
-      dataIndex: "salePrice",
-      render: (value: number) =>
-       typeof value === "number" ? `$${(value * 1.1).toFixed(2)}` : "$0.00"
+      title: "Expiry Date",
+      dataIndex: "expiryDate",
+      render: (val: string) =>
+        val ? new Date(val).toLocaleDateString() : "N/A",
     },
     {
-      title: (
-        <span
-          style={{
-            color: "#1a237e",
-            padding: "6px 12px",
-            borderRadius: 6,
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          Button colour
-        </span>
-      ),
+      title: "Button Color",
       dataIndex: "buttonColor",
-      render: (value: string) =>
-        !value || value === "None" ? (
-          "None"
-        ) : (
+      render: (val: string) =>
+        val ? (
           <span className="d-flex align-items-center">
             <span
               className="dot me-1"
-              style={{ backgroundColor: value, width: 12, height: 12 }}
+              style={{ backgroundColor: val, width: 12, height: 12 }}
             />
-            {value}
+            {val}
           </span>
+        ) : (
+          "None"
         ),
     },
     {
-      title: "",
+      title: "Actions",
       dataIndex: "action",
       render: (_: any, record: Product) => (
         <div className="dropdown text-end">
-          <a
-            href="#"
-            className="btn btn-sm btn-icon"
-            data-bs-toggle="dropdown"
-          >
+          <a href="#" className="btn btn-sm btn-icon" data-bs-toggle="dropdown">
             <i className="ti ti-dots-vertical"></i>
           </a>
           <ul className="dropdown-menu dropdown-menu-end">
             <li>
-              <Link href="#" onClick={() => handleUpdate(record.id, record)}>
+              <button className="dropdown-item" onClick={() => openModal(record)}>
                 Edit
-              </Link>
+              </button>
             </li>
             <li>
-              <Link href="#" onClick={() => handleDelete(record.id)}>
+              <button
+                className="dropdown-item text-danger"
+                onClick={() => handleDelete(record.id)}
+              >
                 Delete
-              </Link>
+              </button>
             </li>
           </ul>
         </div>
@@ -160,10 +125,7 @@ export default function ProductListComponent() {
   ];
 
   return (
-    <div
-      className="page-wrapper"
-      style={{ background: "#f8fafc", minHeight: "100vh" }}
-    >
+    <div className="page-wrapper" style={{ background: "#f8fafc", minHeight: "100vh" }}>
       <div
         className="content"
         style={{
@@ -195,7 +157,154 @@ export default function ProductListComponent() {
             </div>
           </div>
         )}
-        <Brand />
+
+       {/* Update Modal */}
+{isModalOpen && (
+  <div
+    className="modal fade show"
+    style={{
+      display: "block",
+      backgroundColor: "rgba(0,0,0,0.5)",
+    }}
+  >
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content p-3">
+        <div className="modal-header">
+          <h5 className="modal-title">Edit Product</h5>
+          <button type="button" className="btn-close" onClick={closeModal}></button>
+        </div>
+        <div className="modal-body">
+          {/* Each field has a clear label */}
+          <div className="mb-3">
+            <label className="form-label fw-bold">Name</label>
+            <input
+              type="text"
+              name="name"
+              className="form-control"
+              value={formData.name || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Description</label>
+            <input
+              type="text"
+              name="description"
+              className="form-control"
+              value={formData.description || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Cost Price</label>
+            <input
+              type="number"
+              name="costPrice"
+              className="form-control"
+              value={formData.costPrice ?? 0}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Sale Price</label>
+            <input
+              type="number"
+              name="salePrice"
+              className="form-control"
+              value={formData.salePrice ?? 0}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Manufacturer</label>
+            <input
+              type="text"
+              name="manufacturer"
+              className="form-control"
+              value={formData.manufacturer || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Manufacture Date</label>
+            <input
+              type="date"
+              name="manufactureDate"
+              className="form-control"
+              value={
+                formData.manufactureDate
+                  ? formData.manufactureDate.split("T")[0]
+                  : ""
+              }
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Expiry Date</label>
+            <input
+              type="date"
+              name="expiryDate"
+              className="form-control"
+              value={
+                formData.expiryDate ? formData.expiryDate.split("T")[0] : ""
+              }
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Button Color</label>
+            <input
+              type="text"
+              name="buttonColor"
+              className="form-control"
+              value={formData.buttonColor || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Category ID</label>
+            <input
+              type="text"
+              name="categoryId"
+              className="form-control"
+              value={formData.categoryId || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Brand ID</label>
+            <input
+              type="text"
+              name="brandId"
+              className="form-control"
+              value={formData.brandId || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Tax Rate ID</label>
+            <input
+              type="text"
+              name="taxRateId"
+              className="form-control"
+              value={formData.taxRateId || ""}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={closeModal}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={handleSubmit}>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     </div>
   );
