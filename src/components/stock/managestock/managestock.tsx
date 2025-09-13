@@ -18,7 +18,9 @@ export default function ManageStockComponent() {
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStock, setSelectedStock] = useState<Stock | undefined>(undefined);
+  const [selectedStock, setSelectedStock] = useState<Stock | undefined>(
+    undefined
+  );
 
   // delete modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -51,12 +53,12 @@ export default function ManageStockComponent() {
     {
       title: "Product",
       dataIndex: "product",
-      render: (product: any) => product?.name || "-",
+      render: (product: Stock["product"] | null) => product?.name || "-",
     },
     {
       title: "Location",
       dataIndex: "location",
-      render: (location: any) => location?.name || "-",
+      render: (location: Stock["location"] | null) => location?.name || "-",
     },
     {
       title: "Quantity",
@@ -65,19 +67,37 @@ export default function ManageStockComponent() {
     {
       title: "Min Level",
       dataIndex: "minStockLevel",
+      render: (val: number) => val || 0,
     },
     {
       title: "Max Level",
       dataIndex: "maxStockLevel",
+      render: (val: number | undefined) => (val !== undefined ? val : "-"),
     },
     {
       title: "Reorder Level",
       dataIndex: "reorderLevel",
+      render: (val: number) => val || 0,
+    },
+    {
+      title: "Last Restock",
+      dataIndex: "lastRestockDate",
+      render: (date: string | null) =>
+        date ? new Date(date).toLocaleDateString() : "-",
+    },
+    {
+      title: "Status",
+      dataIndex: "isLowStock",
+      render: (isLow: boolean) => (
+        <span className={`badge ${isLow ? "bg-danger" : "bg-success"}`}>
+          {isLow ? "Low Stock" : "In Stock"}
+        </span>
+      ),
     },
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (_: any, record: Stock) => (
+      render: (_: unknown, record: Stock) => (
         <div className="d-flex gap-2">
           <Link href="#" onClick={() => handleEdit(record)}>
             <Edit className="feather-edit" />

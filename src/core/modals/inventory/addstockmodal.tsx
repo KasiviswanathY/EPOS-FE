@@ -8,6 +8,14 @@ import { getAllproducts } from "@/lib/redux/actions/productsAction";
 import { getAllLocations } from "@/lib/redux/actions";
 import { createStock, updateStock } from "@/lib/redux/actions/stockActions";
 import { NewStockPayload, Stock } from "@/core/interfaces/Stock";
+import { Product } from "@/core/interfaces/Products";
+import { Location } from "@/core/interfaces/Location";
+
+// Define option types for select dropdowns
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
 interface AddStockModalProps {
   isOpen: boolean;
@@ -31,9 +39,13 @@ export default function AddStockModal({
   const [locationId, setLocationId] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(0);
   const [minStockLevel, setMinStockLevel] = useState<number>(0);
-  const [maxStockLevel, setMaxStockLevel] = useState<number>(0);
+  const [maxStockLevel, setMaxStockLevel] = useState<number | undefined>(
+    undefined
+  );
   const [reorderLevel, setReorderLevel] = useState<number>(0);
+  const [isLowStock, setIsLowStock] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   // load products & locations on open
@@ -51,18 +63,22 @@ export default function AddStockModal({
       setLocationId(stock.location?.id || "");
       setQuantity(stock.quantity ?? 0);
       setMinStockLevel(stock.minStockLevel ?? 0);
-      setMaxStockLevel(stock.maxStockLevel ?? 0);
+      setMaxStockLevel(stock.maxStockLevel);
       setReorderLevel(stock.reorderLevel ?? 0);
+      setIsLowStock(stock.isLowStock ?? false);
       setError(null);
+      setSuccessMessage(null);
     } else if (isOpen) {
       // reset for create
       setProductId("");
       setLocationId("");
       setQuantity(0);
       setMinStockLevel(0);
-      setMaxStockLevel(0);
+      setMaxStockLevel(undefined);
       setReorderLevel(0);
+      setIsLowStock(false);
       setError(null);
+      setSuccessMessage(null);
     }
   }, [stock, isOpen]);
 
@@ -71,9 +87,11 @@ export default function AddStockModal({
     setLocationId("");
     setQuantity(0);
     setMinStockLevel(0);
-    setMaxStockLevel(0);
+    setMaxStockLevel(undefined);
     setReorderLevel(0);
+    setIsLowStock(false);
     setError(null);
+    setSuccessMessage(null);
     setSaving(false);
     onClose();
   };
@@ -85,21 +103,32 @@ export default function AddStockModal({
       // EDIT mode -> only allowed fields
       const payload = {
         minStockLevel: Number(minStockLevel),
-        maxStockLevel: Number(maxStockLevel),
+        maxStockLevel:
+          maxStockLevel !== undefined ? Number(maxStockLevel) : undefined,
         reorderLevel: Number(reorderLevel),
+        // Remove isLowStock as it's not allowed to be updated directly
       };
 
       setSaving(true);
       try {
         await dispatch(
-          updateStock({ id: stock.id, data: payload } as any) as any
+          updateStock({
+            id: stock.id,
+            data: payload,
+          })
         );
+        setSuccessMessage("Stock updated successfully!");
+        // Call onSuccess to refresh the parent component
         onSuccess();
-        resetAndClose();
-      } catch (err: any) {
-        setError(
-          (err && err.message) || (err && err.error) || "Failed to update stock"
-        );
+
+        // Add a short delay before closing the modal to show the success message
+        setTimeout(() => {
+          resetAndClose();
+        }, 1500);
+      } catch (err: unknown) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update stock";
+        setError(errorMessage);
         setSaving(false);
       }
       return;
@@ -126,17 +155,24 @@ export default function AddStockModal({
       minStockLevel,
       maxStockLevel,
       reorderLevel,
+      isLowStock,
     };
 
     setSaving(true);
     try {
-      await dispatch(createStock(newPayload) as any);
+      await dispatch(createStock(newPayload));
+      setSuccessMessage("Stock created successfully!");
+      // Call onSuccess to refresh the parent component
       onSuccess();
-      resetAndClose();
-    } catch (err: any) {
-      setError(
-        (err && err.message) || (err && err.error) || "Failed to create stock"
-      );
+
+      // Add a short delay before closing the modal to show the success message
+      setTimeout(() => {
+        resetAndClose();
+      }, 1500);
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to create stock";
+      setError(errorMessage);
       setSaving(false);
     }
   };
@@ -165,7 +201,35 @@ export default function AddStockModal({
 
           {/* Body */}
           <div className="modal-body">
-            {error && <div className="alert alert-danger">{error}</div>}
+            {error && (
+              <div
+                className="alert alert-danger alert-dismissible fade show"
+                role="alert"
+              >
+                <strong>Error!</strong> {error}
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setError(null)}
+                  aria-label="Close"
+                ></button>
+              </div>
+            )}
+
+            {successMessage && (
+              <div
+                className="alert alert-success alert-dismissible fade show"
+                role="alert"
+              >
+                <strong>Success!</strong> {successMessage}
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setSuccessMessage(null)}
+                  aria-label="Close"
+                ></button>
+              </div>
+            )}
 
             <div className="row">
               {/* Product */}
@@ -190,7 +254,7 @@ export default function AddStockModal({
                     classNamePrefix="react-select"
                     options={
                       Array.isArray(products)
-                        ? products.map((p: any) => ({
+                        ? products.map((p: Product) => ({
                             value: p.id,
                             label: p.name,
                           }))
@@ -201,12 +265,14 @@ export default function AddStockModal({
                         ? {
                             value: productId,
                             label:
-                              products?.find((p: any) => p.id === productId)
+                              products?.find((p: Product) => p.id === productId)
                                 ?.name || "",
                           }
                         : null
                     }
-                    onChange={(opt: any) => setProductId(opt?.value || "")}
+                    onChange={(opt: SelectOption | null) =>
+                      setProductId(opt?.value || "")
+                    }
                     placeholder="Select Product"
                   />
                 )}
@@ -234,7 +300,7 @@ export default function AddStockModal({
                     classNamePrefix="react-select"
                     options={
                       Array.isArray(locations)
-                        ? locations.map((l: any) => ({
+                        ? locations.map((l: Location) => ({
                             value: l.id,
                             label: l.name,
                           }))
@@ -245,12 +311,15 @@ export default function AddStockModal({
                         ? {
                             value: locationId,
                             label:
-                              locations?.find((l: any) => l.id === locationId)
-                                ?.name || "",
+                              locations?.find(
+                                (l: Location) => l.id === locationId
+                              )?.name || "",
                           }
                         : null
                     }
-                    onChange={(opt: any) => setLocationId(opt?.value || "")}
+                    onChange={(opt: SelectOption | null) =>
+                      setLocationId(opt?.value || "")
+                    }
                     placeholder="Select Location"
                   />
                 )}
@@ -276,8 +345,14 @@ export default function AddStockModal({
                   <input
                     type="number"
                     className="form-control"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    value={quantity || ""}
+                    onChange={(e) => {
+                      const value =
+                        e.target.value === ""
+                          ? 0
+                          : parseInt(e.target.value, 10);
+                      setQuantity(value);
+                    }}
                     min={0}
                   />
                 )}
@@ -289,8 +364,12 @@ export default function AddStockModal({
                 <input
                   type="number"
                   className="form-control"
-                  value={minStockLevel}
-                  onChange={(e) => setMinStockLevel(Number(e.target.value))}
+                  value={minStockLevel || ""}
+                  onChange={(e) => {
+                    const value =
+                      e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+                    setMinStockLevel(value);
+                  }}
                   min={0}
                 />
               </div>
@@ -299,9 +378,15 @@ export default function AddStockModal({
                 <input
                   type="number"
                   className="form-control"
-                  value={maxStockLevel}
-                  onChange={(e) => setMaxStockLevel(Number(e.target.value))}
+                  value={maxStockLevel !== undefined ? maxStockLevel : ""}
+                  onChange={(e) => {
+                    const val = e.target.value.trim();
+                    setMaxStockLevel(
+                      val === "" ? undefined : parseInt(val, 10)
+                    );
+                  }}
                   min={0}
+                  placeholder="Optional"
                 />
               </div>
               <div className="col-lg-4 mb-3">
@@ -309,10 +394,36 @@ export default function AddStockModal({
                 <input
                   type="number"
                   className="form-control"
-                  value={reorderLevel}
-                  onChange={(e) => setReorderLevel(Number(e.target.value))}
+                  value={reorderLevel || ""}
+                  onChange={(e) => {
+                    const value =
+                      e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+                    setReorderLevel(value);
+                  }}
                   min={0}
                 />
+              </div>
+
+              {/* Low Stock Status */}
+              <div className="col-lg-12 mb-3">
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="isLowStock"
+                    checked={isLowStock}
+                    onChange={(e) => setIsLowStock(e.target.checked)}
+                    disabled={!!stock} /* Disable in edit mode */
+                  />
+                  <label className="form-check-label" htmlFor="isLowStock">
+                    Mark as Low Stock
+                    {stock && (
+                      <span className="text-muted ms-2 small">
+                        (Read-only in edit mode. This is calculated automatically based on stock levels.)
+                      </span>
+                    )}
+                  </label>
+                </div>
               </div>
             </div>
           </div>

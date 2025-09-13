@@ -4,7 +4,6 @@ import axios, { AxiosError } from "axios";
 
 import { Stock } from "@/core/interfaces/Stock";
 
-
 export const createStock = createAsyncThunk(
   "stock/create",
   async (payload: Partial<Stock>, thunkAPI) => {
@@ -54,8 +53,9 @@ interface UpdateStockPayload {
   id: string;
   data: {
     minStockLevel: number;
-    maxStockLevel: number;
+    maxStockLevel?: number;
     reorderLevel: number;
+    // Removed isLowStock as it's not allowed by the server
   };
 }
 
@@ -67,7 +67,7 @@ export const updateStock = createAsyncThunk(
         minStockLevel: data.minStockLevel,
         maxStockLevel: data.maxStockLevel,
         reorderLevel: data.reorderLevel,
-      }); // ✅ only allowed fields
+      });
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -78,17 +78,16 @@ export const updateStock = createAsyncThunk(
   }
 );
 
-
 export const deletestock = createAsyncThunk(
-  "company/deletestock",
+  "stock/deletestock",
   async (stockId: string, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/api/stocks/${stockId}`);
+      const response = await axios.delete(`/api/stock/${stockId}`);
       return { id: stockId, data: response.data };
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || "Failed to delete stockId"
+        axiosError.response?.data || "Failed to delete stock"
       );
     }
   }

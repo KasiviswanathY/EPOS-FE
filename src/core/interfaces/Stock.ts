@@ -5,20 +5,22 @@ import { StockMovement } from "./StockMovement";
 export interface Stock {
   id: string;
   quantity: number;
+  minStockLevel: number;
+  maxStockLevel?: number;
+  reorderLevel: number;
   lastRestockDate: string | null;
+  isLowStock: boolean;
+
   product: Product;
+  productId: string;
+
   location: Location;
+  locationId: string;
+
+  stockMovements?: StockMovement[];
+
   createdAt: string;
   updatedAt: string;
-
-  minStockLevel?: number;
-  maxStockLevel?: number;
-  reorderLevel?: number;
-
-  isLowStock: boolean;
-  productId: string;
-  locationId: string;
-  stockMovements?: StockMovement[];
 }
 
 export interface PaginatedStockResponse {
@@ -32,7 +34,7 @@ export interface PaginatedStockResponse {
 export interface GetStockParams {
   page: number;
   pageSize: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface NewStockPayload {
@@ -40,6 +42,7 @@ export interface NewStockPayload {
   locationId: string;
   quantity: number;
   minStockLevel: number;
-  maxStockLevel: number;
+  maxStockLevel?: number;
   reorderLevel: number;
+  isLowStock?: boolean;
 }
