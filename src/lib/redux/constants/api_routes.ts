@@ -12,4 +12,5 @@ export const apiRoutes = {
   roles: `${BASE_URL}/roles`,
   locations: `${BASE_URL}/locations`,
   orders: `${BASE_URL}/orders`,
+  stockMovements: `${BASE_URL}/stock-movements`,
 };
