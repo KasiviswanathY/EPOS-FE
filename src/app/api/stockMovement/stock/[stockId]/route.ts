@@ -4,13 +4,13 @@ import { AxiosError } from "axios";
 import { apiRoutes } from "@/lib/redux/constants/api_routes";
 
 interface RouteParams {
-  params: { stockId: string };
+  params: Promise<{ stockId: string }>;
 }
 
 // GET stock movements by stock ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { stockId } = params;
+    const { stockId } = await params;
 
     const response = await axiosInstanceServer.get(
       `${apiRoutes.stockMovements}/stock/${stockId}`
