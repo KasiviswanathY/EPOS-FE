@@ -4,13 +4,15 @@ import {
   createproducts,
   getproducts,
   getAllproducts,
+  updateproducts,
+  deleteproducts,
 } from "../actions/productsAction";
 import { Product } from "@/core/interfaces/Products";
 
 interface ProductState {
-  products: Product[]; // 👈 properly type this
+  products: Product[];
   loading: boolean;
-error: any;
+  error: string | null;
 }
 
 const initialState: ProductState = {
@@ -66,6 +68,39 @@ const productSlice = createSlice({
         : (action.payload.data as Product[]) || [];
     });
     builder.addCase(getAllproducts.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+    
+    // Update Product
+    builder.addCase(updateproducts.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(updateproducts.fulfilled, (state, action) => {
+      state.loading = false;
+      const updatedProduct = action.payload as Product;
+      const index = state.products.findIndex((p) => p.id === updatedProduct.id);
+      if (index !== -1) {
+        state.products[index] = updatedProduct;
+      }
+    });
+    builder.addCase(updateproducts.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+    
+    // Delete Product
+    builder.addCase(deleteproducts.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(deleteproducts.fulfilled, (state, action) => {
+      state.loading = false;
+      const { id } = action.payload as { id: string };
+      state.products = state.products.filter((product) => product.id !== id);
+    });
+    builder.addCase(deleteproducts.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
