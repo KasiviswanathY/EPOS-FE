@@ -13,6 +13,7 @@ import rolesReducer from "./slices/rolesSlice";
 import orderReducer from "./slices/orderSlice";
 import staffReducer from "./slices/staffSlice";
 import stockReducer from "./slices/stockSlice";
+import lowstockReducer from"./slices/lowstockSlice";
 export const store = configureStore({
   reducer: {
     company: companyReducer,
@@ -29,6 +30,7 @@ export const store = configureStore({
     orders: orderReducer,
     staff: staffReducer,
     stock:stockReducer,
+    lowstock:lowstockReducer,
   },
 });
 
