@@ -4,13 +4,12 @@ import { AxiosError } from "axios";
 import { apiRoutes } from "@/lib/redux/constants/api_routes";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
-
 // GET a specific stock movement by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const response = await axiosInstanceServer.get(
       `${apiRoutes.stockMovements}/${id}`
@@ -33,7 +32,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // UPDATE a stock movement
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const response = await axiosInstanceServer.put(
@@ -58,7 +57,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 // DELETE a stock movement
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const response = await axiosInstanceServer.delete(
       `${apiRoutes.stockMovements}/${id}`
