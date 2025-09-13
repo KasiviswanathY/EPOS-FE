@@ -262,7 +262,7 @@ export default function StockMovements() {
                           <td>{movement.reference || "-"}</td>
                           <td>
                             {movement.processedByStaff?.name ||
-                              movement.processedByUser?.name ||
+                              movement.processedByUser?.username ||
                               "-"}
                           </td>
                           <td>
