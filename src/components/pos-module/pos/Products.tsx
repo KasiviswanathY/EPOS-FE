@@ -10,9 +10,11 @@ import { useSelector } from "react-redux";
 const Products = ({
   activeTab,
   setCartItems,
+  cartResetCounter = 0,
 }: {
   activeTab: string;
   setCartItems: React.Dispatch<React.SetStateAction<CartItems[]>>;
+  cartResetCounter?: number;
 }) => {
   const { products, loading, error } = useSelector(
     (state: RootState) =>
@@ -66,7 +68,11 @@ const Products = ({
               <div className="d-flex align-items-center justify-content-between price">
                 <p className="text-gray-9 mb-0">${product.salePrice || "0"}</p>
                 <div className="qty-item m-0">
-                  <CartCounter product={product} setCartItems={setCartItems} />
+                  <CartCounter 
+                    key={`${product.id}-${cartResetCounter}`}
+                    product={product} 
+                    setCartItems={setCartItems} 
+                  />
                 </div>
               </div>
             </div>

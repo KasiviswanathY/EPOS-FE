@@ -26,6 +26,8 @@ export default function PosComponent() {
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Add a cart reset counter to force CartCounter components to reset
+  const [cartResetCounter, setCartResetCounter] = useState(0);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -177,6 +179,7 @@ export default function PosComponent() {
                             <Products
                               setCartItems={setCartItems}
                               activeTab={activeTab}
+                              cartResetCounter={cartResetCounter}
                             />
                           </div>
                         </div>
@@ -193,6 +196,7 @@ export default function PosComponent() {
                 setOrderTotal={setOrderTotal}
                 selectedLocationId={selectedLocationId}
                 selectedStaffId={selectedStaffId}
+                onCartReset={() => setCartResetCounter((prev) => prev + 1)}
               />
             </div>
             <div className="pos-footer bg-white p-3 border-top">

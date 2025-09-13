@@ -21,6 +21,7 @@ const Orders = ({
   setOrderTotal,
   selectedLocationId,
   selectedStaffId,
+  onCartReset,
 }: {
   cartItems: CartItems[];
   setCartItems: React.Dispatch<React.SetStateAction<CartItems[]>>;
@@ -29,14 +30,17 @@ const Orders = ({
   setOrderTotal: React.Dispatch<React.SetStateAction<number>>;
   selectedLocationId: string;
   selectedStaffId: string;
+  onCartReset?: () => void;
 }) => {
   const [isClient, setIsClient] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"CASH" | "CARD" | "CREDIT" | "BANK_TRANSFER" | "MOBILE_PAYMENT">("CASH");
 
   const dispatch = useDispatch<AppDispatch>();
   const {
     loading: orderLoading,
     error: orderError,
     success: orderSuccess,
+    currentOrder,
   } = useSelector((state: RootState) => state.orders);
 
   const shippingCost = 0;
@@ -79,6 +83,9 @@ const Orders = ({
 
   React.useEffect(() => {
     if (orderSuccess || orderError) {
+      // Scroll to top to ensure messages are visible
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
       const timer = setTimeout(() => {
         dispatch(clearOrderState());
       }, 5000);
@@ -103,14 +110,19 @@ const Orders = ({
         return total + (item.salePrice || 0) * item.quantity;
       }, 0);
 
-      const orderItems: OrderItem[] = cartItems.map((item) => ({
-        productId: item.id || "",
-        quantity: item.quantity,
-        unitPrice: Math.round((item.salePrice || 0) * 100) / 100,
-        taxRate: Math.round((item.taxRate?.percentage || 0) * 10000) / 100,
-        totalPrice:
-          Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
-      }));
+      const orderItems: OrderItem[] = cartItems.map((item) => {
+        // Calculate tax amount based on tax rate percentage
+        const taxAmount = (item.taxRate?.percentage || 0) * (item.salePrice || 0) * item.quantity;
+        
+        return {
+          productId: item.id || "",
+          quantity: item.quantity,
+          unitPrice: Math.round((item.salePrice || 0) * 100) / 100,
+          taxAmount: Math.round(taxAmount * 100) / 100,
+          discountAmount: 0, // Set default discount amount
+          totalPrice: Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
+        };
+      });
 
       // Prepare order data
       const orderData = {
@@ -122,9 +134,10 @@ const Orders = ({
         taxAmount: Math.round(totalTaxRate * 100) / 100,
         discountAmount: Math.round(couponDiscount * 100) / 100,
         finalAmount: Math.round(orderTotal * 100) / 100,
-        paymentMethod: "CASH" as const,
+        paymentMethod: selectedPaymentMethod,
         paymentStatus: "PENDING" as const,
         notes: "",
+        // customerId: null, // Optional, set if customer is selected
         locationId: selectedLocationId,
         processedByStaffId: selectedStaffId,
         orderItems: orderItems,
@@ -134,14 +147,23 @@ const Orders = ({
       const result = await dispatch(createOrder(orderData)).unwrap();
 
       if (result) {
-        alert(`Order placed successfully! Order ID: ${result.id}`);
         // Clear cart after successful order
         setCartItems([]);
         setOrderTotal(0);
+        
+        // Reset cart counters
+        if (onCartReset) {
+          onCartReset();
+        }
+
+        // Scroll to top to show the success message
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (error) {
       console.error("Failed to place order:", error);
-      alert("Failed to place order. Please try again.");
+
+      // Scroll to top to show the error message
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -150,28 +172,31 @@ const Orders = ({
       <aside className="product-order-list bg-secondary-transparent flex-fill">
         {orderError && (
           <div
-            className="alert alert-danger alert-dismissible fade show"
+            className="alert alert-danger alert-dismissible fade show mb-3 position-sticky top-0 shadow-sm"
             role="alert"
+            style={{ zIndex: 100 }}
           >
             <strong>Order Error:</strong> {orderError}
             <button
               type="button"
               className="btn-close"
-              data-bs-dismiss="alert"
+              onClick={() => dispatch(clearOrderState())}
               aria-label="Close"
             ></button>
           </div>
         )}
-        {orderSuccess && (
+        {orderSuccess && currentOrder && (
           <div
-            className="alert alert-success alert-dismissible fade show"
+            className="alert alert-success alert-dismissible fade show mb-3 position-sticky top-0 shadow-sm"
             role="alert"
+            style={{ zIndex: 100 }}
           >
-            <strong>Success:</strong> Order placed successfully!
+            <strong>Success:</strong> Order placed successfully! Order ID:{" "}
+            {currentOrder.id}
             <button
               type="button"
               className="btn-close"
-              data-bs-dismiss="alert"
+              onClick={() => dispatch(clearOrderState())}
               aria-label="Close"
             ></button>
           </div>
@@ -447,6 +472,9 @@ const Orders = ({
                   className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
                   data-bs-toggle="modal"
                   data-bs-target="#payment-cash"
+                  onClick={() => {
+                    setSelectedPaymentMethod("CASH");
+                  }}
                 >
                   <img
                     src="assets/img/icons/cash-icon.svg"
@@ -462,6 +490,9 @@ const Orders = ({
                   className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
                   data-bs-toggle="modal"
                   data-bs-target="#payment-card"
+                  onClick={() => {
+                    setSelectedPaymentMethod("CARD");
+                  }}
                 >
                   <img
                     src="assets/img/icons/card.svg"
@@ -476,14 +507,17 @@ const Orders = ({
                   href="#"
                   className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
                   data-bs-toggle="modal"
-                  data-bs-target="#payment-points"
+                  data-bs-target="#payment-credit"
+                  onClick={() => {
+                    setSelectedPaymentMethod("CREDIT");
+                  }}
                 >
                   <img
                     src="assets/img/icons/points.svg"
                     className="me-2"
                     alt="img"
                   />
-                  <p className="fs-14 fw-medium">Points</p>
+                  <p className="fs-14 fw-medium">Credit</p>
                 </Link>
               </div>
               <div className="col-sm-6 col-md-4 d-flex">
@@ -491,14 +525,17 @@ const Orders = ({
                   href="#"
                   className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
                   data-bs-toggle="modal"
-                  data-bs-target="#payment-deposit"
+                  data-bs-target="#payment-bank"
+                  onClick={() => {
+                    setSelectedPaymentMethod("BANK_TRANSFER");
+                  }}
                 >
                   <img
                     src="assets/img/icons/deposit.svg"
                     className="me-2"
                     alt="img"
                   />
-                  <p className="fs-14 fw-medium">Deposit</p>
+                  <p className="fs-14 fw-medium">Bank Transfer</p>
                 </Link>
               </div>
               <div className="col-sm-6 col-md-4 d-flex">
@@ -506,85 +543,17 @@ const Orders = ({
                   href="#"
                   className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
                   data-bs-toggle="modal"
-                  data-bs-target="#payment-cheque"
-                >
-                  <img
-                    src="assets/img/icons/cheque.svg"
-                    className="me-2"
-                    alt="img"
-                  />
-                  <p className="fs-14 fw-medium">Cheque</p>
-                </Link>
-              </div>
-              <div className="col-sm-6 col-md-4 d-flex">
-                <Link
-                  href="#"
-                  className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#gift-payment"
-                >
-                  <img
-                    src="assets/img/icons/giftcard.svg"
-                    className="me-2"
-                    alt="img"
-                  />
-                  <p className="fs-14 fw-medium">Gift Card</p>
-                </Link>
-              </div>
-              <div className="col-sm-6 col-md-4 d-flex">
-                <Link
-                  href="#"
-                  className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#scan-payment"
+                  data-bs-target="#payment-mobile"
+                  onClick={() => {
+                    setSelectedPaymentMethod("MOBILE_PAYMENT");
+                  }}
                 >
                   <img
                     src="assets/img/icons/scan-icon.svg"
                     className="me-2"
                     alt="img"
                   />
-                  <p className="fs-14 fw-medium">Scan</p>
-                </Link>
-              </div>
-              <div className="col-sm-6 col-md-4 d-flex">
-                <Link
-                  href="#"
-                  className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
-                >
-                  <img
-                    src="assets/img/icons/paylater.svg"
-                    className="me-2"
-                    alt="img"
-                  />
-                  <p className="fs-14 fw-medium">Pay Later</p>
-                </Link>
-              </div>
-              <div className="col-sm-6 col-md-4 d-flex">
-                <Link
-                  href="#"
-                  className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
-                >
-                  <img
-                    src="assets/img/icons/external.svg"
-                    className="me-2"
-                    alt="img"
-                  />
-                  <p className="fs-14 fw-medium">External</p>
-                </Link>
-              </div>
-              <div className="col-sm-6 col-md-4 d-flex">
-                <Link
-                  href="#"
-                  className="payment-item d-flex align-items-center justify-content-center p-2 flex-fill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#split-payment"
-                >
-                  <img
-                    src="assets/img/icons/split-bill.svg"
-                    className="me-2"
-                    alt="img"
-                  />
-                  <p className="fs-14 fw-medium">Split Bill</p>
+                  <p className="fs-14 fw-medium">Mobile Payment</p>
                 </Link>
               </div>
             </div>
@@ -602,17 +571,24 @@ const Orders = ({
           </Link>
           <Link
             href="#"
-            className="btn btn-secondary d-flex align-items-center justify-content-center flex-fill m-0"
+            className={`btn ${
+              orderLoading ? "btn-warning" : "btn-secondary"
+            } d-flex align-items-center justify-content-center flex-fill m-0`}
             onClick={(e) => {
               e.preventDefault();
-              handlePlaceOrder();
+              if (!orderLoading) {
+                handlePlaceOrder();
+              }
             }}
             style={{
-              opacity: orderLoading ? 0.7 : 1,
               cursor: orderLoading ? "not-allowed" : "pointer",
             }}
           >
-            <i className="ti ti-shopping-cart me-2" />
+            <i
+              className={`ti ${
+                orderLoading ? "ti-loader ti-spin" : "ti-shopping-cart"
+              } me-2`}
+            />
             {orderLoading ? "Processing..." : "Place Order"}
           </Link>
         </div>
