@@ -152,13 +152,19 @@ export default function AddProduct() {
             {/* Basic Fields */}
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Product Name</label>
+                <label>
+                  Product Name <span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
                   {...register("name", { required: true })}
                 />
-                {errors.name && <small className="text-danger">Required</small>}
+                {errors.name && (
+                  <small className="text-danger">
+                    Product name is required
+                  </small>
+                )}
               </div>
             </div>
 
@@ -175,10 +181,14 @@ export default function AddProduct() {
             {/* Dropdowns */}
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Category</label>
+                <label>
+                  Category <span className="text-danger">*</span>
+                </label>
                 <select
                   className="form-control"
-                  {...register("categoryId", { required: true })}
+                  {...register("categoryId", {
+                    required: "Category is required",
+                  })}
                 >
                   <option value="">Select Category</option>
                   {categories?.map((cat) => (
@@ -188,17 +198,21 @@ export default function AddProduct() {
                   ))}
                 </select>
                 {errors.categoryId && (
-                  <small className="text-danger">Required</small>
+                  <small className="text-danger">
+                    {errors.categoryId.message}
+                  </small>
                 )}
               </div>
             </div>
 
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Brand</label>
+                <label>
+                  Brand <span className="text-danger">*</span>
+                </label>
                 <select
                   className="form-control"
-                  {...register("brandId", { required: true })}
+                  {...register("brandId", { required: "Brand is required" })}
                 >
                   <option value="">Select Brand</option>
                   {brands?.map((brand) => (
@@ -208,17 +222,23 @@ export default function AddProduct() {
                   ))}
                 </select>
                 {errors.brandId && (
-                  <small className="text-danger">Required</small>
+                  <small className="text-danger">
+                    {errors.brandId.message}
+                  </small>
                 )}
               </div>
             </div>
 
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Tax Rate</label>
+                <label>
+                  Tax Rate <span className="text-danger">*</span>
+                </label>
                 <select
                   className="form-control"
-                  {...register("taxRateId", { required: true })}
+                  {...register("taxRateId", {
+                    required: "Tax rate is required",
+                  })}
                 >
                   <option value="">Select Tax Rate</option>
                   {taxRates?.map((tax) => (
@@ -228,7 +248,9 @@ export default function AddProduct() {
                   ))}
                 </select>
                 {errors.taxRateId && (
-                  <small className="text-danger">Required</small>
+                  <small className="text-danger">
+                    {errors.taxRateId.message}
+                  </small>
                 )}
               </div>
             </div>
@@ -236,31 +258,53 @@ export default function AddProduct() {
             {/* Pricing */}
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Cost Price</label>
+                <label>
+                  Cost Price <span className="text-danger">*</span>
+                </label>
                 <input
                   type="number"
                   step="0.01"
                   className="form-control"
                   {...register("costPrice", {
-                    required: true,
+                    required: "Cost price is required",
                     valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Cost price must be a positive number",
+                    },
                   })}
                 />
+                {errors.costPrice && (
+                  <small className="text-danger">
+                    {errors.costPrice.message}
+                  </small>
+                )}
               </div>
             </div>
 
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Sale Price</label>
+                <label>
+                  Sale Price <span className="text-danger">*</span>
+                </label>
                 <input
                   type="number"
                   step="0.01"
                   className="form-control"
                   {...register("salePrice", {
-                    required: true,
+                    required: "Sale price is required",
                     valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Sale price must be a positive number",
+                    },
                   })}
                 />
+                {errors.salePrice && (
+                  <small className="text-danger">
+                    {errors.salePrice.message}
+                  </small>
+                )}
               </div>
             </div>
 
@@ -279,12 +323,17 @@ export default function AddProduct() {
             {/* Other Fields */}
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
-                <label>Unit Of Sale</label>
+                <label>
+                  Unit Of Sale <span className="text-danger">*</span>
+                </label>
                 <select
                   className="form-control"
                   defaultValue="each"
-                  {...register("unitOfSale")}
+                  {...register("unitOfSale", {
+                    required: "Unit of sale is required",
+                  })}
                 >
+                  <option value="">Select unit of sale</option>
                   <option value="cards">Cards</option>
                   <option value="each">Each</option>
                   <option value="kg">Kilogram (kg)</option>
@@ -304,6 +353,11 @@ export default function AddProduct() {
                   <option value="m">Meter (m)</option>
                   <option value="oz">Ounce (oz)</option>
                 </select>
+                {errors.unitOfSale && (
+                  <small className="text-danger">
+                    {errors.unitOfSale.message}
+                  </small>
+                )}
               </div>
             </div>
 
