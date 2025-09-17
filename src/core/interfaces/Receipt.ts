@@ -22,7 +22,7 @@ export interface Receipt {
   barCodeType: string;
   qrCodeLink: string;
   qrCodeDescription: string;
-  guid: string;
+  guid: number;
   companyId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -51,7 +51,7 @@ export interface CreateReceiptRequest {
   barCodeType: string;
   qrCodeLink: string;
   qrCodeDescription: string;
-  guid: string;
+  guid: number;
 }
 
 export type UpdateReceiptRequest = Partial<CreateReceiptRequest>;

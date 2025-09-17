@@ -40,7 +40,8 @@ export const createReceipt = createAsyncThunk<
     } catch (error: unknown) {
       const err = error as AxiosError<{ message?: string }>;
       const errorMessage = err.response?.data?.message || err.message || 'Failed to create receipt';
-      return rejectWithValue(errorMessage);
+      const message="please create a recipt";
+      return rejectWithValue(message);
     }
   }
 );

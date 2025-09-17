@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
   } catch (error: unknown) {
     const err = error as {
       response?: { data?: unknown; status?: number };
-      message?: string;
+     
     };
-    console.error("API Route Error:", err.response?.data || err.message);
+  
     return NextResponse.json(
       { error: err.response?.data || "Failed to fetch receipts" },
       { status: err.response?.status || 500 }
