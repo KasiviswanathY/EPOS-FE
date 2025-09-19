@@ -1,3 +1,5 @@
+import { Product } from "./Products";
+
 export interface OrderItem {
   id?: string;
   quantity: number;
@@ -10,6 +12,7 @@ export interface OrderItem {
   promotions?: Promotion[];
   createdAt?: string;
   updatedAt?: string;
+   product?: Product; 
 }
 
 export interface Promotion {
@@ -39,4 +42,5 @@ export interface Order {
   orderItems?: OrderItem[];
   createdAt?: string;
   updatedAt?: string;
+  product?: Product; 
 }

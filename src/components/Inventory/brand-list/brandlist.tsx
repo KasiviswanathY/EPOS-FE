@@ -118,9 +118,9 @@ export default function BrandListComponent() {
                     <tr>
                       <th>Name</th>
                       <th>Description</th>
-                      <th>Status</th>
+                      {/* <th>Status</th>
                       <th>Product Order Code</th>
-                      <th>Article Code</th>
+                      <th>Article Code</th> */}
                       <th style={{ width: "150px" }}>Actions</th>
                     </tr>
                   </thead>
@@ -129,9 +129,9 @@ export default function BrandListComponent() {
                       <tr key={item.id}>
                         <td>{item.name}</td>
                         <td>{item.description}</td>
-                        <td>{item.Status}</td>
+                        {/* <td>{item.Status}</td>
                         <td>{item.productOrderCode}</td>
-                        <td>{item.articleCode}</td>
+                        <td>{item.articleCode}</td> */}
                         <td>
                           <button
                             className="btn btn-outline-primary btn-sm me-2"
