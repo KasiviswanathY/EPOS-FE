@@ -33,7 +33,9 @@ const Orders = ({
   onCartReset?: () => void;
 }) => {
   const [isClient, setIsClient] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"CASH" | "CARD" | "CREDIT" | "BANK_TRANSFER" | "MOBILE_PAYMENT">("CASH");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+    "CASH" | "CARD" | "CREDIT" | "BANK_TRANSFER" | "MOBILE_PAYMENT"
+  >("CASH");
 
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -112,15 +114,19 @@ const Orders = ({
 
       const orderItems: OrderItem[] = cartItems.map((item) => {
         // Calculate tax amount based on tax rate percentage
-        const taxAmount = (item.taxRate?.percentage || 0) * (item.salePrice || 0) * item.quantity;
-        
+        const taxAmount =
+          (item.taxRate?.percentage || 0) *
+          (item.salePrice || 0) *
+          item.quantity;
+
         return {
           productId: item.id || "",
           quantity: item.quantity,
           unitPrice: Math.round((item.salePrice || 0) * 100) / 100,
-          taxAmount: Math.round(taxAmount * 100) / 100,
+          taxAmount: Math.round(taxAmount) / 100,
           discountAmount: 0, // Set default discount amount
-          totalPrice: Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
+          totalPrice:
+            Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
         };
       });
 
@@ -150,7 +156,7 @@ const Orders = ({
         // Clear cart after successful order
         setCartItems([]);
         setOrderTotal(0);
-        
+
         // Reset cart counters
         if (onCartReset) {
           onCartReset();

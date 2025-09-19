@@ -6,18 +6,25 @@ import {
   getAllproducts,
   updateproducts,
   deleteproducts,
+  uploadProductImage,
+  getProductImages,
+  deleteProductImage,
 } from "../actions/productsAction";
-import { Product } from "@/core/interfaces/Products";
+import { Product, ProductImage } from "@/core/interfaces/Products";
 
 interface ProductState {
   products: Product[];
+  productImages: Record<string, ProductImage[]>; // keyed by productId
   loading: boolean;
+  imageLoading: boolean;
   error: string | null;
 }
 
 const initialState: ProductState = {
   products: [],
+  productImages: {},
   loading: false,
+  imageLoading: false,
   error: null,
 };
 
@@ -103,6 +110,101 @@ const productSlice = createSlice({
     builder.addCase(deleteproducts.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
+    });
+
+    // Upload Product Image
+    builder.addCase(uploadProductImage.pending, (state) => {
+      state.imageLoading = true;
+      state.error = null;
+    });
+    builder.addCase(uploadProductImage.fulfilled, (state, action) => {
+      state.imageLoading = false;
+      const { productId, image } = action.payload;
+
+      if (productId && image) {
+        // Initialize the images array if it doesn't exist
+        if (!state.productImages[productId]) {
+          state.productImages[productId] = [];
+        }
+
+        // Add the image to the product's images array
+        state.productImages[productId].push(image);
+
+        // If the image is set as primary, update the product's main image field
+        if (image.isPrimary) {
+          const productIndex = state.products.findIndex(
+            (p) => p.id === productId
+          );
+          if (productIndex !== -1) {
+            state.products[productIndex].images =
+              state.productImages[productId];
+          }
+        }
+      }
+    });
+    builder.addCase(uploadProductImage.rejected, (state, action) => {
+      state.imageLoading = false;
+      state.error = action.error.message || "Failed to upload image";
+    });
+
+    // Get Product Images
+    builder.addCase(getProductImages.pending, (state) => {
+      state.imageLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getProductImages.fulfilled, (state, action) => {
+      state.imageLoading = false;
+      const { productId, images } = action.payload;
+
+      if (productId && Array.isArray(images)) {
+        state.productImages[productId] = images;
+      }
+    });
+    builder.addCase(getProductImages.rejected, (state, action) => {
+      state.imageLoading = false;
+      state.error = action.error.message || "Failed to get product images";
+    });
+
+    // Delete Product Image
+    builder.addCase(deleteProductImage.pending, (state) => {
+      state.imageLoading = true;
+      state.error = null;
+    });
+    builder.addCase(deleteProductImage.fulfilled, (state, action) => {
+      state.imageLoading = false;
+      const { imageId, data } = action.payload;
+      const productId = data?.productId;
+
+      if (productId && imageId && state.productImages[productId]) {
+        // Remove the image from the product's images array
+        state.productImages[productId] = state.productImages[productId].filter(
+          (img) => img.id !== imageId
+        );
+
+        // If the deleted image was primary, update the product's main image
+        const productIndex = state.products.findIndex(
+          (p) => p.id === productId
+        );
+        if (productIndex !== -1) {
+          const hasPrimaryImage = state.productImages[productId].some(
+            (img) => img.isPrimary
+          );
+          if (!hasPrimaryImage) {
+            state.products[productIndex].images = undefined;
+          } else {
+            const primaryImage = state.productImages[productId].find(
+              (img) => img.isPrimary
+            );
+            if (primaryImage) {
+              state.products[productIndex].images = [primaryImage];
+            }
+          }
+        }
+      }
+    });
+    builder.addCase(deleteProductImage.rejected, (state, action) => {
+      state.imageLoading = false;
+      state.error = action.error.message || "Failed to delete image";
     });
   },
 });

@@ -6,6 +6,7 @@ import { Product } from "@/core/interfaces/Products";
 import { RootState } from "@/lib/redux/store";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import ProductImageComponent from "@/components/common/ProductImage";
 
 const Products = ({
   activeTab,
@@ -49,12 +50,23 @@ const Products = ({
           >
             <div className="product-info card mb-0" tabIndex={0}>
               <Link href="#" className="pro-img">
-                <img
-                  src={
-                    product.image || "assets/img/products/pos-product-01.svg"
-                  }
-                  alt={product.name || "Product"}
-                />
+                {product.images && product.images.length > 0 ? (
+                  <ProductImageComponent
+                    productId={product.id}
+                    image={
+                      product.images.find((img) => img.isPrimary) ||
+                      product.images[0]
+                    }
+                    altText={product.name || "Product"}
+                    className="product-image"
+                  />
+                ) : (
+                  <img
+                    src="/assets/img/products/pos-product-01.svg"
+                    alt={product.name || "Product"}
+                    className="product-image"
+                  />
+                )}
                 <span>
                   <i className="ti ti-circle-check-filled" />
                 </span>
@@ -68,10 +80,10 @@ const Products = ({
               <div className="d-flex align-items-center justify-content-between price">
                 <p className="text-gray-9 mb-0">${product.salePrice || "0"}</p>
                 <div className="qty-item m-0">
-                  <CartCounter 
+                  <CartCounter
                     key={`${product.id}-${cartResetCounter}`}
-                    product={product} 
-                    setCartItems={setCartItems} 
+                    product={product}
+                    setCartItems={setCartItems}
                   />
                 </div>
               </div>
