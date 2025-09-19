@@ -153,7 +153,12 @@ export default function ProductListComponent() {
 
   const columns = [
     { title: "Name", dataIndex: "name" },
-    { title: "Category", dataIndex: "categoryId" },
+    {
+    title: "Category",
+    dataIndex: "categoryId",
+    render: (_: unknown, record: Product) =>
+      record.category?.name || "N/A", 
+  },
     { title: "Manufacturer", dataIndex: "manufacturer" },
     {
       title: "Cost Price",
@@ -426,7 +431,7 @@ export default function ProductListComponent() {
                       type="text"
                       name="categoryId"
                       className="form-control"
-                      value={formData.categoryId || ""}
+                      value={formData.category?.name || ""}
                       onChange={handleChange}
                     />
                   </div>
@@ -436,7 +441,7 @@ export default function ProductListComponent() {
                       type="text"
                       name="brandId"
                       className="form-control"
-                      value={formData.brandId || ""}
+                      value={formData.brand?.name || ""}
                       onChange={handleChange}
                     />
                   </div>
@@ -446,7 +451,7 @@ export default function ProductListComponent() {
                       type="text"
                       name="taxRateId"
                       className="form-control"
-                      value={formData.taxRateId || ""}
+                      value={formData.taxRate?.name || ""}
                       onChange={handleChange}
                     />
                   </div>
