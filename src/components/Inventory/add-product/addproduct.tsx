@@ -2,14 +2,19 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import Image from "next/image";
 
 import { Product } from "@/core/interfaces/Products";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { getAllCateogry } from "@/lib/redux/actions/categoryActions";
 import { getAllBrands } from "@/lib/redux/actions/brandAction";
 
-import { getAllTaxRates } from "@/lib/redux/actions/taxratesAction";
-import { createproducts } from "@/lib/redux/actions/productsAction";
+import { getAllTaxRates, TaxRate } from "@/lib/redux/actions/taxratesAction";
+import {
+  createproducts,
+} from "@/lib/redux/actions/productsAction";
+import { Brands } from "@/core/interfaces/Brands";
+import { Cateogry } from "@/core/interfaces/Cateogry";
 
 export default function AddProduct() {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +37,18 @@ export default function AddProduct() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Add state for image upload
+  const [productImages, setProductImages] = useState<
+    Array<{
+      file: File;
+      preview: string;
+      isPrimary: boolean;
+      altText: string;
+      sortOrder: number;
+    }>
+  >([]);
+  const [uploading, setUploading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -46,49 +63,165 @@ export default function AddProduct() {
     dispatch(getAllTaxRates());
   }, [dispatch]);
 
-  const onSubmit = (data: Product) => {
+  // Handle image selection and preview
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    
+    // Check if we've reached the maximum number of images
+    if (productImages.length >= 5) {
+      setErrorMessage("Maximum of 5 images allowed. Please remove an image before adding more.");
+      return;
+    }
+    
+    const file = files[0];
+    const reader = new FileReader();
+    
+    reader.onloadend = () => {
+      // Add the new image to the array, making it primary if it's the first one
+      setProductImages((prev) => {
+        const isPrimary = prev.length === 0;
+        return [
+          ...prev,
+          {
+            file,
+            preview: reader.result as string,
+            isPrimary,
+            altText: "",
+            sortOrder: prev.length,
+          },
+        ];
+      });
+    };
+
+    reader.readAsDataURL(file);
+
+    // Reset the input value so the same file can be selected again
+    event.target.value = "";
+  };  // Set an image as primary
+  const setPrimaryImage = (index: number) => {
+    setProductImages((prev) =>
+      prev.map((img, i) => ({
+        ...img,
+        isPrimary: i === index,
+      }))
+    );
+  };
+
+  // Remove an image from the array
+  const removeImage = (index: number) => {
+    setProductImages((prev) => {
+      const newImages = prev.filter((_, i) => i !== index);
+
+      // If we removed the primary image and there are other images,
+      // make the first one primary
+      if (prev[index].isPrimary && newImages.length > 0) {
+        newImages[0].isPrimary = true;
+      }
+
+      // Update sort orders
+      return newImages.map((img, i) => ({
+        ...img,
+        sortOrder: i,
+      }));
+    });
+  };
+
+  // Update alt text for an image
+  const updateAltText = (index: number, text: string) => {
+    setProductImages((prev) =>
+      prev.map((img, i) => (i === index ? { ...img, altText: text } : img))
+    );
+  };
+
+  const onSubmit = async (data: Product) => {
     // Clear previous messages
     setSuccessMessage(null);
     setErrorMessage(null);
 
-    const payload: Product = {
-      ...data,
-      costPrice: Number(data.costPrice),
-      salePrice: Number(data.salePrice),
-      rrp: Number(data.rrp || 0),
-      rating: Number(data.rating || 0),
-      warranty: Number(data.warranty || 0),
-      // Ensure orderQuantityLimit is never null or undefined
-      orderQuantityLimit: Number(data.orderQuantityLimit || 100),
-      volumeOfSale: Number(data.volumeOfSale || 1),
-      // Fix for date fields - send null when empty
-      manufactureDate:
-        data.manufactureDate && data.manufactureDate.trim() !== ""
-          ? new Date(data.manufactureDate).toISOString()
-          : null,
-      expiryDate:
-        data.expiryDate && data.expiryDate.trim() !== ""
-          ? new Date(data.expiryDate).toISOString()
-          : null,
-    };
+    try {
+      // Prepare the product data
+      const productData: Partial<Product> = {
+        ...data,
+        costPrice: Number(data.costPrice),
+        salePrice: Number(data.salePrice),
+        rrp: Number(data.rrp || 0),
+        rating: Number(data.rating || 0),
+        warranty: Number(data.warranty || 0),
+        // Ensure orderQuantityLimit is never null or undefined
+        orderQuantityLimit: Number(data.orderQuantityLimit || 100),
+        volumeOfSale: Number(data.volumeOfSale || 1),
+        // Fix for date fields - send null when empty
+        manufactureDate:
+          data.manufactureDate && data.manufactureDate.trim() !== ""
+            ? new Date(data.manufactureDate).toISOString()
+            : null,
+        expiryDate:
+          data.expiryDate && data.expiryDate.trim() !== ""
+            ? new Date(data.expiryDate).toISOString()
+            : null,
+      };
 
-    dispatch(createproducts(payload))
-      .unwrap()
-      .then(() => {
-        setSuccessMessage("Product created successfully!");
-        reset(); // Reset the form
+      // If we have images, prepare them for upload
+      if (productImages.length > 0) {
+        setUploading(true);
+        
+        // Extract the image files, primary status, and alt text
+        const imageFiles = productImages.map(img => img.file);
+        const isPrimaryImages = productImages.map(img => img.isPrimary);
+        const imageAltTexts = productImages.map(img => img.altText);
+        
+        try {
+          // Create product with images
+          await dispatch(
+            createproducts({
+              productData,
+              imageFiles,
+              isPrimaryImages,
+              imageAltTexts
+            })
+          ).unwrap();
+          
+          setSuccessMessage("Product created successfully!");
+          reset(); // Reset the form
+          setProductImages([]); // Clear images
 
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 5000);
-      })
-      .catch((err) => {
-        console.error("Failed to create product:", err);
-        setErrorMessage(
-          err.message || "Failed to create product. Please try again."
-        );
-      });
+          // Clear success message after 5 seconds
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
+        } catch (error) {
+          console.error("Error creating product:", error);
+          setErrorMessage("Failed to create product with images. Please try again.");
+        } finally {
+          setUploading(false);
+        }
+      } else {
+        // Create product without images
+        await dispatch(createproducts({ productData }))
+          .unwrap()
+          .then(() => {
+            setSuccessMessage("Product created successfully!");
+            reset(); // Reset the form
+
+            // Clear success message after 5 seconds
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+          })
+          .catch((err: Error) => {
+            console.error("Failed to create product:", err);
+            setErrorMessage(
+              err.message || "Failed to create product. Please try again."
+            );
+          });
+      }
+    } catch (error: unknown) {
+      console.error("Error in form submission:", error);
+      setErrorMessage(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
+    }
   };
 
   // ✅ Show full-page loader if dropdowns are still fetching
@@ -178,6 +311,93 @@ export default function AddProduct() {
               </div>
             </div>
 
+            {/* Image Upload */}
+            <div className="col-lg-12 col-sm-12">
+              <div className="form-group">
+                <label>Product Images (Up to 5 images)</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={productImages.length >= 5}
+                />
+                <small className="text-muted">
+                  You can add up to 5 images. Select one image at a time. Mark one image as primary.
+                </small>
+
+                {productImages.length > 0 && (
+                  <div className="mt-3">
+                    <div className="d-flex flex-wrap gap-3">
+                      {productImages.map((img, index) => (
+                        <div
+                          key={index}
+                          className="position-relative border rounded p-2"
+                          style={{ width: "200px" }}
+                        >
+                          <div className="position-absolute top-0 end-0 badge bg-light text-dark p-2">
+                            {index + 1} / {productImages.length}
+                          </div>
+                          
+                          <Image
+                            src={img.preview}
+                            alt={`Product preview ${index + 1}`}
+                            width={200}
+                            height={150}
+                            style={{ objectFit: "contain" }}
+                            className={`mb-2 ${
+                              img.isPrimary ? "border border-primary" : ""
+                            }`}
+                          />
+
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Alt text"
+                              value={img.altText}
+                              onChange={(e) =>
+                                updateAltText(index, e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div className="d-flex justify-content-between mt-2">
+                            <button
+                              type="button"
+                              className={`btn btn-sm ${
+                                img.isPrimary
+                                  ? "btn-primary"
+                                  : "btn-outline-primary"
+                              }`}
+                              onClick={() => setPrimaryImage(index)}
+                              disabled={img.isPrimary}
+                            >
+                              {img.isPrimary ? "Primary" : "Set Primary"}
+                            </button>
+
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-danger"
+                              onClick={() => removeImage(index)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {productImages.length >= 5 && (
+                      <div className="alert alert-info mt-2">
+                        Maximum number of images reached (5).
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Dropdowns */}
             <div className="col-lg-6 col-sm-12">
               <div className="form-group">
@@ -191,7 +411,7 @@ export default function AddProduct() {
                   })}
                 >
                   <option value="">Select Category</option>
-                  {categories?.map((cat) => (
+                  {categories?.map((cat: Cateogry) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}
                     </option>
@@ -215,7 +435,7 @@ export default function AddProduct() {
                   {...register("brandId", { required: "Brand is required" })}
                 >
                   <option value="">Select Brand</option>
-                  {brands?.map((brand) => (
+                  {brands?.map((brand: Brands) => (
                     <option key={brand.id} value={brand.id}>
                       {brand.name}
                     </option>
@@ -241,7 +461,7 @@ export default function AddProduct() {
                   })}
                 >
                   <option value="">Select Tax Rate</option>
-                  {taxRates?.map((tax) => (
+                  {taxRates?.map((tax: TaxRate) => (
                     <option key={tax.id} value={tax.id}>
                       {tax.name} ({tax.percentage}%)
                     </option>
@@ -545,9 +765,9 @@ export default function AddProduct() {
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={productLoading}
+                disabled={productLoading || uploading}
               >
-                {productLoading ? "Saving..." : "Save Product"}
+                {productLoading || uploading ? "Saving..." : "Save Product"}
               </button>
             </div>
           </div>

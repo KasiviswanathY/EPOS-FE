@@ -17,6 +17,21 @@ interface Brand {
   description?: string;
 }
 
+export interface ProductImage {
+  id: string;
+  imageData?: string; // Base64 encoded for frontend
+  contentType: string;
+  fileName?: string;
+  fileSize: number;
+  isPrimary: boolean;
+  altText?: string;
+  sortOrder: number;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
+  imageUrl?: string; // For display purposes
+}
+
 interface ProductTag {
   id: string;
   name: string;
@@ -38,12 +53,12 @@ interface MulitChoiceProductGroup {
 export interface Product {
   id: string;
   name: string;
-  image?: string;
+  images?: ProductImage[];
   description?: string;
   costPrice: number;
   salePrice: number;
   manufactureDate?: string | null;
-expiryDate?: string | null;
+  expiryDate?: string | null;
   unitOfSale?: string; // UnitOfSale enum value
   rating?: number;
   sellOnPos: boolean;
@@ -62,7 +77,6 @@ expiryDate?: string | null;
   orderQuantityLimit: number;
 
   volumeOfSale?: number;
-
 
   taxRateId?: string;
   categoryId?: string;

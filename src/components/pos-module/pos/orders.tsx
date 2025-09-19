@@ -33,7 +33,9 @@ const Orders = ({
   onCartReset?: () => void;
 }) => {
   const [isClient, setIsClient] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"CASH" | "CARD" | "CREDIT" | "BANK_TRANSFER" | "MOBILE_PAYMENT">("CASH");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+    "CASH" | "CARD" | "CREDIT" | "BANK_TRANSFER" | "MOBILE_PAYMENT"
+  >("CASH");
 
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -52,9 +54,10 @@ const Orders = ({
 
   const totalTaxRate = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      return (
-        total + (item?.taxRate?.percentage || 0) * 100 * (item.quantity || 0)
-      );
+      const taxRateDecimal = (item.taxRate?.percentage || 0) / 100;
+      const itemTaxAmount =
+        (item.salePrice || 0) * item.quantity * taxRateDecimal;
+      return total + itemTaxAmount;
     }, 0);
   }, [cartItems]);
 
@@ -83,7 +86,6 @@ const Orders = ({
 
   React.useEffect(() => {
     if (orderSuccess || orderError) {
-      // Scroll to top to ensure messages are visible
       window.scrollTo({ top: 0, behavior: "smooth" });
 
       const timer = setTimeout(() => {
@@ -111,16 +113,18 @@ const Orders = ({
       }, 0);
 
       const orderItems: OrderItem[] = cartItems.map((item) => {
-        // Calculate tax amount based on tax rate percentage
-        const taxAmount = (item.taxRate?.percentage || 0) * (item.salePrice || 0) * item.quantity;
-        
+        const taxRateDecimal = (item.taxRate?.percentage || 0) / 100;
+        const taxAmount =
+          taxRateDecimal * (item.salePrice || 0) * item.quantity;
+
         return {
           productId: item.id || "",
           quantity: item.quantity,
           unitPrice: Math.round((item.salePrice || 0) * 100) / 100,
-          taxAmount: Math.round(taxAmount * 100) / 100,
+          taxAmount: parseFloat(taxAmount.toFixed(2)),
           discountAmount: 0, // Set default discount amount
-          totalPrice: Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
+          totalPrice:
+            Math.round((item.salePrice || 0) * item.quantity * 100) / 100,
         };
       });
 
@@ -150,19 +154,17 @@ const Orders = ({
         // Clear cart after successful order
         setCartItems([]);
         setOrderTotal(0);
-        
+
         // Reset cart counters
         if (onCartReset) {
           onCartReset();
         }
 
-        // Scroll to top to show the success message
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (error) {
       console.error("Failed to place order:", error);
 
-      // Scroll to top to show the error message
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -400,7 +402,9 @@ const Orders = ({
                   </tr>
                   <tr>
                     <td>Tax</td>
-                    <td className="text-gray-9 text-end">{totalTaxRate}</td>
+                    <td className="text-gray-9 text-end">
+                      ${(Math.round(totalTaxRate * 100) / 100).toFixed(2)}
+                    </td>
                   </tr>
                   <tr>
                     <td>
