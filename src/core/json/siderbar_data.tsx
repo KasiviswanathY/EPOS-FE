@@ -275,6 +275,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
        },
+       { label: "Tax Rates", link: "/tax-rates",icon: "ti ti-discount-2",showSubRoute: false },
 
       {
         label: "Receipts",
@@ -1432,7 +1433,7 @@ export const SidebarData = [
             link: "/bank-settings-grid",
             showSubRoute: false,
           },
-          { label: "Tax Rates", link: "/tax-rates", showSubRoute: false },
+          // { label: "Tax Rates", link: "/tax-rates", showSubRoute: false },
           {
             label: "Currencies",
             link: "/currency-settings",
