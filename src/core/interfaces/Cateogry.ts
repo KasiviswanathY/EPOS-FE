@@ -7,5 +7,7 @@ export interface Cateogry {
   showonTill: boolean,
   nominalCode: string,
   popupNoteId: string,
+
+  parentId?:string,
  
 }

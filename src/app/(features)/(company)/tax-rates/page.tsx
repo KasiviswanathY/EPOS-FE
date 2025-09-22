@@ -1,4 +1,4 @@
-import TaxRatesComponent from "@/components/company/taxrates/taxrates";
+import TaxRatesComponent from "@/components/company/taxRates/taxrates";
 
 export default function TaxRate() {
   return (
