@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../lib/redux/store";
 import { getCurrentUser } from "../../../lib/redux/actions/userActions";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type LoginFormInputs = {
   email: string;
@@ -16,6 +17,7 @@ type LoginFormInputs = {
 
 export default function Login() {
   const route = all_routes;
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export default function Login() {
           console.error("Failed to fetch current user:", userError);
         }
 
-        window.location.href = "/dashboard";
+        router.push("/dashboard");
         return;
       }
 
