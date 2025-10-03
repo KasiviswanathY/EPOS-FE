@@ -42,7 +42,7 @@ export default function Login() {
           console.error("Failed to fetch current user:", userError);
         }
 
-        window.location.href = "/dashboard";
+        window.location.href = "/index";
         return;
       }
 

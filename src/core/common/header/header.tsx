@@ -1,18 +1,12 @@
 "use client";
-{
-  /* eslint-disable-next-line @next/next/no-img-element */
-}
 
 import { all_routes } from "@/data/all_routes";
 import FeatherIcon, { Search } from "feather-icons-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
-
+import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
 import { RootState } from "@/lib/redux/store";
 import useCurrentUser from "@/hooks/useCurrentUser";
 
@@ -35,7 +29,6 @@ export default function Header() {
     SetToggle((current: boolean) => !current);
   };
 
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -111,13 +104,31 @@ export default function Header() {
             onMouseOver={expandMenuOpen}
           >
             <Link href="/dashboard" className="logo logo-normal">
-              <img src="assets/img/logo.png" alt="img" />
+              <Image
+                src="/assets/img/logo.png"
+                alt="Logo"
+                width={100}
+                height={40}
+                priority
+              />
             </Link>
             <Link href="/dashboard" className="logo logo-white">
-              <img src="assets/img/logo-white.png" alt="img" />
+              <Image
+                src="/assets/img/logo-white.png"
+                alt="Logo"
+                width={100}
+                height={40}
+                priority
+              />
             </Link>
             <Link href="/dashboard" className="logo-small">
-              <img src="assets/img/logo-small.png" alt="img" />
+              <Image
+                src="/assets/img/logo-small.png"
+                alt="Logo"
+                width={40}
+                height={40}
+                priority
+              />
             </Link>
             <Link
               id="toggle_btn"
@@ -171,10 +182,13 @@ export default function Header() {
                     </div>
                     <span className="input-group-text">
                       <kbd className="d-flex align-items-center">
-                        <img
-                          src="assets/img/icons/command.svg"
-                          alt="img"
+                        <Image
+                          src="/assets/img/icons/command.svg"
+                          alt="Command"
+                          width={16}
+                          height={16}
                           className="me-1"
+                          priority
                         />
                         K
                       </kbd>
@@ -194,10 +208,13 @@ export default function Header() {
               >
                 <span className="user-info">
                   <span className="user-letter">
-                    <img
-                      src="assets/img/store/store-01.png"
+                    <Image
+                      src="/assets/img/store/store-01.png"
                       alt="Store Logo"
+                      width={120}
+                      height={80}
                       className="img-fluid"
+                      priority
                     />
                   </span>
                   <span className="user-detail">
@@ -207,34 +224,46 @@ export default function Header() {
               </Link>
               <div className="dropdown-menu dropdown-menu-right">
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-01.png"
+                  <Image
+                    src="/assets/img/store/store-01.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Freshmart
                 </Link>
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-02.png"
+                  <Image
+                    src="/assets/img/store/store-02.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Grocery Apex
                 </Link>
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-03.png"
+                  <Image
+                    src="/assets/img/store/store-03.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Grocery Bevy
                 </Link>
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-04.png"
+                  <Image
+                    src="/assets/img/store/store-04.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Grocery Eden
                 </Link>
@@ -269,46 +298,46 @@ export default function Header() {
                       <p>Product</p>
                     </Link>
                   </div>
-                  <div className="col-md-2">
+                  {/* <div className="col-md-2">
                     <Link href={route.categorylist} className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-shopping-bag" />
                       </span>
                       <p>Purchase</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
+                  </div> */}
+                  {/* <div className="col-md-2">
                     <Link href="{route.online}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-shopping-cart" />
                       </span>
                       <p>Sale</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.expenselist} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.expenselist}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-file-text" />
                       </span>
                       <p>Expense</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.quotationlist} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.quotationlist}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-device-floppy" />
                       </span>
                       <p>Quotation</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.salesreturn} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.salesreturn}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-copy" />
                       </span>
                       <p>Return</p>
                     </Link>
-                  </div>
+                  </div> */}
                   <div className="col-md-2">
                     <Link href={route.users} className="link-item">
                       <span className="link-icon">
@@ -317,38 +346,38 @@ export default function Header() {
                       <p>User</p>
                     </Link>
                   </div>
-                  <div className="col-md-2">
+                  {/* <div className="col-md-2">
                     <Link href={route.customer} className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-users" />
                       </span>
                       <p>Customer</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
+                  </div> */}
+                  {/* <div className="col-md-2">
                     <Link href={route.salesreport} className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-shield" />
                       </span>
                       <p>Biller</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.suppliers} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.suppliers}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-user-check" />
                       </span>
                       <p>Supplier</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.stocktransfer} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.stocktransfer}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-truck" />
                       </span>
                       <p>Transfer</p>
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </li>
@@ -372,7 +401,13 @@ export default function Header() {
               >
                 {/* <i data-feather="globe" /> */}
                 {/* <FeatherIcon icon="globe" /> */}
-                <img src={flagImage} alt="img" height={16} />
+                <Image
+                  src={`/${flagImage}`}
+                  alt="Selected flag"
+                  width={24}
+                  height={16}
+                  priority
+                />
               </Link>
               <div className="dropdown-menu dropdown-menu-right">
                 <Link
@@ -380,10 +415,12 @@ export default function Header() {
                   className="dropdown-item active"
                   // onClick={() => changeLanguage("en")}
                 >
-                  <img
-                    src="assets/img/flags/english.svg"
-                    alt="img"
+                  <Image
+                    src="/assets/img/flags/english.svg"
+                    alt="English"
+                    width={24}
                     height={16}
+                    priority
                   />
                   {/* {t("English")} */}
                 </Link>
@@ -392,11 +429,13 @@ export default function Header() {
                   className="dropdown-item"
                   // onClick={() => changeLanguage("fr")}
                 >
-                  <img
-                    src="assets/img/flags/arabic.svg"
-                    alt="img"
+                  <Image
+                    src="/assets/img/flags/arabic.svg"
+                    alt="Arabic"
+                    width={24}
                     height={16}
-                  />{" "}
+                    priority
+                  />
                   Arabic
                 </Link>
               </div>
@@ -444,9 +483,12 @@ export default function Header() {
                       <Link href={route.activities}>
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-13.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-13.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -464,9 +506,12 @@ export default function Header() {
                       <Link href={route.activities}>
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-03.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-03.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -483,9 +528,12 @@ export default function Header() {
                       <Link href={route.activities} className="recent-msg">
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-17.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-17.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -502,9 +550,12 @@ export default function Header() {
                       <Link href={route.activities} className="recent-msg">
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-02.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-02.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -548,10 +599,13 @@ export default function Header() {
               >
                 <span className="user-info p-0">
                   <span className="user-letter">
-                    <img
-                      src="assets/img/profiles/avator1.jpg"
-                      alt="Img"
+                    <Image
+                      src="/assets/img/profiles/avator1.jpg"
+                      alt="Avatar"
+                      width={40}
+                      height={40}
                       className="img-fluid"
+                      priority
                     />
                   </span>
                 </span>
@@ -559,7 +613,13 @@ export default function Header() {
               <div className="dropdown-menu menu-drop-user">
                 <div className="profileset d-flex align-items-center">
                   <span className="user-img me-2">
-                    <img src="assets/img/profiles/avator1.jpg" alt="Img" />
+                    <Image
+                      src="/assets/img/profiles/avator1.jpg"
+                      alt="Avatar"
+                      width={40}
+                      height={40}
+                      priority
+                    />
                   </span>
                   <div>
                     <h6 className="fw-medium">
@@ -581,10 +641,10 @@ export default function Header() {
                   <i className="ti ti-user-circle me-2" />
                   MyProfile
                 </Link>
-                <Link className="dropdown-item" href={route.salesreport}>
+                {/* <Link className="dropdown-item" href={route.salesreport}>
                   <i className="ti ti-file-text me-2" />
                   Reports
-                </Link>
+                </Link> */}
                 <Link className="dropdown-item" href={route.generalsettings}>
                   <i className="ti ti-settings-2 me-2" />
                   Settings

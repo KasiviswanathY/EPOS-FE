@@ -1,4 +1,4 @@
-"use client"
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import PredefinedDateRanges from "@/core/common/daterangepicker/datePicker";
 import CommonFooter from "@/core/common/footer/commonFooter";
@@ -17,21 +17,23 @@ import { Stock } from "@/core/interfaces/Stock";
 import { getOrders } from "@/lib/redux/actions/orderActions";
 
 export default function NewDashboard() {
-    const route = all_routes
+  const route = all_routes;
 
-    const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
   const { lowStocks, loading, error } = useSelector(
     (state: RootState) => state.lowstock
   );
 
-const { orders, loading: ordersLoading, error: ordersError } = useSelector(
-  (state: RootState) => state.orders
-);
+  const {
+    orders,
+    loading: ordersLoading,
+    error: ordersError,
+  } = useSelector((state: RootState) => state.orders);
 
-useEffect(() => {
-  dispatch(getAllLowStocks());
-  dispatch(getOrders()); // fetch recent sales data
-}, [dispatch]);
+  useEffect(() => {
+    dispatch(getAllLowStocks());
+    dispatch(getOrders()); // fetch recent sales data
+  }, [dispatch]);
 
   return (
     <div className="page-wrapper">
@@ -81,7 +83,7 @@ useEffect(() => {
             <i className="ti ti-x" />
           </button>
         </div>
-        <div className="row">
+        {/* <div className="row">
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card bg-skyblue sale-widget flex-fill">
               <div className="card-body d-flex align-items-center">
@@ -158,10 +160,10 @@ useEffect(() => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="row">
           {/* Profit */}
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          {/* <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card revenue-widget flex-fill">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
@@ -187,10 +189,10 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Profit */}
           {/* Invoice */}
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          {/* <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card revenue-widget flex-fill">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
@@ -216,10 +218,10 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Invoice */}
           {/* Expenses */}
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          {/* <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card revenue-widget flex-fill">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
@@ -245,10 +247,10 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Expenses */}
           {/* Returns */}
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          {/* <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card revenue-widget flex-fill">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
@@ -274,13 +276,13 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Returns */}
         </div>
         <div className="row">
           <>
             {/* Sales & Purchase */}
-            <div className="col-xxl-8 col-xl-7 col-sm-12 col-12 d-flex">
+            {/* <div className="col-xxl-8 col-xl-7 col-sm-12 col-12 d-flex">
               <div className="card flex-fill">
                 <div className="card-header d-flex justify-content-between align-items-center">
                   <div className="d-inline-flex align-items-center">
@@ -329,17 +331,17 @@ useEffect(() => {
                       </div>
                     </div>
                     <div id="sales-daychart">
-                     <SalesDayChart />
+                      <SalesDayChart />
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* /Sales & Purchase */}
           </>
 
           {/* Top Selling Products */}
-          <div className="col-xxl-4 col-xl-5 d-flex">
+          {/* <div className="col-xxl-4 col-xl-5 d-flex">
             <div className="card flex-fill">
               <div className="card-header">
                 <div className="d-inline-flex align-items-center">
@@ -445,11 +447,11 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="row">
           {/* Top Selling Products */}
-          <div className="col-xxl-4 col-md-6 d-flex">
+          {/* <div className="col-xxl-4 col-md-6 d-flex">
             <div className="card flex-fill">
               <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div className="d-inline-flex align-items-center">
@@ -590,179 +592,207 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Top Selling Products */}
           {/* Low Stock Products */}
-     
 
-{/* Low Stock Products */}
-<div className="col-xxl-4 col-md-6 d-flex">
-  <div className="card flex-fill shadow-sm">
-    <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
-      <div className="d-inline-flex align-items-center">
-        <span className="title-icon bg-soft-danger fs-16 me-2 rounded-circle p-2">
-          <i className="ti ti-alert-triangle text-danger" />
-        </span>
-        <h5 className="card-title mb-0">Low Stock Products</h5>
-      </div>
-      <Link
-        href={route.lowstock}
-        className="fs-13 fw-bold text-decoration-underline text-primary"
-      >
-        View All
-      </Link>
-    </div>
+          {/* Low Stock Products */}
+          <div className="col-xxl-4 col-md-6 d-flex">
+            <div className="card flex-fill shadow-sm">
+              <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div className="d-inline-flex align-items-center">
+                  <span className="title-icon bg-soft-danger fs-16 me-2 rounded-circle p-2">
+                    <i className="ti ti-alert-triangle text-danger" />
+                  </span>
+                  <h5 className="card-title mb-0">Low Stock Products</h5>
+                </div>
+                <Link
+                  href={route.lowstock}
+                  className="fs-13 fw-bold text-decoration-underline text-primary"
+                >
+                  View All
+                </Link>
+              </div>
 
-    <div className="card-body">
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-danger">{error}</p>}
-      {!loading && lowStocks.length === 0 && (
-        <p className="text-muted">No low stock items found.</p>
-      )}
+              <div className="card-body">
+                {loading && <p>Loading...</p>}
+                {error && <p className="text-danger">{error}</p>}
+                {!loading && lowStocks.length === 0 && (
+                  <p className="text-muted">No low stock items found.</p>
+                )}
 
-      {/* ✅ Explicitly type item as Stock */}
-      {lowStocks.slice(0, 5).map((item: Stock) => {
-        const { id, product, quantity, location, minStockLevel } = item;
-        const isCritical = quantity <= minStockLevel / 2;
-        return (
-          <div
-            key={id}
-            className="d-flex justify-content-between align-items-center py-2 border-bottom"
-          >
-            {/* Product and Location */}
-            <div>
-              <h6 className="fw-semibold mb-1 text-dark">
-                {product?.name || "Unnamed Product"}
-              </h6>
-              <span className="badge bg-light text-muted me-2">
-                {location?.name || "Unknown Location"}
-              </span>
-            </div>
+                {/* ✅ Explicitly type item as Stock */}
+                {lowStocks.slice(0, 5).map((item: Stock) => {
+                  const { id, product, quantity, location, minStockLevel } =
+                    item;
+                  const isCritical = quantity <= minStockLevel / 2;
+                  return (
+                    <div
+                      key={id}
+                      className="d-flex justify-content-between align-items-center py-2 border-bottom"
+                    >
+                      {/* Product and Location */}
+                      <div>
+                        <h6 className="fw-semibold mb-1 text-dark">
+                          {product?.name || "Unnamed Product"}
+                        </h6>
+                        <span className="badge bg-light text-muted me-2">
+                          {location?.name || "Unknown Location"}
+                        </span>
+                      </div>
 
-            {/* Quantity Badge */}
-            <div className="text-end">
-              <span
-                className={`badge px-3 py-2 rounded-pill fw-semibold ${
-                  isCritical ? "bg-danger text-white" : "bg-warning text-dark"
-                }`}
-              >
-                {quantity ?? 0} in stock
-              </span>
+                      {/* Quantity Badge */}
+                      <div className="text-end">
+                        <span
+                          className={`badge px-3 py-2 rounded-pill fw-semibold ${
+                            isCritical
+                              ? "bg-danger text-white"
+                              : "bg-warning text-dark"
+                          }`}
+                        >
+                          {quantity ?? 0} in stock
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        );
-      })}
-    </div>
-  </div>
-</div>
 
           {/* /Low Stock Products */}
-   {/* Recent Sales */}
-<div className="col-xxl-4 col-md-12 d-flex">
-  <div className="card flex-fill">
-    <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
-      <div className="d-inline-flex align-items-center">
-        <span className="title-icon bg-soft-pink fs-16 me-2">
-          <i className="ti ti-box" />
-        </span>
-        <h5 className="card-title mb-0">Recent Sales</h5>
-      </div>
-      <div className="dropdown">
-        <Link
-          href="#"
-          className="dropdown-toggle btn btn-sm btn-white"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <i className="ti ti-calendar me-1" />
-          Weekly
-        </Link>
-        <ul className="dropdown-menu p-3">
-          <li><Link href="#" className="dropdown-item">Today</Link></li>
-          <li><Link href="#" className="dropdown-item">Weekly</Link></li>
-          <li><Link href="#" className="dropdown-item">Monthly</Link></li>
-        </ul>
-      </div>
-    </div>
-
-    <div className="card-body">
-      {loading && <p>Loading...</p>}
-      {!loading && (!orders || orders.length === 0) && <p>No recent sales</p>}
-
-      {!loading &&
-        [...orders]
-          .sort(
-            (a, b) =>
-              new Date(b.orderDate).getTime() -
-              new Date(a.orderDate).getTime()
-          )
-          .slice(0, 5)
-          .map((order) => {
-            const firstItem = order.orderItems?.[0];
-            const product = firstItem?.product;
-
-            const imageUrl =
-              product?.images?.find((img: { isPrimary: any; }) => img.isPrimary)?.imageUrl ||
-              product?.images?.[0]?.imageUrl ||
-              "assets/img/products/default.jpg";
-
-            const amount = firstItem?.totalPrice?.toFixed(2) ?? "0.00";
-
-            const badgeClass = {
-              PENDING: "bg-purple",
-              CONFIRMED: "badge-info",
-              PROCESSING: "badge-warning",
-              COMPLETED: "badge-success",
-              CANCELLED: "badge-danger",
-              REFUNDED: "badge-secondary",
-            }[order.status] ?? "bg-secondary";
-
-            return (
-              <div
-                key={order.id}
-                className="d-flex align-items-center justify-content-between mb-4"
-              >
-                <div className="d-flex align-items-center">
-                  <Link href="#" className="avatar avatar-lg">
-                    <img src={imageUrl} alt={product?.name || "Product"} />
-                  </Link>
-                  <div className="ms-2">
-                    <h6 className="fw-bold mb-1">
-                      <Link href="#">{product?.name || "Unnamed Product"}</Link>
-                    </h6>
-                    <div className="d-flex align-items-center item-list">
-                      <p>{product?.category?.name || "General"}</p>
-                      <p className="text-gray-9 ms-2">${amount}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-end">
-                  <p className="fs-13 mb-1">
-                    {new Date(order.orderDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </p>
-                  <span
-                    className={`badge ${badgeClass} badge-xs d-inline-flex align-items-center`}
-                  >
-                    <i className="ti ti-circle-filled fs-5 me-1" />
-                    {order.status}
+          {/* Recent Sales */}
+          <div className="col-xxl-4 col-md-12 d-flex">
+            <div className="card flex-fill">
+              <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div className="d-inline-flex align-items-center">
+                  <span className="title-icon bg-soft-pink fs-16 me-2">
+                    <i className="ti ti-box" />
                   </span>
+                  <h5 className="card-title mb-0">Recent Sales</h5>
+                </div>
+                <div className="dropdown">
+                  <Link
+                    href="#"
+                    className="dropdown-toggle btn btn-sm btn-white"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i className="ti ti-calendar me-1" />
+                    Weekly
+                  </Link>
+                  <ul className="dropdown-menu p-3">
+                    <li>
+                      <Link href="#" className="dropdown-item">
+                        Today
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="#" className="dropdown-item">
+                        Weekly
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="#" className="dropdown-item">
+                        Monthly
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               </div>
-            );
-          })}
-    </div>
-  </div>
-</div>
+
+              <div className="card-body">
+                {loading && <p>Loading...</p>}
+                {!loading && (!orders || orders.length === 0) && (
+                  <p>No recent sales</p>
+                )}
+
+                {!loading &&
+                  [...orders]
+                    .sort(
+                      (a, b) =>
+                        new Date(b.orderDate).getTime() -
+                        new Date(a.orderDate).getTime()
+                    )
+                    .slice(0, 5)
+                    .map((order) => {
+                      const firstItem = order.orderItems?.[0];
+                      const product = firstItem?.product;
+
+                      const imageUrl =
+                        product?.images?.find(
+                          (img: { isPrimary: any }) => img.isPrimary
+                        )?.imageUrl ||
+                        product?.images?.[0]?.imageUrl ||
+                        "assets/img/products/default.jpg";
+
+                      const amount =
+                        firstItem?.totalPrice?.toFixed(2) ?? "0.00";
+
+                      const badgeClass =
+                        {
+                          PENDING: "bg-purple",
+                          CONFIRMED: "badge-info",
+                          PROCESSING: "badge-warning",
+                          COMPLETED: "badge-success",
+                          CANCELLED: "badge-danger",
+                          REFUNDED: "badge-secondary",
+                        }[order.status] ?? "bg-secondary";
+
+                      return (
+                        <div
+                          key={order.id}
+                          className="d-flex align-items-center justify-content-between mb-4"
+                        >
+                          <div className="d-flex align-items-center">
+                            <Link href="#" className="avatar avatar-lg">
+                              <img
+                                src={imageUrl}
+                                alt={product?.name || "Product"}
+                              />
+                            </Link>
+                            <div className="ms-2">
+                              <h6 className="fw-bold mb-1">
+                                <Link href="#">
+                                  {product?.name || "Unnamed Product"}
+                                </Link>
+                              </h6>
+                              <div className="d-flex align-items-center item-list">
+                                <p>{product?.category?.name || "General"}</p>
+                                <p className="text-gray-9 ms-2">${amount}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-end">
+                            <p className="fs-13 mb-1">
+                              {new Date(order.orderDate).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )}
+                            </p>
+                            <span
+                              className={`badge ${badgeClass} badge-xs d-inline-flex align-items-center`}
+                            >
+                              <i className="ti ti-circle-filled fs-5 me-1" />
+                              {order.status}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
+          </div>
 
           {/* /Recent Sales */}
         </div>
         <div className="row">
           {/* Sales Statics */}
-          <div className="col-xl-6 col-sm-12 col-12 d-flex">
+          {/* <div className="col-xl-6 col-sm-12 col-12 d-flex">
             <div className="card flex-fill">
               <div className="card-header d-flex justify-content-between align-items-center">
                 <div className="d-inline-flex align-items-center">
@@ -828,209 +858,238 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Sales Statics */}
           {/* Recent Transactions */}
           {/* ---------- RECENT TRANSACTIONS CARD ---------- */}
-<div className="col-xl-6 col-sm-12 col-12 d-flex">
-  <div className="card flex-fill">
-    <div className="card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
-      <div className="d-inline-flex align-items-center">
-        <span className="title-icon bg-soft-orange fs-16 me-2">
-          <i className="ti ti-flag" />
-        </span>
-        <h5 className="card-title mb-0">Recent Transactions</h5>
-      </div>
-      <Link
-        href={route.onlineorder}
-        className="fs-13 fw-medium text-decoration-underline"
-      >
-        View All
-      </Link>
-    </div>
+          <div className="col-xl-6 col-sm-12 col-12 d-flex">
+            <div className="card flex-fill">
+              <div className="card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div className="d-inline-flex align-items-center">
+                  <span className="title-icon bg-soft-orange fs-16 me-2">
+                    <i className="ti ti-flag" />
+                  </span>
+                  <h5 className="card-title mb-0">Recent Transactions</h5>
+                </div>
+                {/* <Link
+                  href={route.onlineorder}
+                  className="fs-13 fw-medium text-decoration-underline"
+                >
+                  View All
+                </Link> */}
+              </div>
 
-    <div className="card-body p-0">
-      <ul className="nav nav-tabs nav-justified transaction-tab">
-        <li className="nav-item">
-          <Link className="nav-link active" href="#sale" data-bs-toggle="tab">
-            Sale
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" href="#purchase-transaction" data-bs-toggle="tab">
-            Purchase
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" href="#quotation" data-bs-toggle="tab">
-            Quotation
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" href="#expenses" data-bs-toggle="tab">
-            Expenses
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" href="#invoices" data-bs-toggle="tab">
-            Invoices
-          </Link>
-        </li>
-      </ul>
+              <div className="card-body p-0">
+                <ul className="nav nav-tabs nav-justified transaction-tab">
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link active"
+                      href="#sale"
+                      data-bs-toggle="tab"
+                    >
+                      Sale
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      href="#purchase-transaction"
+                      data-bs-toggle="tab"
+                    >
+                      Purchase
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      href="#quotation"
+                      data-bs-toggle="tab"
+                    >
+                      Quotation
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      href="#expenses"
+                      data-bs-toggle="tab"
+                    >
+                      Expenses
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link"
+                      href="#invoices"
+                      data-bs-toggle="tab"
+                    >
+                      Invoices
+                    </Link>
+                  </li>
+                </ul>
 
-      <div className="tab-content">
-        {/* ---- SALE TAB (dynamic orders) ---- */}
-        <div className="tab-pane show active" id="sale">
-          <div className="table-responsive">
-            <table className="table table-borderless custom-table">
-              <thead className="thead-light">
-                <tr>
-                  <th>Date</th>
-                  <th>Order #</th>
-                  <th>Status</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ordersLoading ? (
-                  <tr>
-                    <td colSpan={4} className="text-center py-3">Loading...</td>
-                  </tr>
-                ) : ordersError ? (
-                  <tr>
-                    <td colSpan={4} className="text-danger text-center py-3">
-                      {ordersError}
-                    </td>
-                  </tr>
-                ) : orders && orders.length > 0 ? (
-                  orders.slice(0, 5).map((order) => (
-                    <tr key={order.id}>
-                      <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                      <td>#{order.orderNumber}</td>
-                      <td>
-                        <span className="badge badge-success badge-xs d-inline-flex align-items-center">
-                          <i className="ti ti-circle-filled fs-5 me-1" />
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="fs-16 fw-bold text-gray-9">
-                        ${order.totalAmount.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="text-center py-3">
-                      No recent transactions
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                <div className="tab-content">
+                  {/* ---- SALE TAB (dynamic orders) ---- */}
+                  <div className="tab-pane show active" id="sale">
+                    <div className="table-responsive">
+                      <table className="table table-borderless custom-table">
+                        <thead className="thead-light">
+                          <tr>
+                            <th>Date</th>
+                            <th>Order #</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ordersLoading ? (
+                            <tr>
+                              <td colSpan={4} className="text-center py-3">
+                                Loading...
+                              </td>
+                            </tr>
+                          ) : ordersError ? (
+                            <tr>
+                              <td
+                                colSpan={4}
+                                className="text-danger text-center py-3"
+                              >
+                                {ordersError}
+                              </td>
+                            </tr>
+                          ) : orders && orders.length > 0 ? (
+                            orders.slice(0, 5).map((order) => (
+                              <tr key={order.id}>
+                                <td>
+                                  {new Date(
+                                    order.orderDate
+                                  ).toLocaleDateString()}
+                                </td>
+                                <td>#{order.orderNumber}</td>
+                                <td>
+                                  <span className="badge badge-success badge-xs d-inline-flex align-items-center">
+                                    <i className="ti ti-circle-filled fs-5 me-1" />
+                                    {order.status}
+                                  </span>
+                                </td>
+                                <td className="fs-16 fw-bold text-gray-9">
+                                  ${order.totalAmount.toFixed(2)}
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={4} className="text-center py-3">
+                                No recent transactions
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* ---- PURCHASE TAB ---- */}
+                  <div className="tab-pane fade" id="purchase-transaction">
+                    <div className="table-responsive">
+                      <table className="table table-borderless custom-table">
+                        <thead className="thead-light">
+                          <tr>
+                            <th>Date</th>
+                            <th>Vendor</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td colSpan={4} className="text-center py-3">
+                              No purchase transactions
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* ---- QUOTATION TAB ---- */}
+                  <div className="tab-pane fade" id="quotation">
+                    <div className="table-responsive">
+                      <table className="table table-borderless custom-table">
+                        <thead className="thead-light">
+                          <tr>
+                            <th>Date</th>
+                            <th>Quote #</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td colSpan={4} className="text-center py-3">
+                              No quotations
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* ---- EXPENSES TAB ---- */}
+                  <div className="tab-pane fade" id="expenses">
+                    <div className="table-responsive">
+                      <table className="table table-borderless custom-table">
+                        <thead className="thead-light">
+                          <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td colSpan={4} className="text-center py-3">
+                              No expenses recorded
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* ---- INVOICES TAB ---- */}
+                  <div className="tab-pane fade" id="invoices">
+                    <div className="table-responsive">
+                      <table className="table table-borderless custom-table">
+                        <thead className="thead-light">
+                          <tr>
+                            <th>Date</th>
+                            <th>Invoice #</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td colSpan={4} className="text-center py-3">
+                              No invoices available
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* ---- PURCHASE TAB ---- */}
-        <div className="tab-pane fade" id="purchase-transaction">
-          <div className="table-responsive">
-            <table className="table table-borderless custom-table">
-              <thead className="thead-light">
-                <tr>
-                  <th>Date</th>
-                  <th>Vendor</th>
-                  <th>Status</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan={4} className="text-center py-3">
-                    No purchase transactions
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ---- QUOTATION TAB ---- */}
-        <div className="tab-pane fade" id="quotation">
-          <div className="table-responsive">
-            <table className="table table-borderless custom-table">
-              <thead className="thead-light">
-                <tr>
-                  <th>Date</th>
-                  <th>Quote #</th>
-                  <th>Status</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan={4} className="text-center py-3">
-                    No quotations
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ---- EXPENSES TAB ---- */}
-        <div className="tab-pane fade" id="expenses">
-          <div className="table-responsive">
-            <table className="table table-borderless custom-table">
-              <thead className="thead-light">
-                <tr>
-                  <th>Date</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan={4} className="text-center py-3">
-                    No expenses recorded
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ---- INVOICES TAB ---- */}
-        <div className="tab-pane fade" id="invoices">
-          <div className="table-responsive">
-            <table className="table table-borderless custom-table">
-              <thead className="thead-light">
-                <tr>
-                  <th>Date</th>
-                  <th>Invoice #</th>
-                  <th>Status</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan={4} className="text-center py-3">
-                    No invoices available
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
           {/* /Recent Transactions */}
         </div>
         <div className="row">
           {/* Top Customers */}
-          <div className="col-xxl-4 col-md-6 d-flex">
+          {/* <div className="col-xxl-4 col-md-6 d-flex">
             <div className="card flex-fill">
               <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div className="d-inline-flex align-items-center">
@@ -1159,10 +1218,10 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Top Customers */}
           {/* Top Categories */}
-          <div className="col-xxl-4 col-md-6 d-flex">
+          {/* <div className="col-xxl-4 col-md-6 d-flex">
             <div className="card flex-fill">
               <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div className="d-inline-flex align-items-center">
@@ -1254,10 +1313,10 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Top Categories */}
           {/* Order Statistics */}
-          <div className="col-xxl-4 col-md-12 d-flex">
+          {/* <div className="col-xxl-4 col-md-12 d-flex">
             <div className="card flex-fill">
               <div className="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div className="d-inline-flex align-items-center">
@@ -1297,15 +1356,15 @@ useEffect(() => {
               </div>
               <div className="card-body pb-0">
                 <div id="heat_chart">
-                 <HeatmapChart />
+                  <HeatmapChart />
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* /Order Statistics */}
         </div>
       </div>
-     <CommonFooter />
+      <CommonFooter />
     </div>
   );
 }
