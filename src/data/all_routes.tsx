@@ -1,8 +1,6 @@
-import { popup } from "leaflet";
-
 export const all_routes = {
   newdashboard: "/index",
-  dashboard: "/admin-dashboard",
+  dashboard: "/index",
   productview: "/product-view",
   productlist: "/product-list",
   addproduct: "/add-product",
@@ -297,7 +295,7 @@ export const all_routes = {
   checkout: "/checkout",
   wishlist: "/wishlist",
   reviews: "/reviews",
-  superadmindashboard: "/dashboard",
+  superadmindashboard: "/index",
   companies: "/companies",
   subscription: "/subscription",
   packagelist: "/packages",

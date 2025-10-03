@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (session?.token && pathname === "/signin") {
-    return NextResponse.redirect(new URL("/index", request.nextUrl));
+    return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
   }
 
   return NextResponse.next();
