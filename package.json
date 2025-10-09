@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.24.0",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@fullcalendar/daygrid": "^6.1.15",
@@ -17,9 +18,9 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@hello-pangea/dnd": "^18.0.1",
     "@react-latest-ui/react-sticky-notes": "^0.2.6",
-    "@reduxjs/toolkit": "^2.8.2",
+    "@reduxjs/toolkit": "^2.9.0",
     "@tabler/icons-react": "^3.31.0",
-    "antd": "^5.24.4",
+    "antd": "^5.27.4",
     "apexcharts": "^4.5.0",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.3",
@@ -54,7 +55,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.3.1",
     "react-feather": "^2.0.10",
-    "react-hook-form": "^7.61.1",
+    "react-hook-form": "^7.64.0",
     "react-i18next": "^15.4.1",
     "react-input-mask": "^2.0.4",
     "react-phone-number-input": "^3.4.12",

@@ -15,13 +15,19 @@ import { getErrorMessage } from "@/core/utils";
 
 export default function CompanySettings() {
   const dispatch = useDispatch<AppDispatch>();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Company>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Company>();
 
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [isCreating, setIsCreating] = useState(false); // 👈 NEW state for Create flow
 
   const [devices] = useState(1);
   const [locations] = useState(1);
@@ -32,21 +38,22 @@ export default function CompanySettings() {
   useEffect(() => {
     setIsLoading(true);
     dispatch(getAllCompanies())
-      .then((res) => {
+      .then((res: { payload: any; }) => {
         setCompanies(res.payload || []);
         setError(null);
       })
-      .catch((err) => setError(getErrorMessage(err)))
+      .catch((err: string | object | null) => setError(getErrorMessage(err)))
       .finally(() => setIsLoading(false));
   }, [dispatch]);
 
   // When a company is selected, load its details
   const handleSelectCompany = (id: string) => {
     setCompanyId(id);
+    setIsCreating(false); // hide create form if user selects from dropdown
     const selected = companies.find((c) => c.id === id);
     if (selected) {
       dispatch(updateCompanyState(selected));
-      reset(selected); // Load values into the form
+      reset(selected);
     }
   };
 
@@ -56,7 +63,8 @@ export default function CompanySettings() {
       taxNumber: data.taxNumber,
       customCurrency: data.customCurrency,
       language: data.language,
-      updateCostPriceOnMasterUpdate: data.updateCostPriceOnMasterUpdate || false,
+      updateCostPriceOnMasterUpdate:
+        data.updateCostPriceOnMasterUpdate || false,
       explicitConsent: data.explicitConsent || false,
       eraseCustomerData: data.eraseCustomerData || false,
       runReportsOnPageLoad: data.runReportsOnPageLoad || false,
@@ -69,27 +77,25 @@ export default function CompanySettings() {
     setSaving(true);
 
     if (companyId) {
-      // PATCH
-    dispatch(updateCompany({ id: companyId, data: payload }))
-  .unwrap()
-  .then(async () => {
-    // ✅ Re-fetch updated companies
-    const res = await dispatch(getAllCompanies()).unwrap();
-    setCompanies(res);
-    const updated = res.find((c: Company) => c.id === companyId);
-    if (updated) reset(updated); // Update form fields
-  })
-  .catch((err) => setError(getErrorMessage(err)))
-  .finally(() => setSaving(false));
-
-
+      // PATCH flow
+      dispatch(updateCompany({ id: companyId, data: payload }))
+        .unwrap()
+        .then(async () => {
+          const res = await dispatch(getAllCompanies()).unwrap();
+          setCompanies(res);
+          const updated = res.find((c: Company) => c.id === companyId);
+          if (updated) reset(updated);
+        })
+        .catch((err: string | object | null) => setError(getErrorMessage(err)))
+        .finally(() => setSaving(false));
     } else {
-      // POST
+      // POST flow
       dispatch(createCompany(payload))
-        .then((res) => {
+        .then((res: { payload: Company; }) => {
           if (res?.payload?.id) {
             setCompanies((prev) => [...prev, res.payload]);
             setCompanyId(res.payload.id);
+            setIsCreating(false);
             router.refresh?.();
             if (!router.refresh) window.location.reload();
           }
@@ -98,7 +104,14 @@ export default function CompanySettings() {
     }
   };
 
-  const handleCancel = () => router.push("/index");
+  const handleCancel = () => {
+    if (isCreating) {
+      setIsCreating(false);
+      reset();
+    } else {
+      router.push("/index");
+    }
+  };
 
   return (
     <div className="page-wrapper">
@@ -114,48 +127,96 @@ export default function CompanySettings() {
                 <p className="mt-2">Loading companies...</p>
               </div>
             ) : error ? (
-              <div className="alert alert-danger"><strong>Error:</strong> {error}</div>
+              <div className="alert alert-danger">
+                <strong>Error:</strong> {error}
+              </div>
             ) : (
               <>
-                {/* Company Selection Dropdown */}
-                <div className="row align-items-center mb-4">
-                  <label className="col-sm-3 col-form-label text-end">Select Company</label>
-                  <div className="col-sm-6">
-                    <select
-                      className="form-select"
-                      value={companyId || ""}
-                      onChange={(e) => handleSelectCompany(e.target.value)}
+                {/* If NO companies exist */}
+                {companies.length === 0 && !isCreating && (
+                  <div className="text-center py-4">
+                    <p>No companies found.</p>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        setIsCreating(true);
+                        reset(); // clear form
+                      }}
                     >
-                      <option value="">-- Select a Company --</option>
-                      {companies.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
+                      Create Company
+                    </button>
                   </div>
-                </div>
+                )}
 
-                {/* Show the form only if a company is selected */}
-                {companyId && (
+                {/* If companies exist, show dropdown */}
+                {companies.length > 0 && !isCreating && (
+                  <div className="row align-items-center mb-4">
+                    <label className="col-sm-3 col-form-label text-end">
+                      Select Company
+                    </label>
+                    <div className="col-sm-6 d-flex gap-3">
+                      <select
+                        className="form-select"
+                        value={companyId || ""}
+                        onChange={(e) => handleSelectCompany(e.target.value)}
+                      >
+                        <option value="">-- Select a Company --</option>
+                        {companies.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setCompanyId(null);
+                          setIsCreating(true);
+                          reset();
+                        }}
+                      >
+                        + Create New
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Show the form only if creating OR company is selected */}
+                {(isCreating || companyId) && (
                   <form onSubmit={handleSubmit(onSubmit)}>
                     {/* Basic Fields */}
                     {(
                       [
-                        { label: "Company Name", name: "name" as keyof Company },
-                        { label: "Tax Number", name: "taxNumber" as keyof Company },
+                        {
+                          label: "Company Name",
+                          name: "name" as keyof Company,
+                        },
+                        {
+                          label: "Tax Number",
+                          name: "taxNumber" as keyof Company,
+                        },
                       ] as const
                     ).map((field) => (
-                      <div className="row align-items-center mb-3" key={field.name}>
-                        <label className="col-sm-3 col-form-label text-end">{field.label}</label>
+                      <div
+                        className="row align-items-center mb-3"
+                        key={field.name}
+                      >
+                        <label className="col-sm-3 col-form-label text-end">
+                          {field.label}
+                        </label>
                         <div className="col-sm-6">
                           <input
-                            {...register(field.name, { required: field.name === "name" })}
+                            {...register(field.name, {
+                              required: field.name === "name",
+                            })}
                             className="form-control"
                             type="text"
                           />
                           {errors[field.name] && (
-                            <small className="text-danger">This field is required</small>
+                            <small className="text-danger">
+                              This field is required
+                            </small>
                           )}
                         </div>
                       </div>
@@ -163,9 +224,14 @@ export default function CompanySettings() {
 
                     {/* Currency */}
                     <div className="row align-items-center mb-3">
-                      <label className="col-sm-3 col-form-label text-end">Custom Currency</label>
+                      <label className="col-sm-3 col-form-label text-end">
+                        Custom Currency
+                      </label>
                       <div className="col-sm-6">
-                        <select className="form-select" {...register("customCurrency", { required: true })}>
+                        <select
+                          className="form-select"
+                          {...register("customCurrency", { required: true })}
+                        >
                           <option value="Dollar ($)">Dollar ($)</option>
                           <option value="Euro (€)">Euro (€)</option>
                           <option value="Pound (£)">Pound (£)</option>
@@ -175,9 +241,14 @@ export default function CompanySettings() {
 
                     {/* Language */}
                     <div className="row align-items-center mb-3">
-                      <label className="col-sm-3 col-form-label text-end">Language</label>
+                      <label className="col-sm-3 col-form-label text-end">
+                        Language
+                      </label>
                       <div className="col-sm-6">
-                        <select className="form-select" {...register("language", { required: true })}>
+                        <select
+                          className="form-select"
+                          {...register("language", { required: true })}
+                        >
                           <option value="en">English (US)</option>
                           <option value="en-uk">English (UK)</option>
                           <option value="fr">French</option>
@@ -189,19 +260,43 @@ export default function CompanySettings() {
                     {/* Checkboxes */}
                     {(
                       [
-                        { name: "updateCostPriceOnMasterUpdate", label: "Update cost price on master update" },
-                        { name: "explicitConsent", label: "Capture explicit consent on signup" },
-                        { name: "eraseCustomerData", label: "Erase customer data on delete" },
-                        { name: "runReportsOnPageLoad", label: "Run reports on page load" },
-                        { name: "showIncExTaxOption", label: "Show inclusive/exclusive tax option" },
-                        { name: "showInstructionsOnStartup", label: "Show instructions on startup" },
+                        {
+                          name: "updateCostPriceOnMasterUpdate",
+                          label: "Update cost price on master update",
+                        },
+                        {
+                          name: "explicitConsent",
+                          label: "Capture explicit consent on signup",
+                        },
+                        {
+                          name: "eraseCustomerData",
+                          label: "Erase customer data on delete",
+                        },
+                        {
+                          name: "runReportsOnPageLoad",
+                          label: "Run reports on page load",
+                        },
+                        {
+                          name: "showIncExTaxOption",
+                          label: "Show inclusive/exclusive tax option",
+                        },
+                        {
+                          name: "showInstructionsOnStartup",
+                          label: "Show instructions on startup",
+                        },
                       ] as const
                     ).map((checkbox) => (
                       <div className="row mb-2" key={checkbox.name}>
                         <div className="offset-sm-3 col-sm-9">
                           <div className="form-check">
-                            <input type="checkbox" className="form-check-input" {...register(checkbox.name as keyof Company)} />
-                            <label className="form-check-label">{checkbox.label}</label>
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              {...register(checkbox.name as keyof Company)}
+                            />
+                            <label className="form-check-label">
+                              {checkbox.label}
+                            </label>
                           </div>
                         </div>
                       </div>
@@ -209,15 +304,21 @@ export default function CompanySettings() {
 
                     {/* Readonly Fields */}
                     <div className="row align-items-center mb-3">
-                      <label className="col-sm-3 col-form-label text-end">Max Devices</label>
+                      <label className="col-sm-3 col-form-label text-end">
+                        Max Devices
+                      </label>
                       <div className="col-sm-6 pt-1">{devices}</div>
                     </div>
                     <div className="row align-items-center mb-3">
-                      <label className="col-sm-3 col-form-label text-end">Max Locations</label>
+                      <label className="col-sm-3 col-form-label text-end">
+                        Max Locations
+                      </label>
                       <div className="col-sm-6 pt-1">{locations}</div>
                     </div>
                     <div className="row align-items-center mb-3">
-                      <label className="col-sm-3 col-form-label text-end">GUID</label>
+                      <label className="col-sm-3 col-form-label text-end">
+                        GUID
+                      </label>
                       <div className="col-sm-6 pt-1 text-muted">{guid}</div>
                     </div>
 
@@ -230,10 +331,17 @@ export default function CompanySettings() {
                       >
                         Cancel
                       </button>
-                      <button type="submit" className="btn btn-success" disabled={saving}>
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={saving}
+                      >
                         {saving ? (
                           <>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" />
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                            />
                             Saving...
                           </>
                         ) : (

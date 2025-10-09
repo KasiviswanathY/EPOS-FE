@@ -861,30 +861,30 @@ export const SidebarData = [
   //   ],
   // },
 
-  // {
-  //   label: "HRM",
-  //   submenuOpen: true,
-  //   showSubRoute: false,
-  //   submenuHdr: "HRM",
-  //   submenuItems: [
-  // {
-  //   label: "Employees",
-  //   link: "/employees-grid",
-  //   icon: "user",
-  //   showSubRoute: false,
-  // },
+  {
+    label: "HRM",
+    submenuOpen: true,
+    showSubRoute: false,
+    submenuHdr: "HRM",
+    submenuItems: [
+  {
+    label: "Employees",
+    link: "/employees-grid",
+    icon: "user",
+    showSubRoute: false,
+  },
   // {
   //   label: "Departments",
   //   link: "/department-grid",
   //   icon: "compass",
   //   showSubRoute: false,
   // },
-  // {
-  //   label: "Designations",
-  //   link: "/designation",
-  //   icon: "git-merge",
-  //   showSubRoute: false,
-  // },
+  {
+    label: "Designations",
+    link: "/designation",
+    icon: "git-merge",
+    showSubRoute: false,
+  },
   // {
   //   label: "Shifts",
   //   link: "/shift",
@@ -934,9 +934,9 @@ export const SidebarData = [
   //     { label: "Payslip", link: "/payslip" },
   //   ],
   // },
-  //   ],
-  // },
-  // {
+    ],
+  },
+  //{
   //   label: "Reports",
   //   submenuOpen: true,
   //   showSubRoute: false,

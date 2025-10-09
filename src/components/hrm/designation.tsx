@@ -198,12 +198,7 @@ export default function DesignationComponent() {
           </div>
 
           <div className="d-flex justify-content-start mt-4">
-            <Link
-              href="/employees-grid"
-              className="btn btn-success flex items-center gap-1"
-            >
-              <span className="text-lg leading-none"></span>Edit Staff
-            </Link>
+           
           </div>
         </div>
       </div>
