@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { all_routes } from "../../../data/all_routes";
-
 import { SubmitHandler, useForm } from "react-hook-form";
-
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../lib/redux/store";
+import { getCurrentUser } from "../../../lib/redux/actions/userActions";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type LoginFormInputs = {
   email: string;
@@ -15,6 +17,8 @@ type LoginFormInputs = {
 
 export default function Login() {
   const route = all_routes;
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +38,13 @@ export default function Login() {
       const response = await axios.post("/api/login", data);
 
       if (response.status === 200) {
-        window.location.href = "/dashboard";
+        try {
+          await dispatch(getCurrentUser()).unwrap();
+        } catch (userError) {
+          console.error("Failed to fetch current user:", userError);
+        }
+
+        router.push("/dashboard");
         return;
       }
 

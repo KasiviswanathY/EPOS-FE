@@ -474,6 +474,12 @@ const TwoColumnSidebar = () => {
                                                 <span>Discount Reasons</span>
                                             </Link>
                                             </li>
+                                             <li>
+                                            <Link href={route.taxrates}>
+                                                <span>Tax Rates List</span>
+                                            </Link>
+                                            
+                                        </li>
                                             <li>
                                             <Link href={route.receipts}>
                                                 <span>Receipts</span>
@@ -1434,9 +1440,9 @@ const TwoColumnSidebar = () => {
                                                 <li>
                                                     <Link href={route.banipaddress}>Bank Accounts</Link>
                                                 </li>
-                                                <li>
+                                                {/* <li>
                                                     <Link href={route.taxrates}>Tax Rates</Link>
-                                                </li>
+                                                </li> */}
                                                 <li>
                                                     <Link href={route.currencysettings}>Currencies</Link>
                                                 </li>

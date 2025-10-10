@@ -34,13 +34,9 @@ interface UpdateTaxRatePayload {
 // ===== GET All Tax Rates with Pagination =====
 export const getAllTaxRates = createAsyncThunk(
   "taxRates/getAll",
-  async (
-    { page = 1, pageSize = 10 }: { page?: number; pageSize?: number },
-    { rejectWithValue }
-  ) => {
+  async (_, { rejectWithValue })=> {
     try {
       const response = await axios.get("/api/tax-rates", {
-        params: { page, pageSize },
       });
       return response.data as PaginatedTaxRatesResponse;
     } catch (error) {

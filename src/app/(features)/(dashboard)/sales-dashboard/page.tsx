@@ -1,9 +1,9 @@
-import Salesdashboard from "@/components/dashboards/saledashboard";
+import NewDashboard from "@/components/dashboards/newdashboard";
 
-export default function SalesDashboard(){
-    return (
-        <>
-        <Salesdashboard />
-        </>
-    )
+export default function SalesDashboard() {
+  return (
+    <>
+      <NewDashboard />
+    </>
+  );
 }

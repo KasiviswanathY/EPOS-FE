@@ -1,0 +1,16 @@
+export const PERMISSION_OPTIONS = [
+  { value: "USER_RIGHTS", label: "User Rights" },
+  { value: "PRODUCT_RIGHTS", label: "Product Rights" },
+  { value: "PURCHASE_ORDER_RIGHTS", label: "Purchase Order Rights" },
+  { value: "CREATE_PURCHASE_ORDER", label: "Create Purchase Order" },
+  { value: "VIEW_PURCHASE_ORDER", label: "View Purchase Order" },
+  { value: "UPDATE_PURCHASE_ORDER", label: "Update Purchase Order" },
+  { value: "CANCEL_PURCHASE_ORDER", label: "Cancel Purchase Order" },
+  { value: "SETUP_RIGHTS", label: "Setup Rights" },
+  { value: "MANAGEMENT_RIGHTS", label: "Management Rights" },
+  { value: "REPORTING_RIGHTS", label: "Reporting Rights" },
+  { value: "MARGIN_RIGHTS", label: "Margin Rights" },
+  { value: "TILL_RIGHTS", label: "Till Rights" },
+  { value: "WEB_INTEGRATION_RIGHTS", label: "Web Integration Rights" },
+  { value: "APPS_RIGHTS", label: "Apps Rights" },
+];

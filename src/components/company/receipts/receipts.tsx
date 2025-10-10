@@ -6,309 +6,311 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import {
   createReceipt,
-  getReceiptByCompanyId,
+  fetchReceiptByCompanyId,
   updateReceipt,
-} from "@/lib/redux/actions/createReceiptsAction";
+} from "@/lib/redux/actions/receiptsActions";
+import { getAllCompanies } from "@/lib/redux/actions/companiesActions";
+import { Receipt } from "@/core/interfaces/Receipt";
+import { getErrorMessage } from "@/core/utils/errorUtils";
 
-import { useRouter } from "next/navigation";
-import { getCompany } from "@/lib/redux/actions/companiesActions";
+type ReceiptFormValues = Omit<Receipt, "id" | "companyId"> & { guid: number | null };
 
-type ReceiptFormValues = {
-  name: string;
-  displayName: string;
-  taxNumber: string;
-  email: string;
-  website: string;
-  refundDays: number;
-  message: string;
-  showTaxBreakdown: boolean;
-  sendEmailReceipt: boolean;
-  showCustomerBalance: boolean;
-  printCustomerAddress: boolean;
-  showItemNodes: boolean;
-  groupItemsByPromotions: boolean;
-  groupItemOnPrint: boolean;
-  useProductNameOnPrint: boolean;
-  showBarCode: boolean;
-  showProductName: boolean;
-  showProductDescription: boolean;
-  customFontSize: number;
-  barCodeType: string;
-  qrCodeLink: string;
-  qrCodeDescription: string;
-  guid: string;
-};
+// Auto-generate numeric GUID if left blank
+const generateGuid = () => Math.floor(1000000000 + Math.random() * 9000000000);
 
 export default function ReceiptsComponent() {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const { companies, loading: companiesLoading } = useSelector(
+    (state: RootState) => state.company
+  );
 
-  const reduxToken = useSelector((state: RootState) => state.app.token);
-  const company = useSelector((state: RootState) => state.app.company);
-
-  const [token, setToken] = useState<string | null>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState("");
   const [receiptId, setReceiptId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [lastFetchedReceipt, setLastFetchedReceipt] = useState<Receipt | null>(
+    null
+  );
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<ReceiptFormValues>();
+  const { register, handleSubmit, reset, setValue } = useForm<ReceiptFormValues>({
+    defaultValues: {
+      name: "",
+      displayName: "",
+      taxNumber: "",
+      email: "",
+      website: "",
+      refundDays: 7,
+      message: "",
+      showTaxBreakdown: false,
+      sendEmailReceipt: false,
+      showCustomerBalance: false,
+      printCustomerAddress: false,
+      showItemNodes: false,
+      groupItemsByPromotions: false,
+      groupItemOnPrint: false,
+      useProductNameOnPrint: false,
+      showBarCode: false,
+      showProductName: false,
+      showProductDescription: false,
+      customFontSize: 14,
+      barCodeType: "CODE128",
+      qrCodeLink: "",
+      qrCodeDescription: "",
+      guid: 0,
+    },
+  });
 
-  // Get token from localStorage or Redux
+  // Load companies on mount
   useEffect(() => {
-    const localToken = localStorage.getItem("authToken");
-    setToken(localToken || reduxToken || null);
-  }, [reduxToken]);
+    dispatch(getAllCompanies()).catch((err) =>
+      console.error("Failed to load companies:", getErrorMessage(err as any))
+    );
+  }, [dispatch]);
 
-  // Fetch company details if not already in Redux
-  // useEffect(() => {
-  //   if (!company && token) {
-  //     dispatch(getCompany());
-  //   }
-  // }, [dispatch, token, company]);
-
-  // Load receipt data if company ID exists
+  // Fetch receipt when company changes
   useEffect(() => {
-    if (token && company?.id) {
-      dispatch(getReceiptByCompanyId({ token, companyId: company.id })).then(
-        (res: any) => {
-          if (res?.payload) {
-            const receipt = res.payload;
-            Object.keys(receipt).forEach((key) => {
-              if (receipt[key] !== null && receipt[key] !== undefined) {
-                setValue(key as keyof ReceiptFormValues, receipt[key]);
-              }
-            });
-            setReceiptId(receipt.id);
-          }
+    if (!selectedCompanyId) {
+      reset();
+      setReceiptId(null);
+      setLastFetchedReceipt(null);
+      return;
+    }
+
+    setLocalError(null);
+    reset();
+    setReceiptId(null);
+
+    dispatch(fetchReceiptByCompanyId({ companyId: selectedCompanyId }))
+      .unwrap()
+      .then((fetchedReceipt: Receipt | null) => {
+        if (!fetchedReceipt) {
+          setLastFetchedReceipt(null);
+          setReceiptId(null);
+          return;
         }
-      );
-    }
-  }, [dispatch, token, company?.id, setValue]);
-  // Pre-fill company details
-  useEffect(() => {
-    if (company) {
-      setValue("name", company.name || "");
-      setValue("taxNumber", company.taxNumber || "");
-    }
-  }, [company, setValue]);
+        Object.entries(fetchedReceipt).forEach(([k, v]) => {
+          if (v !== null && v !== undefined) setValue(k as any, v as any);
+        });
+        setReceiptId(fetchedReceipt.id ?? null);
+        setLastFetchedReceipt(fetchedReceipt);
+      })
+      .catch((err) => {
+        if ((err as any)?.status === 404) {
+          setLastFetchedReceipt(null);
+          setReceiptId(null);
+        } else {
+          setLocalError(getErrorMessage(err as any));
+        }
+      });
+  }, [dispatch, selectedCompanyId, reset, setValue]);
 
-  const onSubmit = (data: ReceiptFormValues) => {
-    if (!token) {
-      alert("Token missing!");
+  const onSubmit = async (data: ReceiptFormValues) => {
+    if (!selectedCompanyId) {
+      setLocalError("Please select a company first.");
       return;
     }
 
-    if (!company || !company.id) {
-      alert("Company ID is missing or company not loaded yet!");
-      return;
-    }
+    setSaving(true);
+    setSuccessMsg(null);
+    setLocalError(null);
 
-    const {
-      name,
-      displayName,
-      taxNumber,
-      email,
-      website,
-      refundDays,
-      message,
-      showTaxBreakdown,
-      sendEmailReceipt,
-      showCustomerBalance,
-      printCustomerAddress,
-      showItemNodes,
-      groupItemsByPromotions,
-      groupItemOnPrint,
-      useProductNameOnPrint,
-      showBarCode,
-      showProductName,
-      showProductDescription,
-      customFontSize,
-      barCodeType,
-      qrCodeLink,
-      qrCodeDescription,
-      guid,
-    } = data;
+    // Use provided GUID or generate if null/invalid
+   
 
     const payload = {
-      name,
-      displayName,
-      taxNumber,
-      email,
-      website,
-      refundDays: Number(refundDays),
-      message,
-      showTaxBreakdown,
-      sendEmailReceipt,
-      showCustomerBalance,
-      printCustomerAddress,
-      showItemNodes,
-      groupItemsByPromotions,
-      groupItemOnPrint,
-      useProductNameOnPrint,
-      showBarCode,
-      showProductName,
-      showProductDescription,
-      customFontSize: Number(customFontSize),
-      barCodeType,
-      qrCodeLink,
-      qrCodeDescription,
-      guid,
-      companyId: company.id,
+      name: data.name || "",
+      displayName: data.displayName || "",
+      taxNumber: data.taxNumber || "",
+      email: data.email || "",
+      website: data.website || "",
+      refundDays: Number(data.refundDays || 7),
+      message: data.message || "",
+      showTaxBreakdown: Boolean(data.showTaxBreakdown),
+      sendEmailReceipt: Boolean(data.sendEmailReceipt),
+      showCustomerBalance: Boolean(data.showCustomerBalance),
+      printCustomerAddress: Boolean(data.printCustomerAddress),
+      showItemNodes: Boolean(data.showItemNodes),
+      groupItemsByPromotions: Boolean(data.groupItemsByPromotions),
+      groupItemOnPrint: Boolean(data.groupItemOnPrint),
+      useProductNameOnPrint: Boolean(data.useProductNameOnPrint),
+      showBarCode: Boolean(data.showBarCode),
+      showProductName: Boolean(data.showProductName),
+      showProductDescription: Boolean(data.showProductDescription),
+      customFontSize: Number(data.customFontSize || 14),
+      barCodeType: data.barCodeType || "CODE128",
+      qrCodeLink: data.qrCodeLink || "",
+      qrCodeDescription: data.qrCodeDescription || "",
+      guid: 0,
+      companyId: selectedCompanyId,
     };
 
-    if (receiptId) {
-      dispatch(updateReceipt({ id: receiptId, payload, token }));
-    } else {
-      dispatch(createReceipt({ payload, token })).then((res: any) => {
-        if (res?.payload?.id) setReceiptId(res.payload.id);
-      });
+    try {
+      if (receiptId) {
+        await dispatch(updateReceipt({ id: receiptId, data: payload })).unwrap();
+        setSuccessMsg("Receipt updated successfully!");
+      } else {
+        const created = await dispatch(createReceipt(payload)).unwrap();
+        setReceiptId(created?.id ?? null);
+        setSuccessMsg("Receipt created successfully!");
+      }
+
+      const refetched = await dispatch(
+        fetchReceiptByCompanyId({ companyId: selectedCompanyId })
+      ).unwrap();
+      if (refetched) {
+        reset();
+        Object.entries(refetched).forEach(([k, v]) => {
+          if (v !== null && v !== undefined) setValue(k as any, v as any);
+        });
+        setReceiptId(refetched.id ?? null);
+        setLastFetchedReceipt(refetched);
+      }
+    } catch (err) {
+      setLocalError(getErrorMessage(err as any));
+    } finally {
+      setSaving(false);
+      setTimeout(() => setSuccessMsg(null), 3000);
     }
   };
 
   const handleCancel = () => {
-    router.push("/index");
+    if (lastFetchedReceipt) {
+      reset();
+      Object.entries(lastFetchedReceipt).forEach(([k, v]) => {
+        if (v !== null && v !== undefined) setValue(k as any, v as any);
+      });
+    } else {
+      reset();
+    }
   };
-
-  if (!company?.id) {
-    return <p className="text-center mt-5">Loading company details...</p>;
-  }
 
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="card">
-          <div className="card-header fw-bold">Receipt Settings</div>
-          <div className="card-body">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {/* Text Fields */}
-              {[
-                { label: "Company Name", name: "name" },
-                { label: "Display Name", name: "displayName" },
-                { label: "Tax Number", name: "taxNumber" },
-                { label: "Email", name: "email" },
-                { label: "Website", name: "website" },
-                { label: "Message", name: "message" },
-                { label: "QR Code Link", name: "qrCodeLink" },
-                { label: "QR Description", name: "qrCodeDescription" },
-              ].map((field) => (
-                <div className="row align-items-center mb-3" key={field.name}>
-                  <label className="col-sm-3 col-form-label text-end">
-                    {field.label}
-                  </label>
-                  <div className="col-sm-6">
-                    <input
-                      {...register(field.name as keyof ReceiptFormValues)}
-                      className="form-control"
-                      type="text"
-                    />
-                  </div>
-                </div>
-              ))}
+        {companiesLoading && <p>Loading companies...</p>}
+        {localError && <div className="alert alert-danger">{localError}</div>}
+        {successMsg && <div className="alert alert-success">{successMsg}</div>}
 
-              {/* Numbers */}
-              {[
-                { label: "Refund Days", name: "refundDays" },
-                { label: "Custom Font Size", name: "customFontSize" },
-              ].map((field) => (
-                <div className="row align-items-center mb-3" key={field.name}>
-                  <label className="col-sm-3 col-form-label text-end">
-                    {field.label}
-                  </label>
-                  <div className="col-sm-6">
-                    <input
-                      type="number"
-                      {...register(field.name as keyof ReceiptFormValues)}
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              ))}
-
-              {/* Barcode Type */}
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">
-                  Barcode Type
-                </label>
-                <div className="col-sm-6">
-                  <select {...register("barCodeType")} className="form-select">
-                    <option value="CODE128">CODE128</option>
-                    <option value="QRCODE">QR Code</option>
-                    <option value="EAN13">EAN-13</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Checkboxes */}
-              {[
-                { name: "showTaxBreakdown", label: "Show Tax Breakdown" },
-                { name: "sendEmailReceipt", label: "Send Email Receipt" },
-                { name: "showCustomerBalance", label: "Show Customer Balance" },
-                {
-                  name: "printCustomerAddress",
-                  label: "Print Customer Address",
-                },
-                { name: "showItemNodes", label: "Show Item Notes" },
-                {
-                  name: "groupItemsByPromotions",
-                  label: "Group Items by Promotions",
-                },
-                { name: "groupItemOnPrint", label: "Group Items on Print" },
-                {
-                  name: "useProductNameOnPrint",
-                  label: "Use Product Name on Print",
-                },
-                { name: "showBarCode", label: "Show Barcode" },
-                { name: "showProductName", label: "Show Product Name" },
-                {
-                  name: "showProductDescription",
-                  label: "Show Product Description",
-                },
-              ].map((checkbox) => (
-                <div className="row mb-2" key={checkbox.name}>
-                  <div className="offset-sm-3 col-sm-9">
-                    <div className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        {...register(checkbox.name as keyof ReceiptFormValues)}
-                      />
-                      <label className="form-check-label">
-                        {checkbox.label}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* GUID */}
-              <div className="row align-items-center mb-3">
-                <label className="col-sm-3 col-form-label text-end">GUID</label>
-                <div className="col-sm-6 pt-1">
-                  <span className="text-muted">
-                    {receiptId || "Auto-generated"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Buttons */}
-              <div className="card-footer d-flex justify-content-between">
-                <button
-                  type="button"
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-success">
-                  SAVE
-                </button>
-              </div>
-            </form>
-          </div>
+        <div className="mb-3">
+          <label className="form-label">Select Company</label>
+          <select
+            className="form-select"
+            value={selectedCompanyId}
+            onChange={(e) => setSelectedCompanyId(e.target.value)}
+          >
+            <option value="">-- Select a Company --</option>
+            {companies.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {selectedCompanyId && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Text Fields */}
+            {[
+              ["name", "Name"],
+              ["displayName", "Display Name"],
+              ["taxNumber", "Tax Number"],
+              ["email", "Email"],
+              ["website", "Website"],
+              ["message", "Message"],
+              ["qrCodeLink", "QR Code Link"],
+              ["qrCodeDescription", "QR Code Description"],
+            ].map(([field, label]) => (
+              <div className="row mb-3" key={field}>
+                <label className="col-sm-3 col-form-label text-end">{label}</label>
+                <div className="col-sm-6">
+                  <input
+                    {...register(field as keyof ReceiptFormValues)}
+                    className="form-control"
+                    type="text"
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Numbers */}
+            {[
+              ["refundDays", "Refund Days"],
+              ["customFontSize", "Custom Font Size"],
+              ["guid", "GUID"], // Number input for GUID
+            ].map(([field, label]) => (
+              <div className="row mb-3" key={field}>
+                <label className="col-sm-3 col-form-label text-end">{label}</label>
+                <div className="col-sm-6">
+                  <input
+                    {...register(field as keyof ReceiptFormValues, { valueAsNumber: true })}
+                    className="form-control"
+                    type="number"
+                    placeholder={field === "guid" ? "Leave blank to auto-generate" : ""}
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Barcode Type */}
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label text-end">Barcode Type</label>
+              <div className="col-sm-6">
+                <select {...register("barCodeType")} className="form-select">
+                  <option value="CODE128">CODE128</option>
+                  <option value="QRCODE">QR Code</option>
+                  <option value="EAN13">EAN-13</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Checkboxes */}
+            {[
+              ["showTaxBreakdown", "Show Tax Breakdown"],
+              ["sendEmailReceipt", "Send Email Receipt"],
+              ["showCustomerBalance", "Show Customer Balance"],
+              ["printCustomerAddress", "Print Customer Address"],
+              ["showItemNodes", "Show Item Notes"],
+              ["groupItemsByPromotions", "Group Items by Promotions"],
+              ["groupItemOnPrint", "Group Items on Print"],
+              ["useProductNameOnPrint", "Use Product Name on Print"],
+              ["showBarCode", "Show Barcode"],
+              ["showProductName", "Show Product Name"],
+              ["showProductDescription", "Show Product Description"],
+            ].map(([field, label]) => (
+              <div className="form-check ms-3" key={field}>
+                <input
+                  type="checkbox"
+                  {...register(field as keyof ReceiptFormValues)}
+                  className="form-check-input"
+                />
+                <label className="form-check-label">{label}</label>
+              </div>
+            ))}
+
+            <div className="mt-3 d-flex gap-3">
+              <button type="button" className="btn btn-secondary" onClick={handleCancel}>
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-success" disabled={saving}>
+                {saving ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save"
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {!selectedCompanyId && !companiesLoading && (
+          <div className="alert alert-info mt-4">
+            Please select a company to view or create receipt settings.
+          </div>
+        )}
       </div>
     </div>
   );

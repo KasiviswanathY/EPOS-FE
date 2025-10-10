@@ -18,7 +18,23 @@ export {
   deleteClockingType,
 } from "./clockingTypesActions";
 
+// Export all location actions
+export {
+  createLocation,
+  getAllLocations,
+  getLocation,
+  updateLocation,
+  deleteLocation,
+} from "./locationsActions";
 
+// Export all user actions
+export {
+  createUser,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} from "./userActions";
 
 export {
   createPopup,
