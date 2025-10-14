@@ -13,10 +13,11 @@ import rolesReducer from "./slices/rolesSlice";
 import orderReducer from "./slices/orderSlice";
 import staffReducer from "./slices/staffSlice";
 import stockReducer from "./slices/stockSlice";
-
 import lowstockReducer from"./slices/lowstockSlice";
 import stockMovementReducer from "./slices/stockMovementSlice";
-
+import RefundReasonsReducer from "./slices/refundreasonsslice";
+import noSaleReasonsSliceReducer from "./slices/nosalesreasonsSlice";
+import discountReasonsSliceReducer from "./slices/discountreasonSlice";
 export const store = configureStore({
   reducer: {
     company: companyReducer,
@@ -35,7 +36,9 @@ export const store = configureStore({
     stock:stockReducer,
     lowstock:lowstockReducer,
     stockMovement: stockMovementReducer,
-
+    RefundReasons: RefundReasonsReducer,
+    noSaleReasons:noSaleReasonsSliceReducer,
+    discountReasonsState: discountReasonsSliceReducer,
   },
 });
 
