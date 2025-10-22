@@ -18,9 +18,14 @@ import stockMovementReducer from "./slices/stockMovementSlice";
 import RefundReasonsReducer from "./slices/refundreasonsslice";
 import noSaleReasonsSliceReducer from "./slices/nosalesreasonsSlice";
 import discountReasonsSliceReducer from "./slices/discountreasonSlice";
+
 import customerTypesReducer from "./slices/customertypesSlice";
 import stockMovementReasonsReducer from "./slices/stockmovementreasonsSlice";
 import devicesReducer from "./slices/devicesSlice";
+
+import staffHoursSliceReducer from "./slices/staffHoursslice";
+
+
 export const store = configureStore({
   reducer: {
     company: companyReducer,
@@ -42,10 +47,14 @@ export const store = configureStore({
     RefundReasons: RefundReasonsReducer,
     noSaleReasons:noSaleReasonsSliceReducer,
     discountReasonsState: discountReasonsSliceReducer,
+
     customerTypes:customerTypesReducer, 
     stockMovementReasons: stockMovementReasonsReducer,
     devices: devicesReducer,
-   },
+   
+    staffHours: staffHoursSliceReducer,
+  },
+
 });
 
 export type RootState = ReturnType<typeof store.getState>;
