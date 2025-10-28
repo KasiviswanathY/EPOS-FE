@@ -21,6 +21,7 @@ import discountReasonsSliceReducer from "./slices/discountreasonSlice";
 import customerTypesReducer from "./slices/customertypesSlice";
 import stockMovementReasonsReducer from "./slices/stockmovementreasonsSlice";
 import devicesReducer from "./slices/devicesSlice";
+import openingHoursReducer from "./slices/openinghoursSlice";
 export const store = configureStore({
   reducer: {
     company: companyReducer,
@@ -45,6 +46,8 @@ export const store = configureStore({
     customerTypes:customerTypesReducer, 
     stockMovementReasons: stockMovementReasonsReducer,
     devices: devicesReducer,
+    openinghours:openingHoursReducer, 
+   
    },
 });
 
