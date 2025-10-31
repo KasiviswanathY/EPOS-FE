@@ -1,6 +1,10 @@
 'use client';
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+// 1. Import Redux hooks and the create action
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/redux/store";
+import { createNoSaleReason } from "@/lib/redux/actions/noSaleReasonsActions";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/redux/store";
 import { createNoSaleReason } from "@/lib/redux/actions/nosalesreasonsAction";

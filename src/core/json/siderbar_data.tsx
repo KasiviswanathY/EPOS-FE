@@ -885,25 +885,25 @@ export const SidebarData = [
     icon: "git-merge",
     showSubRoute: false,
   },
-  // {
-  //   label: "Shifts",
-  //   link: "/shift",
-  //   icon: "arrows-shuffle",
-  //   showSubRoute: false,
-  // },
+  {
+    label: "Shifts",
+    link: "/shift",
+    icon: "arrows-shuffle",
+    showSubRoute: false,
+  },
 
-  // {
-  //   label: "Attendance",
-  //   link: "#",
-  //   icon: "user-cog",
-  //   showSubRoute: false,
-  //   submenu: true,
+  {
+    label: "Attendance",
+    link: "#",
+    icon: "user-cog",
+    showSubRoute: false,
+    submenu: true,
 
-  //   submenuItems: [
-  //     { label: "Employee", link: "/attendance-employee" },
-  //     { label: "Admin", link: "/attendance-admin" },
-  //   ],
-  // },
+    submenuItems: [
+      { label: "Employee", link: "/attendance-employee" },
+      { label: "Admin", link: "/attendance-admin" },
+    ],
+  },
   // {
   //   label: "Leaves",
   //   link: "#",
