@@ -1,3 +1,11 @@
+
+// lib/redux/actions/refundReasonsActions.ts
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios, { AxiosError } from "axios";
+
+// ===== Refund Reason interface =====
+export interface RefundReason {
+  id: string; // UUID string
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 export interface RefundReason {
@@ -8,11 +16,17 @@ export interface RefundReason {
   createdAt: string;
   updatedAt: string;
 }
+
+
+// Payload for creating
 export interface NewRefundReasonPayload {
   description: string;
   shortDescription: string;
   returnToStock: boolean;
 }
+
+
+// Payload for updating
 interface UpdateRefundReasonPayload {
   id: string;
   data: {
@@ -21,6 +35,9 @@ interface UpdateRefundReasonPayload {
     returnToStock: boolean;
   };
 }
+
+
+// ===== CREATE Refund Reason =====
 export const createRefundReason = createAsyncThunk(
   "refundReasons/create",
   async (payload: NewRefundReasonPayload, thunkAPI) => {
@@ -35,6 +52,10 @@ export const createRefundReason = createAsyncThunk(
     }
   }
 );
+
+
+// ===== GET All Refund Reasons =====
+
 export const getAllRefundReasons = createAsyncThunk(
   "refundReasons/getAll",
   async (_, { rejectWithValue }) => {
@@ -50,10 +71,16 @@ export const getAllRefundReasons = createAsyncThunk(
   }
 );
 
+
+// ===== UPDATE Refund Reason =====
+
 export const updateRefundReason = createAsyncThunk(
   "refundReasons/update",
   async ({ id, data }: UpdateRefundReasonPayload, { rejectWithValue }) => {
     try {
+
+      // ✅ send fields directly, not wrapped in { data }
+
       const response = await axios.patch(`/api/refund-reasons/${id}`, data);
       return response.data as RefundReason;
     } catch (error) {
@@ -64,6 +91,9 @@ export const updateRefundReason = createAsyncThunk(
     }
   }
 );
+
+// ===== DELETE Refund Reason =====
+
 export const deleteRefundReason = createAsyncThunk(
   "refundReasons/delete",
   async (id: string, { rejectWithValue }) => {
@@ -77,4 +107,7 @@ export const deleteRefundReason = createAsyncThunk(
       );
     }
   }
+
 );
+);
+

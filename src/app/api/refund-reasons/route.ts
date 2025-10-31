@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../axiosInstanceServer";
 import { AxiosError } from "axios";
+
+
+// ================== CREATE Refund Reason ==================
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    // Ensure returnToStock is boolean
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
     if (body.returnToStock !== undefined) {
       body.returnToStock = Boolean(body.returnToStock);
     }
@@ -26,6 +36,10 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
+// ================== GET All Refund Reasons ==================
+
 export async function GET() {
   try {
     const response = await axiosInstanceServer.get("/refund-reasons");
@@ -42,4 +56,8 @@ export async function GET() {
       { status: axiosError.response?.status || 500 }
     );
   }
+
 }
+
+}
+

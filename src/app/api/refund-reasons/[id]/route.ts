@@ -6,6 +6,10 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+
+// ================== GET Refund Reason by ID ==================
+
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
@@ -26,13 +30,26 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+
+// ================== UPDATE Refund Reason by ID ==================
+
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
     const body = await request.json();
+
+
+    // ✅ Ensure returnToStock is boolean if present
     if (body.returnToStock !== undefined) {
       body.returnToStock = Boolean(body.returnToStock);
     }
+
+    // ✅ Send body directly (no `data` wrapper)
+
+    if (body.returnToStock !== undefined) {
+      body.returnToStock = Boolean(body.returnToStock);
+    }
+
     const response = await axiosInstanceServer.patch(
       `/refund-reasons/${id}`,
       body
@@ -52,6 +69,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+
+// ================== DELETE Refund Reason by ID ==================
+
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
@@ -70,4 +90,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       { status: axiosError.response?.status || 500 }
     );
   }
+
 }
+
+}
+
