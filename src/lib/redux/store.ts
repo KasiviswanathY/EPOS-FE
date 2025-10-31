@@ -1,6 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import companyReducer from "./slices/companySlice";
 import clockingTypesReducer from "./slices/clockingTypesSlice";
+
+import discountReasonsSliceReducer from "./slices/discountreasonSlice";
 import locationsReducer from "./slices/locationsSlice";
 import popupReducer from "./slices/PopupSlice";
 import categoryReducer from "./slices/cateogrySlice";
@@ -25,16 +27,20 @@ import devicesReducer from "./slices/devicesSlice";
 
 import staffHoursSliceReducer from "./slices/staffHoursslice";
 
-
 export const store = configureStore({
   reducer: {
     company: companyReducer,
     clockingTypes: clockingTypesReducer,
+
+    discountReasonsState: discountReasonsSliceReducer,
     locations: locationsReducer,
     popup: popupReducer,
     categories: categoryReducer,
     brand: brandsReducer,
     taxrates: taxratesReducer,
+
+
+
     products: productsReducer,
     receipts: receiptsReducer,
     users: userReducer,

@@ -2,6 +2,15 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllDiscountReasons,
+  updateDiscountReason,
+  deleteDiscountReason,
+} from "@/lib/redux/actions/discountReasonsActions";
+import { RootState, AppDispatch } from "@/lib/redux/store";
+import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
+import { DiscountReason } from "@/lib/redux/actions/discountReasonsActions"; // Import the type for better safety
+=======
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { deleteDiscountReason, DiscountReason, getAllDiscountReasons, updateDiscountReason } from "@/lib/redux/actions/discountreasonsAction";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
@@ -15,6 +24,15 @@ export default function DiscountReasonsComponent() {
 
   const [selectedReason, setSelectedReason] = useState<DiscountReason | null>(null);
   const [reasonToDelete, setReasonToDelete] = useState<DiscountReason | null>(null);
+
+
+  // Fetch discount reasons from API on mount
+  useEffect(() => {
+    dispatch(getAllDiscountReasons());
+  }, [dispatch]);
+
+  // Confirm delete
+
   useEffect(() => {
     dispatch(getAllDiscountReasons());
   }, [dispatch]);
@@ -24,6 +42,9 @@ export default function DiscountReasonsComponent() {
       setReasonToDelete(null);
     }
   };
+
+
+  // Save edit
   const handleSaveEdit = () => {
     if (!selectedReason) return;
     dispatch(
@@ -31,7 +52,11 @@ export default function DiscountReasonsComponent() {
         id: selectedReason.id,
         data: {
           reason: selectedReason.reason,
+
+          defaultValue: selectedReason.defaultValue, // ✅ CORRECTED
+
           defaultValue: selectedReason.defaultValue, 
+
         },
       })
     );
@@ -96,6 +121,10 @@ export default function DiscountReasonsComponent() {
           </div>
         </div>
       </div>
+
+
+      {/* Edit Modal */}
+
       {selectedReason && (
         <div
           className="modal fade show d-block"
@@ -156,6 +185,10 @@ export default function DiscountReasonsComponent() {
           </div>
         </div>
       )}
+
+
+      {/* Delete Modal */}
+
       <CommonDeleteModal
         title="Delete Discount Reason"
         description={`Are you sure you want to delete "${reasonToDelete?.reason}"?`}
