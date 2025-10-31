@@ -6,7 +6,9 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+
 // ================== GET by ID ==================
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
@@ -20,6 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     );
   }
 }
+
 
 // ================== UPDATE by ID ==================
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
@@ -38,7 +41,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+
 // ================== DELETE by ID ==================
+
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
@@ -51,4 +56,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       { status: axiosError.response?.status || 500 }
     );
   }
+
 }
+
+}
+

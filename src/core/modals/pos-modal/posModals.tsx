@@ -6,9 +6,13 @@ import TooltipIcons from "../../common/tooltip-content/tooltipIcons";
 import { Tooltip } from "antd";
 import Select from "react-select";
 import Link from "next/link";
-import { Edit, Eye,  Trash2 } from "feather-icons-react";
+import { Edit, Eye, Trash2 } from "feather-icons-react";
 
-const PosModals = () => {
+type PosModalsProps = {
+  payingAmount?: number;
+};
+
+const PosModals = ({ payingAmount }: PosModalsProps) => {
   const [input, setInput] = useState("");
 
   const handleButtonClick = (value: any) => {
@@ -546,7 +550,8 @@ const PosModals = () => {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue={1800}
+                          value={payingAmount}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -1540,7 +1545,7 @@ const PosModals = () => {
                           <li>
                             <Tooltip title="Print">
                               <Link
-                              href="#"
+                                href="#"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="top"
                                 title="Print"
@@ -3076,7 +3081,8 @@ const PosModals = () => {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue={1800}
+                          value={payingAmount}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -3093,7 +3099,8 @@ const PosModals = () => {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue={1800}
+                          readOnly
+                          defaultValue={payingAmount}
                         />
                       </div>
                     </div>

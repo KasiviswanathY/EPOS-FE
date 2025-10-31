@@ -1,21 +1,32 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { PlusCircle } from 'feather-icons-react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useForm } from 'react-hook-form';
-import Select from 'react-select';
-import { AppDispatch, RootState } from '@/lib/redux/store';
-import { createUser } from '@/lib/redux/actions/createUserAction';
-import { resetSuccess } from '@/lib/redux/slices/authSlice';
+import React, { useEffect, useState } from "react";
+import { PlusCircle } from "feather-icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import Select from "react-select";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+
+import { createUser } from "@/lib/redux/actions/userActions";
+import { getAllUsers } from "@/lib/redux/actions/userActions";
+import { UserPermissionType, Status } from "@/core/interfaces/User";
+import { PERMISSION_OPTIONS } from "@/core/constants/permissionOptions";
 
 const AddUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const success = useSelector((state: RootState) => state.app.success);
+  const { success, loading } = useSelector((state: RootState) => state.users);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState<{ value: string; label: string } | null>(null);
-  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'warning' } | null>(null);
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    {
+      value: string;
+      label: string;
+    }[]
+  >([]);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "warning";
+  } | null>(null);
 
   const {
     register,
@@ -24,53 +35,50 @@ const AddUsers = () => {
     formState: { errors },
   } = useForm();
 
-  const permissionOptions = [
-    { value: 'USER_RIGHTS', label: 'User Rights' },
-    { value: 'PRODUCT_RIGHTS', label: 'Product Rights' },
-    { value: 'SALES_RIGHTS', label: 'Sales Rights' },
-  ];
-
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
-  const showMessage = (text: string, type: 'success' | 'error' | 'warning') => {
+  const showMessage = (text: string, type: "success" | "error" | "warning") => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 3000);
   };
 
-  const onSubmit = (data: any) => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      showMessage('Token not found!', 'error');
-      return;
-    }
-
-    if (!selectedPermission) {
-      showMessage('Please select a permission.', 'warning');
+  const onSubmit = async (data: any) => {
+    if (selectedPermissions.length === 0) {
+      showMessage("Please select at least one permission.", "warning");
       return;
     }
 
     const userPayload = {
       username: data.username,
-      email: data.email,
       password: data.password,
-      status: data.status,
-      permissions: [selectedPermission.value],
+      email: data.email,
+      status: data.status || Status.ACTIVE,
+      permissions: selectedPermissions.map(
+        (p) => p.value as UserPermissionType
+      ),
     };
 
-    dispatch(createUser({ payload: userPayload, token }));
-  };
+    try {
+      await dispatch(createUser(userPayload)).unwrap();
+      showMessage("User created successfully!", "success");
 
+      // Refresh users list
+      dispatch(getAllUsers());
+
+      // Close modal and reset form
+      const closeBtn = document.querySelector(
+        "#add-units .close"
+      ) as HTMLElement;
+      closeBtn?.click();
+      reset();
+      setSelectedPermissions([]);
+    } catch (error) {
+      showMessage("Failed to create user. Please try again.", "error");
+    }
+  };
   useEffect(() => {
-  if (success) {
-    alert('Operation Done successfully!'); // ✅ Show browser alert
-    const closeBtn = document.querySelector('#add-units .close') as HTMLElement;
-    closeBtn?.click();
-    reset();
-    setSelectedPermission(null);
-    dispatch(resetSuccess());
-  }
-}, [success, dispatch, reset]);
-;
+    // Effect removed as we now handle success/error in onSubmit
+  }, [success, dispatch, reset]);
 
   return (
     <div>
@@ -83,15 +91,22 @@ const AddUsers = () => {
                   <div className="page-title">
                     <h4>Add User</h4>
                   </div>
-                  <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                  <button
+                    type="button"
+                    className="close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  >
                     <span aria-hidden="true">×</span>
                   </button>
                 </div>
                 <div className="modal-body custom-modal-body">
-
                   {/* Inline Feedback Message */}
                   {message && (
-                    <div className={`alert alert-${message.type} mb-3`} role="alert">
+                    <div
+                      className={`alert alert-${message.type} mb-3`}
+                      role="alert"
+                    >
                       {message.text}
                     </div>
                   )}
@@ -127,9 +142,11 @@ const AddUsers = () => {
                           <input
                             type="text"
                             className="form-control"
-                            {...register('username', { required: true })}
+                            {...register("username", { required: true })}
                           />
-                          {errors.username && <p className="text-danger">Username is required</p>}
+                          {errors.username && (
+                            <p className="text-danger">Username is required</p>
+                          )}
                         </div>
                       </div>
 
@@ -140,16 +157,17 @@ const AddUsers = () => {
                           <input
                             type="email"
                             className="form-control"
-                            {...register('email', {
-                              required: 'Email is required',
+                            {...register("email", {
                               pattern: {
                                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                message: 'Invalid email address',
+                                message: "Invalid email address",
                               },
                             })}
                           />
                           {errors.email?.message && (
-                            <p className="text-danger">{String(errors.email.message)}</p>
+                            <p className="text-danger">
+                              {String(errors.email.message)}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -160,17 +178,21 @@ const AddUsers = () => {
                           <label>Password</label>
                           <div className="pass-group">
                             <input
-                              type={showPassword ? 'text' : 'password'}
+                              type={showPassword ? "text" : "password"}
                               className="pass-input form-control"
                               placeholder="Enter your password"
-                              {...register('password', { required: true })}
+                              {...register("password", { required: true })}
                             />
                             <span
-                              className={`ti toggle-password ${showPassword ? 'ti-eye' : 'ti-eye-off'}`}
+                              className={`ti toggle-password ${
+                                showPassword ? "ti-eye" : "ti-eye-off"
+                              }`}
                               onClick={handleTogglePassword}
                             />
                           </div>
-                          {errors.password && <p className="text-danger">Password is required</p>}
+                          {errors.password && (
+                            <p className="text-danger">Password is required</p>
+                          )}
                         </div>
                       </div>
 
@@ -178,26 +200,33 @@ const AddUsers = () => {
                       <div className="col-lg-6">
                         <div className="input-blocks">
                           <label>Status</label>
-                          <input
-                            type="text"
+                          <select
                             className="form-control"
-                            placeholder="e.g. ACTIVE"
-                            {...register('status', { required: true })}
-                          />
-                          {errors.status && <p className="text-danger">Status is required</p>}
+                            {...register("status", { required: true })}
+                          >
+                            <option value="">Select Status</option>
+                            <option value="ACTIVE">{Status.ACTIVE}</option>
+                            <option value="INACTIVE">{Status.INACTIVE}</option>
+                          </select>
+                          {errors.status && (
+                            <p className="text-danger">Status is required</p>
+                          )}
                         </div>
                       </div>
 
                       {/* Permissions */}
-                      <div className="col-lg-6">
+                      <div className="col-lg-12">
                         <div className="input-blocks">
                           <label>Permissions</label>
                           <Select
                             classNamePrefix="react-select"
-                            options={permissionOptions}
+                            options={PERMISSION_OPTIONS}
                             placeholder="Choose Permissions"
-                            value={selectedPermission}
-                            onChange={setSelectedPermission}
+                            value={selectedPermissions}
+                            onChange={(selected) =>
+                              setSelectedPermissions(selected as any)
+                            }
+                            isMulti={true}
                           />
                         </div>
                       </div>
@@ -205,7 +234,11 @@ const AddUsers = () => {
 
                     {/* Submit/Cancel Buttons */}
                     <div className="modal-footer-btn">
-                      <button type="button" className="btn btn-cancel me-2" data-bs-dismiss="modal">
+                      <button
+                        type="button"
+                        className="btn btn-cancel me-2"
+                        data-bs-dismiss="modal"
+                      >
                         Cancel
                       </button>
                       <button type="submit" className="btn btn-submit">
@@ -213,7 +246,6 @@ const AddUsers = () => {
                       </button>
                     </div>
                   </form>
-
                 </div>
               </div>
             </div>

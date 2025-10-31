@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../axiosInstanceServer";
 import { AxiosError } from "axios";
 
+
 // ================== CREATE no-sale Reason ==================
 
 export async function POST(request: NextRequest) {
@@ -24,7 +25,9 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 // ================== GET All no-sale Reasons ==================
+
 export async function GET() {
   try {
     const response = await axiosInstanceServer.get("/no-sale-reasons");
@@ -41,4 +44,8 @@ export async function GET() {
       { status: axiosError.response?.status || 500 }
     );
   }
+
 }
+
+}
+

@@ -28,8 +28,6 @@ export async function GET() {
   try {
     const response = await axiosInstanceServer.get("/companies");
 
-    console.log("response", response);
-
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
