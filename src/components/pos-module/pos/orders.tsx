@@ -10,8 +10,14 @@ import { AppDispatch, RootState } from "@/lib/redux/store";
 import { createOrder } from "@/lib/redux/actions/orderActions";
 import { OrderItem } from "@/core/interfaces/Order";
 import { clearOrderState } from "@/lib/redux/slices/orderSlice";
+import { Button } from "react-bootstrap";
+import { useRouter } from "next/navigation";
+import InvoiceModal from "./InvoiceModal";
+import { fetchReceiptByCompanyId } from "@/lib/redux/actions/receiptsActions";
+import { getAllCompanies } from "@/lib/redux/actions";
 
 const options = [{ value: "1", label: "Walk in Customer" }];
+
 
 const Orders = ({
   cartItems,
@@ -52,6 +58,8 @@ const Orders = ({
     setIsClient(true);
   }, []);
 
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  
   const totalTaxRate = useMemo(() => {
     return cartItems.reduce((total, item) => {
       const taxRateDecimal = (item.taxRate?.percentage || 0) / 100;
@@ -75,6 +83,23 @@ const Orders = ({
   const hasRoundoff = Math.abs(roundedOff - orderTotalRaw) > 0.001;
 
   const [useRoundoff, setUseRoundoff] = React.useState(false);
+const [showPrintButton, setShowPrintButton] = useState(false);
+const [companyReceipt, setCompanyReceipt] = useState<any>(null);
+
+
+// Inside your useEffect for orderSuccess
+React.useEffect(() => {
+  if (orderSuccess && currentOrder) {
+    setShowPrintButton(true); // Keep Print Order visible
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const timer = setTimeout(() => {
+      dispatch(clearOrderState()); // clears only the alert
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }
+}, [orderSuccess, currentOrder, dispatch]);
 
   React.useEffect(() => {
     setUseRoundoff(hasRoundoff);
@@ -90,7 +115,7 @@ const Orders = ({
 
       const timer = setTimeout(() => {
         dispatch(clearOrderState());
-      }, 5000);
+      }, 20000);
 
       return () => clearTimeout(timer);
     }
@@ -147,10 +172,31 @@ const Orders = ({
         orderItems: orderItems,
       };
 
+      
+
+
       // Dispatch the create order action
       const result = await dispatch(createOrder(orderData)).unwrap();
 
       if (result) {
+        try {
+    // ✅ Step 1: Get all companies
+    const companiesResponse = await dispatch(getAllCompanies()).unwrap();
+
+    // ✅ Step 2: Pick the first company
+    if (companiesResponse && companiesResponse.length > 0) {
+      const companyId = companiesResponse[0].id;
+
+      // ✅ Step 3: Fetch company receipt using companyId
+      const receiptResponse = await dispatch(
+        fetchReceiptByCompanyId({ companyId })
+      ).unwrap();
+
+      setCompanyReceipt(receiptResponse);
+    }
+  } catch (err) {
+    console.error("Failed to fetch company receipt:", err);
+  }
         // Clear cart after successful order
         setCartItems([]);
         setOrderTotal(0);
@@ -168,7 +214,7 @@ const Orders = ({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
+const router = useRouter();
   return (
     <div className="col-md-12 col-lg-5 col-xl-4 ps-0 theiaStickySidebar d-lg-flex">
       <aside className="product-order-list bg-secondary-transparent flex-fill">
@@ -563,30 +609,27 @@ const Orders = ({
             </div>
           </div>
         </div>
-        <div className="btn-row d-flex align-items-center justify-content-between gap-3">
-          <Link
-            href="#"
-            className="btn btn-white d-flex align-items-center justify-content-center flex-fill m-0"
-            data-bs-toggle="modal"
-            data-bs-target="#hold-order"
-          >
-            <i className="ti ti-printer me-2" />
-            Print Order
-          </Link>
-          <Link
-            href="#"
-            className={`btn ${
+        <div className="btn-row d-flex align-items-center justify-content-between gap-3 p-3">
+          {/* Print Order Button */}
+          {orderSuccess && currentOrder && (
+            <Button
+              className="d-flex align-items-center justify-content-center flex-fill m-0 btn btn-white"
+              onClick={() => setShowInvoiceModal(true)}
+            >
+              <i className="ti ti-printer me-2" />
+              Print Order
+            </Button>
+          )}
+
+          {/* Place Order Button */}
+          <Button
+            className={`flex-fill ${
               orderLoading ? "btn-warning" : "btn-secondary"
-            } d-flex align-items-center justify-content-center flex-fill m-0`}
-            onClick={(e) => {
-              e.preventDefault();
-              if (!orderLoading) {
-                handlePlaceOrder();
-              }
+            } d-flex align-items-center justify-content-center`}
+            onClick={() => {
+              if (!orderLoading) handlePlaceOrder();
             }}
-            style={{
-              cursor: orderLoading ? "not-allowed" : "pointer",
-            }}
+            disabled={orderLoading}
           >
             <i
               className={`ti ${
@@ -594,11 +637,25 @@ const Orders = ({
               } me-2`}
             />
             {orderLoading ? "Processing..." : "Place Order"}
-          </Link>
+          </Button>
         </div>
+
       </aside>
+     {showInvoiceModal && currentOrder && (
+ <InvoiceModal
+  show={showInvoiceModal}
+  onClose={() => {
+    setShowInvoiceModal(false);
+    dispatch(clearOrderState());
+  }}
+  order={currentOrder}
+  receipt={companyReceipt} // ✅ company receipt passed in
+/>
+
+)}
+
     </div>
   );
 };
 
-export default Orders;
+export default Orders; 

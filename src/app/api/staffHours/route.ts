@@ -2,32 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../axiosInstanceServer";
 import { AxiosError } from "axios";
 
-
-// ================== CREATE Refund Reason ==================
+// CREATE Staff
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Ensure returnToStock is boolean
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
-    }
-
-    const response = await axiosInstanceServer.post(
-      "/refund-reasons",
-      body
-    );
+    const response = await axiosInstanceServer.post("/staff-hours/create", body);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Refund reason creation error:",
+      "Staff-hourscreation error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -37,18 +23,16 @@ export async function POST(request: NextRequest) {
   }
 }
 
-
-// ================== GET All Refund Reasons ==================
-
+// GET Staff
 export async function GET() {
   try {
-    const response = await axiosInstanceServer.get("/refund-reasons");
+    const response = await axiosInstanceServer.get("/staff-hours");
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Get refund reasons error:",
+      "Get staff-hours error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -56,8 +40,4 @@ export async function GET() {
       { status: axiosError.response?.status || 500 }
     );
   }
-
 }
-
-}
-

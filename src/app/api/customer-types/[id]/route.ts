@@ -6,21 +6,17 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-
-// ================== GET Refund Reason by ID ==================
-
-
+// GET Customer Type by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-
-    const response = await axiosInstanceServer.get(`/refund-reasons/${id}`);
+    const response = await axiosInstanceServer.get(`/customer-types/${id}`);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Get refund reason error:",
+      "Get customer type error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -30,38 +26,17 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-
-// ================== UPDATE Refund Reason by ID ==================
-
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
     const body = await request.json();
 
-
-    // ✅ Ensure returnToStock is boolean if present
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
-    }
-
-    // ✅ Send body directly (no `data` wrapper)
-
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
-    }
-
-    const response = await axiosInstanceServer.patch(
-      `/refund-reasons/${id}`,
-      body
-    );
+    const response = await axiosInstanceServer.put(`/customer-types/${id}`, body);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error(
-      "Update refund reason error:",
-      axiosError.response?.data || axiosError.message
-    );
+    console.error("Update customer type error:", axiosError.response?.data || axiosError.message);
     return NextResponse.json(
       { error: axiosError.response?.data || "Internal Server Error" },
       { status: axiosError.response?.status || 500 }
@@ -69,20 +44,17 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-
-// ================== DELETE Refund Reason by ID ==================
-
+// DELETE Customer Type by ID
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-
-    const response = await axiosInstanceServer.delete(`/refund-reasons/${id}`);
+    const response = await axiosInstanceServer.delete(`/customer-types/${id}`);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Delete refund reason error:",
+      "Delete customer type error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -90,8 +62,4 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       { status: axiosError.response?.status || 500 }
     );
   }
-
 }
-
-}
-

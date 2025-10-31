@@ -2,32 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../axiosInstanceServer";
 import { AxiosError } from "axios";
 
-
-// ================== CREATE Refund Reason ==================
+// CREATE Stock Movement Reason
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
-    // Ensure returnToStock is boolean
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
-    }
-
-    const response = await axiosInstanceServer.post(
-      "/refund-reasons",
-      body
-    );
+    const response = await axiosInstanceServer.post("/stock-movement-reasons", body);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Refund reason creation error:",
+      "Stock movement reason creation error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -37,18 +22,15 @@ export async function POST(request: NextRequest) {
   }
 }
 
-
-// ================== GET All Refund Reasons ==================
-
+// GET All Stock Movement Reasons
 export async function GET() {
   try {
-    const response = await axiosInstanceServer.get("/refund-reasons");
-
+    const response = await axiosInstanceServer.get("/stock-movement-reasons");
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Get refund reasons error:",
+      "Get stock movement reasons error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -56,8 +38,4 @@ export async function GET() {
       { status: axiosError.response?.status || 500 }
     );
   }
-
 }
-
-}
-

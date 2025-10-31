@@ -7,22 +7,15 @@ interface RouteParams {
 }
 
 
-// ================== GET Refund Reason by ID ==================
-
+// ================== GET by ID ==================
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-
-    const response = await axiosInstanceServer.get(`/refund-reasons/${id}`);
-
+    const response = await axiosInstanceServer.get(`/no-sale-reasons/${id}`);
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error(
-      "Get refund reason error:",
-      axiosError.response?.data || axiosError.message
-    );
     return NextResponse.json(
       { error: axiosError.response?.data || "Internal Server Error" },
       { status: axiosError.response?.status || 500 }
@@ -31,37 +24,16 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 
-// ================== UPDATE Refund Reason by ID ==================
-
+// ================== UPDATE by ID ==================
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const body = await request.json();
+    const body = await request.json(); // ✅ flat body { reason: "..." }
 
-
-    // ✅ Ensure returnToStock is boolean if present
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
-    }
-
-    // ✅ Send body directly (no `data` wrapper)
-
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
-    }
-
-    const response = await axiosInstanceServer.patch(
-      `/refund-reasons/${id}`,
-      body
-    );
-
+    const response = await axiosInstanceServer.patch(`/no-sale-reasons/${id}`, body);
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error(
-      "Update refund reason error:",
-      axiosError.response?.data || axiosError.message
-    );
     return NextResponse.json(
       { error: axiosError.response?.data || "Internal Server Error" },
       { status: axiosError.response?.status || 500 }
@@ -70,21 +42,15 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 
-// ================== DELETE Refund Reason by ID ==================
+// ================== DELETE by ID ==================
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-
-    const response = await axiosInstanceServer.delete(`/refund-reasons/${id}`);
-
+    const response = await axiosInstanceServer.delete(`/no-sale-reasons/${id}`);
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error(
-      "Delete refund reason error:",
-      axiosError.response?.data || axiosError.message
-    );
     return NextResponse.json(
       { error: axiosError.response?.data || "Internal Server Error" },
       { status: axiosError.response?.status || 500 }

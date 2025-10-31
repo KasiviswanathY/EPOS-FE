@@ -30,6 +30,11 @@ export default function RefundReasonsComponent() {
     }
   };
 
+
+  const handleSaveEdit = async () => {
+    if (!selectedReason) return;
+    setEditError(null);
+
   const handleSaveEdit = async () => {
     if (!selectedReason) return;
     setEditError(null);
@@ -116,7 +121,9 @@ export default function RefundReasonsComponent() {
         </div>
       </div>
 
+
       {/* Edit Modal */}
+
       {selectedReason && (
         <div
           className="modal fade show d-block"
@@ -201,8 +208,12 @@ export default function RefundReasonsComponent() {
         </div>
       )}
 
+
       {/* Delete Confirmation Modal */}
       <CommonDeleteModal
+
+            <CommonDeleteModal
+
         title="Delete Refund Reason"
         description={`Are you sure you want to delete "${reasonToDelete?.description}"? This action cannot be undone.`}
         onConfirm={handleDeleteConfirm}

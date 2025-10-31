@@ -3,31 +3,27 @@ import axiosInstanceServer from "../axiosInstanceServer";
 import { AxiosError } from "axios";
 
 
-// ================== CREATE Refund Reason ==================
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    // Ensure returnToStock is boolean
+// ================== CREATE Discount Reason ==================
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
-    if (body.returnToStock !== undefined) {
-      body.returnToStock = Boolean(body.returnToStock);
+    if (
+      body.defaultValue !== undefined &&
+      typeof body.defaultValue !== "number"
+    ) {
+      const parsedValue = parseFloat(body.defaultValue);
+      body.defaultValue = isNaN(parsedValue) ? null : parsedValue;
     }
-
     const response = await axiosInstanceServer.post(
-      "/refund-reasons",
+      "/discount-reasons",
       body
     );
-
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Refund reason creation error:",
+      "Discount reason creation error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
@@ -38,17 +34,17 @@ export async function POST(request: NextRequest) {
 }
 
 
-// ================== GET All Refund Reasons ==================
+// ================== GET All Discount Reasons ==================
 
 export async function GET() {
   try {
-    const response = await axiosInstanceServer.get("/refund-reasons");
+    const response = await axiosInstanceServer.get("/discount-reasons");
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     console.error(
-      "Get refund reasons error:",
+      "Get discount reasons error:",
       axiosError.response?.data || axiosError.message
     );
     return NextResponse.json(
