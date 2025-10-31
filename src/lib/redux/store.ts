@@ -2,6 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import companyReducer from "./slices/companySlice";
 import clockingTypesReducer from "./slices/clockingTypesSlice";
 
+import noSaleReasonsSliceReducer from "./slices/nosalereasonsSlice";
+
+
 import discountReasonsSliceReducer from "./slices/discountreasonSlice";
 import locationsReducer from "./slices/locationsSlice";
 import popupReducer from "./slices/PopupSlice";
@@ -31,6 +34,8 @@ export const store = configureStore({
   reducer: {
     company: companyReducer,
     clockingTypes: clockingTypesReducer,
+
+    noSaleReasons:noSaleReasonsSliceReducer,
 
     discountReasonsState: discountReasonsSliceReducer,
     locations: locationsReducer,
