@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axiosInstanceServer from "../axiosInstanceServer";
 import { AxiosError } from "axios";
 
+
 // ================== CREATE Discount Reason ==================
 
 export async function POST(request: NextRequest) {
@@ -32,7 +33,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
+
 // ================== GET All Discount Reasons ==================
+
 export async function GET() {
   try {
     const response = await axiosInstanceServer.get("/discount-reasons");
@@ -49,4 +52,8 @@ export async function GET() {
       { status: axiosError.response?.status || 500 }
     );
   }
+
 }
+
+}
+

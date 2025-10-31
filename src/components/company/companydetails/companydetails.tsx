@@ -1,10 +1,8 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/redux/store";
-
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/redux/store";
 import { useEffect, useState } from "react";
-
 import { useRouter } from "next/navigation";
 import { updateCompanyState } from "@/lib/redux/slices/companySlice";
 import { Company } from "@/core/interfaces/Company";
@@ -17,49 +15,47 @@ import { getErrorMessage } from "@/core/utils";
 
 export default function CompanySettings() {
   const dispatch = useDispatch<AppDispatch>();
-  const company = useSelector((state: RootState) => state.company);
   const {
     register,
     handleSubmit,
-    setValue,
+    reset,
     formState: { errors },
-  } = useForm<Company>({
-    defaultValues: company.company || {},
-  });
+  } = useForm<Company>();
 
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [isCreating, setIsCreating] = useState(false); // 👈 NEW state for Create flow
+
   const [devices] = useState(1);
   const [locations] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
   const guid = "1234-5678-ABCD-EFGH";
+  const router = useRouter();
 
-  // Load company data on mount
+  // Fetch companies for dropdown only
   useEffect(() => {
     setIsLoading(true);
     dispatch(getAllCompanies())
-      .then((res) => {
-        const companyDetails = res.payload?.[0] || null;
-        if (companyDetails) {
-          dispatch(updateCompanyState(companyDetails));
-          setCompanyId(companyDetails.id);
-        }
+      .then((res: { payload: any; }) => {
+        setCompanies(res.payload || []);
+        setError(null);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .catch((err: string | object | null) => setError(getErrorMessage(err)))
+      .finally(() => setIsLoading(false));
   }, [dispatch]);
 
-  // Set form values when company data changes
-  useEffect(() => {
-    if (company.company) {
-      Object.keys(company.company).forEach((key) => {
-        const value = company.company![key as keyof Company];
-        if (value !== null && value !== undefined) {
-          setValue(key as keyof Company, value);
-        }
-      });
+  // When a company is selected, load its details
+  const handleSelectCompany = (id: string) => {
+    setCompanyId(id);
+    setIsCreating(false); // hide create form if user selects from dropdown
+    const selected = companies.find((c) => c.id === id);
+    if (selected) {
+      dispatch(updateCompanyState(selected));
+      reset(selected);
     }
-  }, [company.company, setValue]);
+  };
 
   const onSubmit = (data: Company) => {
     const payload = {
@@ -78,20 +74,45 @@ export default function CompanySettings() {
       showInstructionsOnStartup: data.showInstructionsOnStartup || false,
     };
 
+    setSaving(true);
+
     if (companyId) {
-      dispatch(updateCompany({ id: companyId, data: payload }));
+      // PATCH flow
+      dispatch(updateCompany({ id: companyId, data: payload }))
+        .unwrap()
+        .then(async () => {
+          const res = await dispatch(getAllCompanies()).unwrap();
+          setCompanies(res);
+          const updated = res.find((c: Company) => c.id === companyId);
+          if (updated) reset(updated);
+        })
+        .catch((err: string | object | null) => setError(getErrorMessage(err)))
+        .finally(() => setSaving(false));
     } else {
-      dispatch(createCompany(payload)).then((res) => {
-        if (res?.payload?.id) setCompanyId(res.payload.id);
-      });
+      // POST flow
+      dispatch(createCompany(payload))
+        .then((res: { payload: Company; }) => {
+          if (res?.payload?.id) {
+            setCompanies((prev) => [...prev, res.payload]);
+            setCompanyId(res.payload.id);
+            setIsCreating(false);
+            router.refresh?.();
+            if (!router.refresh) window.location.reload();
+          }
+        })
+        .finally(() => setSaving(false));
     }
   };
 
-  const router = useRouter();
-
   const handleCancel = () => {
-    router.push("/index"); // Navigate to index or any route
+    if (isCreating) {
+      setIsCreating(false);
+      reset();
+    } else {
+      router.push("/index");
+    }
   };
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -103,165 +124,234 @@ export default function CompanySettings() {
                 <div className="spinner-border" role="status">
                   <span className="visually-hidden">Loading...</span>
                 </div>
-                <p className="mt-2">Loading company data...</p>
+                <p className="mt-2">Loading companies...</p>
               </div>
-            ) : company.error ? (
-              <div className="alert alert-danger" role="alert">
-                <strong>Error:</strong> {getErrorMessage(company.error)}
+            ) : error ? (
+              <div className="alert alert-danger">
+                <strong>Error:</strong> {error}
               </div>
             ) : (
-              <form onSubmit={handleSubmit(onSubmit)}>
-                {/* Text Fields */}
-                {(
-                  [
-                    { label: "Company Name", name: "name" as keyof Company },
-                    { label: "Tax Number", name: "taxNumber" as keyof Company },
-                  ] as const
-                ).map((field) => (
-                  <div className="row align-items-center mb-3" key={field.name}>
+              <>
+                {/* If NO companies exist */}
+                {companies.length === 0 && !isCreating && (
+                  <div className="text-center py-4">
+                    <p>No companies found.</p>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        setIsCreating(true);
+                        reset(); // clear form
+                      }}
+                    >
+                      Create Company
+                    </button>
+                  </div>
+                )}
+
+                {/* If companies exist, show dropdown */}
+                {companies.length > 0 && !isCreating && (
+                  <div className="row align-items-center mb-4">
                     <label className="col-sm-3 col-form-label text-end">
-                      {field.label}
+                      Select Company
                     </label>
-                    <div className="col-sm-6">
-                      <input
-                        {...register(field.name, {
-                          required: field.name !== "taxNumber",
-                        })}
-                        className="form-control"
-                        type="text"
-                      />
-                      {errors[field.name] && (
-                        <small className="text-danger">
-                          This field is required
-                        </small>
-                      )}
+                    <div className="col-sm-6 d-flex gap-3">
+                      <select
+                        className="form-select"
+                        value={companyId || ""}
+                        onChange={(e) => handleSelectCompany(e.target.value)}
+                      >
+                        <option value="">-- Select a Company --</option>
+                        {companies.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setCompanyId(null);
+                          setIsCreating(true);
+                          reset();
+                        }}
+                      >
+                        + Create New
+                      </button>
                     </div>
                   </div>
-                ))}
+                )}
 
-                {/* Currency */}
-                <div className="row align-items-center mb-3">
-                  <label className="col-sm-3 col-form-label text-end">
-                    Custom Currency
-                  </label>
-                  <div className="col-sm-6">
-                    <select
-                      className="form-select"
-                      {...register("customCurrency", { required: true })}
-                    >
-                      <option value="Dollar ($)">Dollar ($)</option>
-                      <option value="Euro (€)">Euro (€)</option>
-                      <option value="Pound (£)">Pound (£)</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Language */}
-                <div className="row align-items-center mb-3">
-                  <label className="col-sm-3 col-form-label text-end">
-                    Language
-                  </label>
-                  <div className="col-sm-6">
-                    <select
-                      className="form-select"
-                      {...register("language", { required: true })}
-                    >
-                      <option value="en">English (US)</option>
-                      <option value="en-uk">English (UK)</option>
-                      <option value="fr">French</option>
-                      <option value="de">German</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Checkboxes */}
-                {(
-                  [
-                    {
-                      name: "updateCostPriceOnMasterUpdate" as keyof Company,
-                      label: "Update cost price on master update",
-                    },
-                    {
-                      name: "explicitConsent" as keyof Company,
-                      label: "Capture explicit consent on signup",
-                    },
-                    {
-                      name: "eraseCustomerData" as keyof Company,
-                      label: "Erase customer data on delete",
-                    },
-                    {
-                      name: "runReportsOnPageLoad" as keyof Company,
-                      label: "Run reports on page load",
-                    },
-                    {
-                      name: "showIncExTaxOption" as keyof Company,
-                      label: "Show inclusive/exclusive tax option",
-                    },
-                    {
-                      name: "showInstructionsOnStartup" as keyof Company,
-                      label: "Show instructions on startup",
-                    },
-                  ] as const
-                ).map((checkbox) => (
-                  <div className="row mb-2" key={checkbox.name}>
-                    <div className="offset-sm-3 col-sm-9">
-                      <div className="form-check">
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          {...register(checkbox.name)}
-                        />
-                        <label className="form-check-label">
-                          {checkbox.label}
+                {/* Show the form only if creating OR company is selected */}
+                {(isCreating || companyId) && (
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    {/* Basic Fields */}
+                    {(
+                      [
+                        {
+                          label: "Company Name",
+                          name: "name" as keyof Company,
+                        },
+                        {
+                          label: "Tax Number",
+                          name: "taxNumber" as keyof Company,
+                        },
+                      ] as const
+                    ).map((field) => (
+                      <div
+                        className="row align-items-center mb-3"
+                        key={field.name}
+                      >
+                        <label className="col-sm-3 col-form-label text-end">
+                          {field.label}
                         </label>
+                        <div className="col-sm-6">
+                          <input
+                            {...register(field.name, {
+                              required: field.name === "name",
+                            })}
+                            className="form-control"
+                            type="text"
+                          />
+                          {errors[field.name] && (
+                            <small className="text-danger">
+                              This field is required
+                            </small>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Currency */}
+                    <div className="row align-items-center mb-3">
+                      <label className="col-sm-3 col-form-label text-end">
+                        Custom Currency
+                      </label>
+                      <div className="col-sm-6">
+                        <select
+                          className="form-select"
+                          {...register("customCurrency", { required: true })}
+                        >
+                          <option value="Dollar ($)">Dollar ($)</option>
+                          <option value="Euro (€)">Euro (€)</option>
+                          <option value="Pound (£)">Pound (£)</option>
+                        </select>
                       </div>
                     </div>
-                  </div>
-                ))}
 
-                {/* Readonly Fields */}
-                <div className="row align-items-center mb-3">
-                  <label className="col-sm-3 col-form-label text-end">
-                    Max Devices
-                  </label>
-                  <div className="col-sm-6 pt-1">
-                    <span>{devices}</span>
-                  </div>
-                </div>
+                    {/* Language */}
+                    <div className="row align-items-center mb-3">
+                      <label className="col-sm-3 col-form-label text-end">
+                        Language
+                      </label>
+                      <div className="col-sm-6">
+                        <select
+                          className="form-select"
+                          {...register("language", { required: true })}
+                        >
+                          <option value="en">English (US)</option>
+                          <option value="en-uk">English (UK)</option>
+                          <option value="fr">French</option>
+                          <option value="de">German</option>
+                        </select>
+                      </div>
+                    </div>
 
-                <div className="row align-items-center mb-3">
-                  <label className="col-sm-3 col-form-label text-end">
-                    Max Locations
-                  </label>
-                  <div className="col-sm-6 pt-1">
-                    <span>{locations}</span>
-                  </div>
-                </div>
+                    {/* Checkboxes */}
+                    {(
+                      [
+                        {
+                          name: "updateCostPriceOnMasterUpdate",
+                          label: "Update cost price on master update",
+                        },
+                        {
+                          name: "explicitConsent",
+                          label: "Capture explicit consent on signup",
+                        },
+                        {
+                          name: "eraseCustomerData",
+                          label: "Erase customer data on delete",
+                        },
+                        {
+                          name: "runReportsOnPageLoad",
+                          label: "Run reports on page load",
+                        },
+                        {
+                          name: "showIncExTaxOption",
+                          label: "Show inclusive/exclusive tax option",
+                        },
+                        {
+                          name: "showInstructionsOnStartup",
+                          label: "Show instructions on startup",
+                        },
+                      ] as const
+                    ).map((checkbox) => (
+                      <div className="row mb-2" key={checkbox.name}>
+                        <div className="offset-sm-3 col-sm-9">
+                          <div className="form-check">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              {...register(checkbox.name as keyof Company)}
+                            />
+                            <label className="form-check-label">
+                              {checkbox.label}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
 
-                <div className="row align-items-center mb-3">
-                  <label className="col-sm-3 col-form-label text-end">
-                    GUID
-                  </label>
-                  <div className="col-sm-6 pt-1">
-                    <span className="text-muted">{guid}</span>
-                  </div>
-                </div>
+                    {/* Readonly Fields */}
+                    <div className="row align-items-center mb-3">
+                      <label className="col-sm-3 col-form-label text-end">
+                        Max Devices
+                      </label>
+                      <div className="col-sm-6 pt-1">{devices}</div>
+                    </div>
+                    <div className="row align-items-center mb-3">
+                      <label className="col-sm-3 col-form-label text-end">
+                        Max Locations
+                      </label>
+                      <div className="col-sm-6 pt-1">{locations}</div>
+                    </div>
+                    <div className="row align-items-center mb-3">
+                      <label className="col-sm-3 col-form-label text-end">
+                        GUID
+                      </label>
+                      <div className="col-sm-6 pt-1 text-muted">{guid}</div>
+                    </div>
 
-                {/* Buttons */}
-                <div className="card-footer d-flex justify-content-between">
-                  <button
-                    type="button"
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </button>
-
-                  <button type="submit" className="btn btn-success">
-                    SAVE
-                  </button>
-                </div>
-              </form>
+                    {/* Buttons */}
+                    <div className="card-footer d-flex justify-content-between">
+                      <button
+                        type="button"
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                        onClick={handleCancel}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-success"
+                        disabled={saving}
+                      >
+                        {saving ? (
+                          <>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                            />
+                            Saving...
+                          </>
+                        ) : (
+                          "SAVE"
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </>
             )}
           </div>
         </div>

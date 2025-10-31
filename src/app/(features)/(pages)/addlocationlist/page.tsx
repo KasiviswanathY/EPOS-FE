@@ -5,15 +5,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/redux/store";
 import { useRouter } from "next/navigation";
-import { createLocations } from "@/lib/redux/actions/createLocation";
 
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import {
-  getAllCompanies,
-  getCompany,
-} from "@/lib/redux/actions/companiesActions";
-import { updateCompanyState } from "@/lib/redux/slices/companySlice";
+import { getAllCompanies } from "@/lib/redux/actions/companiesActions";
+import { createLocation } from "@/lib/redux/actions/locationsActions";
 
 interface Country {
   name: string;
@@ -27,6 +23,7 @@ interface State {
 interface LocationFormValues {
   name: string;
   description: string;
+  companyId: string;
   country: string;
   addressLine1: string;
   addressLine2?: string;
@@ -43,9 +40,9 @@ export default function AddLocationPage() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const company = useSelector((state: RootState) => state.app.company);
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+  const { company, companies } = useSelector(
+    (state: RootState) => state.company
+  );
 
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
@@ -58,6 +55,7 @@ export default function AddLocationPage() {
     formState: { errors },
   } = useForm<LocationFormValues>({
     defaultValues: {
+      companyId: company?.id || "",
       language: "English (US)",
       timezone: "Default",
     },
@@ -65,16 +63,12 @@ export default function AddLocationPage() {
 
   const selectedCountry = watch("country");
 
-  // Fetch company info if missing
   useEffect(() => {
-    if (!company && token) {
-      dispatch(getAllCompanies()).then((res) => {
-        dispatch(updateCompanyState(res.payload[0]));
-      });
-    }
-  }, [dispatch, token, company]);
+    dispatch(getAllCompanies()).catch((error) => {
+      console.error("Error fetching companies:", error);
+    });
+  }, []);
 
-  // Fetch countries
   useEffect(() => {
     async function fetchCountries() {
       try {
@@ -82,10 +76,12 @@ export default function AddLocationPage() {
           "https://countriesnow.space/api/v0.1/countries/positions"
         );
         if (res.data?.data) {
-          const countryList = res.data.data.map((c: any) => ({
-            name: c.name,
-            iso2: c.iso2,
-          }));
+          const countryList = res.data.data.map(
+            (c: { name: string; iso2: string }) => ({
+              name: c.name,
+              iso2: c.iso2,
+            })
+          );
           setCountries(countryList);
           if (countryList.length > 0) {
             setValue("country", countryList[0].name);
@@ -121,8 +117,8 @@ export default function AddLocationPage() {
   }, [selectedCountry, setValue]);
 
   const onSubmit = async (data: LocationFormValues) => {
-    if (!token || !company) {
-      alert("Missing authentication or company information.");
+    if (!data.companyId) {
+      alert("Please select a company.");
       return;
     }
 
@@ -133,19 +129,20 @@ export default function AddLocationPage() {
       country: data.country,
       pincode: data.zipCode,
       description: data.description,
-      status: "ACTIVE",
-      email: data.email,
-      phone: data.phone,
+      status: "ACTIVE" as const,
+      email: data.email || "",
+      phone: data.phone || "",
       language: data.language,
       timeZone: data.timezone,
-      companyId: company.id,
+      companyId: data.companyId,
     };
 
     try {
-      await dispatch(createLocations({ payload, token })).unwrap();
+      await dispatch(createLocation(payload)).unwrap();
       router.push("/locationslist");
     } catch (err) {
       console.error("Error creating location:", err);
+      alert("Failed to create location. Please try again.");
     }
   };
 
@@ -169,7 +166,7 @@ export default function AddLocationPage() {
           <div>
             <strong>Add a billable location</strong>
             <br />
-            You've reached your limit of 1 of 1 billable locations. Contact
+            You&apos;ve reached your limit of 1 of 1 billable locations. Contact
             support to add more.
           </div>
           <div>
@@ -179,6 +176,35 @@ export default function AddLocationPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Company Selection */}
+          <div className="card mb-4">
+            <div className="card-header fw-bold">Company Information</div>
+            <div className="card-body">
+              <div className="col-md-6">
+                <label className="form-label">Select Company *</label>
+                <select
+                  className="form-select"
+                  {...register("companyId", {
+                    required: "Please select a company",
+                  })}
+                >
+                  <option value="">Select a company...</option>
+                  {!companies.length && <option value="">Loading...</option>}
+                  {companies.map((comp) => (
+                    <option key={comp.id} value={comp.id}>
+                      {comp.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.companyId && (
+                  <small className="text-danger">
+                    {errors.companyId.message}
+                  </small>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Address Section */}
           <div className="card mb-4">
             <div className="card-header fw-bold">Address</div>

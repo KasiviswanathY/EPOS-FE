@@ -9,32 +9,35 @@ import CollapesIcon from "@/core/common/tooltip-content/collapes";
 import Table from "@/core/common/pagination/datatable";
 import AddUsers from "@/core/modals/usermanagement/addusers";
 import EditUser from "@/core/modals/usermanagement/edituser";
-import { fetchUsersList } from "@/lib/redux/actions/getallusersAction";
-import { deleteUser } from "@/lib/redux/actions/deleteUserAction";
+import { getAllUsers, deleteUser } from "@/lib/redux/actions/userActions";
 import CommonDeleteModal from "@/core/common/modal/commonDeleteModal";
+import { User } from "@/core/interfaces/User";
+
 export default function UsersComponent() {
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [userToDelete, setUserToDelete] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-  const { usersList, usersListLoading, usersListError } = useSelector(
-    (state: RootState) => state.app
+  const { users, loading, error } = useSelector(
+    (state: RootState) => state.users
   );
-const handlerefresh = () => {
-    dispatch(fetchUsersList());
-  }
+
+  const handlerefresh = () => {
+    dispatch(getAllUsers());
+  };
+
   useEffect(() => {
-    dispatch(fetchUsersList());
+    dispatch(getAllUsers());
   }, [dispatch]);
 
   const handleDeleteConfirm = () => {
     if (userToDelete) {
-      dispatch(deleteUser({ id: userToDelete.id }));
+      dispatch(deleteUser(userToDelete.id)); // ID is already a string in Prisma
       setUserToDelete(null);
     }
   };
 
-  const dataSource = usersList.map((user: { id: any; }, index: any) => ({
+  const dataSource = users.map((user: { id: string }, index: number) => ({
     ...user,
     key: user.id || index,
   }));
@@ -43,17 +46,33 @@ const handlerefresh = () => {
     {
       title: "User Name",
       dataIndex: "username",
-      render: (text: any) => <span style={{ fontWeight: 500 }}>{text}</span>,
-      sorter: (a: any, b: any) => a.username?.length - b.username?.length,
+      render: (text: string) => (
+        <span style={{ fontWeight: 500 }}>{text || "N/A"}</span>
+      ),
+      sorter: (a: User, b: User) =>
+        (a.username || "").length - (b.username || "").length,
     },
-    { title: "Phone", dataIndex: "phone" },
-    { title: "Email", dataIndex: "email" },
-    { title: "Role", dataIndex: "permissions" },
-    { title: "Created On", dataIndex: "createdAt" },
+    {
+      title: "Email",
+      dataIndex: "email",
+      render: (text: string) => text || "N/A",
+    },
+    {
+      title: "Permissions",
+      dataIndex: "permissions",
+      render: (permissions: string[]) => (
+        <div>
+          {permissions && permissions.length > 0
+            ? permissions.slice(0, 2).join(", ") +
+              (permissions.length > 2 ? "..." : "")
+            : "No permissions"}
+        </div>
+      ),
+    },
     {
       title: "Status",
       dataIndex: "status",
-      render: (text: any) => (
+      render: (text: string) => (
         <span
           className={`d-inline-flex align-items-center p-1 pe-2 rounded-1 text-white fs-10 ${
             text === "Active" ? "bg-success" : "bg-danger"
@@ -109,8 +128,10 @@ const handlerefresh = () => {
           </div>
           <ul className="table-top-head">
             <TooltipIcons />
-            <span onClick={handlerefresh}><RefreshIcon /></span>
-            
+            <span onClick={handlerefresh}>
+              <RefreshIcon />
+            </span>
+
             <CollapesIcon />
           </ul>
           <div className="page-btn">
@@ -129,10 +150,10 @@ const handlerefresh = () => {
         <div className="card table-list-card">
           <div className="card-body">
             <div className="table-responsive">
-              {usersListLoading ? (
+              {loading ? (
                 <div>Loading...</div>
-              ) : usersListError ? (
-                <div>Error: {usersListError}</div>
+              ) : error ? (
+                <div>Error: {error}</div>
               ) : (
                 <Table columns={columns} dataSource={dataSource} />
               )}

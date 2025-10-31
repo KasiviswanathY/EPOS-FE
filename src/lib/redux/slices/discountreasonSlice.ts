@@ -1,10 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 import {
   createDiscountReason,
   getAllDiscountReasons as fetchDiscountReasonsList,
   updateDiscountReason,
   deleteDiscountReason,
 } from "../actions/discountReasonsActions";
+
+import { createDiscountReason, deleteDiscountReason, updateDiscountReason, getAllDiscountReasons } from "../actions/discountreasonsAction";
+const fetchDiscountReasonsList = getAllDiscountReasons;
+
 
 export interface DiscountReason {
   id: number;
@@ -36,6 +41,7 @@ const discountReasonsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
       // FETCH ALL
       .addCase(fetchDiscountReasonsList.pending, (state) => {
         state.loading = true;
@@ -72,6 +78,7 @@ const discountReasonsSlice = createSlice({
         state.error = (action.payload as string) ?? "Failed to create discount reason";
       })
 
+
       // UPDATE
       .addCase(updateDiscountReason.pending, (state) => {
         state.loading = true;
@@ -93,6 +100,7 @@ const discountReasonsSlice = createSlice({
         state.loading = false;
         state.error = (action.payload as string) ?? "Failed to update discount reason";
       })
+
 
       // DELETE
       .addCase(deleteDiscountReason.pending, (state) => {

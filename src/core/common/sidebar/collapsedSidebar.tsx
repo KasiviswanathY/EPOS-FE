@@ -4,7 +4,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
 
-
 const CollapsedSidebar = () => {
   const [isActive, setIsActive] = useState(false);
   const [isActive2, setIsActive2] = useState(false);
@@ -260,11 +259,11 @@ const CollapsedSidebar = () => {
                   <span>Create Product</span>
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="expired-products">
                   <span>Expired Products</span>
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="low-stocks">
                   <span>Low Stocks</span>

@@ -6,6 +6,7 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+
 // ================== GET Discount Reason by ID ==================
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+
 // ================== UPDATE Discount Reason by ID ==================
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
@@ -44,7 +46,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     const response = await axiosInstanceServer.patch(
       `/discount-reasons/${id}`,
+
       body // Sending the modified body
+      body 
+
     );
 
     return NextResponse.json(response.data, { status: response.status });
@@ -61,7 +66,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+
 // ================== DELETE Discount Reason by ID ==================
+
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
@@ -80,4 +87,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       { status: axiosError.response?.status || 500 }
     );
   }
+
 }
+
+}
+

@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createDiscountReason } from "@/lib/redux/actions/discountReasonsActions";
 import { AppDispatch } from "@/lib/redux/store";
+import { AppDispatch } from "@/lib/redux/store";
+import { createDiscountReason } from "@/lib/redux/actions/discountreasonsAction";
+
 
 export default function AddDiscountReason() {
   const router = useRouter();

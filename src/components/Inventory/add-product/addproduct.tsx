@@ -1,958 +1,778 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import Image from "next/image";
 
-import CounterThree from "@/core/common/counter/counterThree";
-import CommonFooter from "@/core/common/footer/commonFooter";
-import { category } from "@/core/common/selectOption/selectOption";
-import CommonTagsInput from "@/core/common/Taginput";
-import TextEditor from "@/core/common/texteditor/texteditor";
-import CollapesIcon from "@/core/common/tooltip-content/collapes";
-import RefreshIcon from "@/core/common/tooltip-content/refresh";
-import AddBrand from "@/core/modals/inventory/addbrand";
-import AddCategory from "@/core/modals/inventory/addcategory";
-import Addunits from "@/core/modals/inventory/addunits";
-import AddVariant from "@/core/modals/inventory/addvariant";
-import AddVarientNew from "@/core/modals/inventory/addVarientNew";
-import { all_routes } from "@/data/all_routes";
-import { DatePicker } from "antd";
-import { ArrowLeft, Calendar, Info, LifeBuoy, List, Plus, PlusCircle, X , Image,} from "feather-icons-react";
-import Link from "next/link";
-import { useState } from "react";
-import Select from "react-select";
+import { Product } from "@/core/interfaces/Products";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import { getAllCateogry } from "@/lib/redux/actions/categoryActions";
+import { getAllBrands } from "@/lib/redux/actions/brandAction";
 
-export default function AddProductComponent(){
-    const route = all_routes;
-    const [tags, setTags] = useState(["Red", "Black"]);
-    const [product, setProduct] = useState(false);
-    const [product2, setProduct2] = useState(true);
-  
-  
-  
-    const store = [
-      { value: "choose", label: "Choose" },
-      { value: "thomas", label: "Thomas" },
-      { value: "rasmussen", label: "Rasmussen" },
-      { value: "fredJohn", label: "Fred John" },
-    ];
-    const warehouse = [
-      { value: "choose", label: "Choose" },
-      { value: "legendary", label: "Legendary" },
-      { value: "determined", label: "Determined" },
-      { value: "sincere", label: "Sincere" },
-    ];
-    const category = [
-      { value: "choose", label: "Choose" },
-      { value: "lenovo", label: "Lenovo" },
-      { value: "electronics", label: "Electronics" },
-    ];
-    const subcategory = [
-      { value: "choose", label: "Choose" },
-      { value: "lenovo", label: "Lenovo" },
-      { value: "electronics", label: "Electronics" },
-    ];
-  
-    const brand = [
-      { value: "choose", label: "Choose" },
-      { value: "nike", label: "Nike" },
-      { value: "bolt", label: "Bolt" },
-    ];
-    const unit = [
-      { value: "choose", label: "Choose" },
-      { value: "kg", label: "Kg" },
-      { value: "pc", label: "Pc" },
-    ];
-    const sellingtype = [
-      { value: "choose", label: "Choose" },
-      { value: "transactionalSelling", label: "Transactional selling" },
-      { value: "solutionSelling", label: "Solution selling" },
-    ];
-    const barcodesymbol = [
-      { value: "choose", label: "Choose" },
-      { value: "code34", label: "Code34" },
-      { value: "code35", label: "Code35" },
-      { value: "code36", label: "Code36" },
-    ];
-    const taxtype = [
-      { value: "exclusive", label: "Exclusive" },
-      { value: "salesTax", label: "Sales Tax" },
-    ];
-    const discounttype = [
-      { value: "choose", label: "Choose" },
-      { value: "percentage", label: "Percentage" },
-      { value: "cash", label: "Cash" },
-    ];
-  
-    const warrenty = [
-      { value: "choose", label: "Choose" },
-      { value: "Replacement Warranty", label: "Replacement Warranty" },
-      { value: "On-Site Warranty", label: "On-Site Warranty" },
-      { value: "Accidental Protection Plan", label: "Accidental Protection Plan" },
-    ];
-    const [isImageVisible, setIsImageVisible] = useState(true);
-  
-    const handleRemoveProduct = () => {
-      setIsImageVisible(false);
+import { getAllTaxRates, TaxRate } from "@/lib/redux/actions/taxratesAction";
+import {
+  createproducts,
+} from "@/lib/redux/actions/productsAction";
+import { Brands } from "@/core/interfaces/Brands";
+import { Cateogry } from "@/core/interfaces/Cateogry";
+
+export default function AddProduct() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  // redux state
+  const { categories, loading: categoryLoading } = useSelector(
+    (state: RootState) => state.categories
+  );
+  const { brands, loading: brandLoading } = useSelector(
+    (state: RootState) => state.brand
+  );
+  const { taxRates, loading: taxRateLoading } = useSelector(
+    (state: RootState) => state.taxrates
+  );
+  const { loading: productLoading } = useSelector(
+    (state: RootState) => state.products
+  );
+
+  // Add state for success message
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Add state for image upload
+  const [productImages, setProductImages] = useState<
+    Array<{
+      file: File;
+      preview: string;
+      isPrimary: boolean;
+      altText: string;
+      sortOrder: number;
+    }>
+  >([]);
+  const [uploading, setUploading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Product>();
+
+  // fetch dropdown data
+  useEffect(() => {
+    dispatch(getAllCateogry());
+    dispatch(getAllBrands());
+    dispatch(getAllTaxRates());
+  }, [dispatch]);
+
+  // Handle image selection and preview
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    
+    // Check if we've reached the maximum number of images
+    if (productImages.length >= 5) {
+      setErrorMessage("Maximum of 5 images allowed. Please remove an image before adding more.");
+      return;
+    }
+    
+    const file = files[0];
+    const reader = new FileReader();
+    
+    reader.onloadend = () => {
+      // Add the new image to the array, making it primary if it's the first one
+      setProductImages((prev) => {
+        const isPrimary = prev.length === 0;
+        return [
+          ...prev,
+          {
+            file,
+            preview: reader.result as string,
+            isPrimary,
+            altText: "",
+            sortOrder: prev.length,
+          },
+        ];
+      });
     };
-    const [isImageVisible1, setIsImageVisible1] = useState(true);
-  
-    const handleRemoveProduct1 = () => {
-      setIsImageVisible1(false);
-    };
-    return(
-        <>
 
-      <div className="page-wrapper">
-        <div className="content">
-          <div className="page-header">
-            <div className="add-item d-flex">
-              <div className="page-title">
-                <h4>Create Product</h4>
-                <h6>Create new product</h6>
+    reader.readAsDataURL(file);
+
+    // Reset the input value so the same file can be selected again
+    event.target.value = "";
+  };  // Set an image as primary
+  const setPrimaryImage = (index: number) => {
+    setProductImages((prev) =>
+      prev.map((img, i) => ({
+        ...img,
+        isPrimary: i === index,
+      }))
+    );
+  };
+
+  // Remove an image from the array
+  const removeImage = (index: number) => {
+    setProductImages((prev) => {
+      const newImages = prev.filter((_, i) => i !== index);
+
+      // If we removed the primary image and there are other images,
+      // make the first one primary
+      if (prev[index].isPrimary && newImages.length > 0) {
+        newImages[0].isPrimary = true;
+      }
+
+      // Update sort orders
+      return newImages.map((img, i) => ({
+        ...img,
+        sortOrder: i,
+      }));
+    });
+  };
+
+  // Update alt text for an image
+  const updateAltText = (index: number, text: string) => {
+    setProductImages((prev) =>
+      prev.map((img, i) => (i === index ? { ...img, altText: text } : img))
+    );
+  };
+
+  const onSubmit = async (data: Product) => {
+    // Clear previous messages
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
+    try {
+      // Prepare the product data
+      const productData: Partial<Product> = {
+        ...data,
+        costPrice: Number(data.costPrice),
+        salePrice: Number(data.salePrice),
+        rrp: Number(data.rrp || 0),
+        rating: Number(data.rating || 0),
+        warranty: Number(data.warranty || 0),
+        // Ensure orderQuantityLimit is never null or undefined
+        orderQuantityLimit: Number(data.orderQuantityLimit || 100),
+        volumeOfSale: Number(data.volumeOfSale || 1),
+        // Fix for date fields - send null when empty
+        manufactureDate:
+          data.manufactureDate && data.manufactureDate.trim() !== ""
+            ? new Date(data.manufactureDate).toISOString()
+            : null,
+        expiryDate:
+          data.expiryDate && data.expiryDate.trim() !== ""
+            ? new Date(data.expiryDate).toISOString()
+            : null,
+      };
+
+      // If we have images, prepare them for upload
+      if (productImages.length > 0) {
+        setUploading(true);
+        
+        // Extract the image files, primary status, and alt text
+        const imageFiles = productImages.map(img => img.file);
+        const isPrimaryImages = productImages.map(img => img.isPrimary);
+        const imageAltTexts = productImages.map(img => img.altText);
+        
+        try {
+          // Create product with images
+          await dispatch(
+            createproducts({
+              productData,
+              imageFiles,
+              isPrimaryImages,
+              imageAltTexts
+            })
+          ).unwrap();
+          
+          setSuccessMessage("Product created successfully!");
+          reset(); // Reset the form
+          setProductImages([]); // Clear images
+
+          // Clear success message after 5 seconds
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
+        } catch (error) {
+          console.error("Error creating product:", error);
+          setErrorMessage("Failed to create product with images. Please try again.");
+        } finally {
+          setUploading(false);
+        }
+      } else {
+        // Create product without images
+        await dispatch(createproducts({ productData }))
+          .unwrap()
+          .then(() => {
+            setSuccessMessage("Product created successfully!");
+            reset(); // Reset the form
+
+            // Clear success message after 5 seconds
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+          })
+          .catch((err: Error) => {
+            console.error("Failed to create product:", err);
+            setErrorMessage(
+              err.message || "Failed to create product. Please try again."
+            );
+          });
+      }
+    } catch (error: unknown) {
+      console.error("Error in form submission:", error);
+      setErrorMessage(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
+    }
+  };
+
+  // ✅ Show full-page loader if dropdowns are still fetching
+  if (categoryLoading || brandLoading || taxRateLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <div className="spinner-border text-primary" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page-wrapper">
+      <div className="content container-fluid">
+        <div className="page-header">
+          <div className="row">
+            <div className="col">
+              <h3 className="page-title">Create Product</h3>
+            </div>
+          </div>
+        </div>
+
+        {/* Success and Error Messages */}
+        {successMessage && (
+          <div
+            className="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            <strong>Success!</strong> {successMessage}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setSuccessMessage(null)}
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div
+            className="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <strong>Error!</strong> {errorMessage}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setErrorMessage(null)}
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="row">
+            {/* Basic Fields */}
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Product Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("name", { required: true })}
+                />
+                {errors.name && (
+                  <small className="text-danger">
+                    Product name is required
+                  </small>
+                )}
               </div>
             </div>
-            <ul className="table-top-head">
-              <RefreshIcon />
-              <CollapesIcon />
-              <li>
-                <div className="page-btn">
-                  <Link href={route.productlist} className="btn btn-secondary">
-                    <ArrowLeft className="me-2" />
-                    Back to Product
-                  </Link>
-                </div>
-              </li>
 
-            </ul>
-          </div>
-          {/* /add */}
-          <form className="add-product-form">
-            <div className="add-product">
-              
-                <div className="accordions-items-seperate" id="accordionSpacingExample">
-                  <div className="accordion-item border mb-4">
-                    <h2 className="accordion-header" id="headingSpacingOne">
-                      <div
-                        className="accordion-button collapsed bg-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#SpacingOne"
-                        aria-expanded="true"
-                        aria-controls="SpacingOne"
-                      >
-                        <div className="d-flex align-items-center justify-content-between flex-fill">
-                          <h5 className="d-flex align-items-center">
-                            <Info className="text-primary me-2"/>
-                            <span>Product Information</span>
-                          </h5>
-                        </div>
-                      </div>
-                    </h2>
-                    <div
-                      id="SpacingOne"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingSpacingOne"
-                    >
-                      <div className="accordion-body border-top">
-                        <div className="row">
-                          <div className="col-sm-6 col-12">
-                            <div className="mb-3">
-                              <label className="form-label">
-                                Store<span className="text-danger ms-1">*</span>
-                              </label>
-                              <Select
-                                className="react-select"
-                                options={store}
-                                placeholder="Choose"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-sm-6 col-12">
-                            <div className="mb-3">
-                              <label className="form-label">
-                                Warehouse<span className="text-danger ms-1">*</span>
-                              </label>
-                              <Select
-                                className="react-select"
-                                options={warehouse}
-                                placeholder="Choose"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-sm-6 col-12">
-                            <div className="mb-3">
-                              <label className="form-label">
-                                Product Name<span className="text-danger ms-1">*</span>
-                              </label>
-                              <input type="text" className="form-control" />
-                            </div>
-                          </div>
-                          <div className="col-sm-6 col-12">
-                            <div className="mb-3">
-                              <label className="form-label">
-                                Slug<span className="text-danger ms-1">*</span>
-                              </label>
-                              <input type="text" className="form-control" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-sm-6 col-12">
-                            <div className="mb-3 list position-relative">
-                              <label className="form-label">
-                                SKU<span className="text-danger ms-1">*</span>
-                              </label>
-                              <input type="text" className="form-control list" />
-                              <button type="button" className="btn btn-primaryadd">
-                                Generate
-                              </button>
-                            </div>
-                          </div>
-                          <div className="col-sm-6 col-12">
-                            <div className="mb-3">
-                              <label className="form-label">
-                                Selling Type<span className="text-danger ms-1">*</span>
-                              </label>
-                              <Select
-                                className="react-select"
-                                options={sellingtype}
-                                placeholder="Choose"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="addservice-info">
-                          <div className="row">
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <div className="add-newplus">
-                                  <label className="form-label">
-                                    Category<span className="text-danger ms-1">*</span>
-                                  </label>
-                                  <Link
-                                    href="#"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#add-units-category"
-                                  >
-                                    <PlusCircle
-                                      data-feather="plus-circle"
-                                      className="plus-down-add"
-                                    />
-                                    <span>Add New</span>
-                                  </Link>
-                                </div>
-                                <Select
-                                  className="react-select"
-                                  options={category}
-                                  placeholder="Choose"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <label className="form-label">
-                                  Sub Category<span className="text-danger ms-1">*</span>
-                                </label>
-                                <Select
-                                  className="react-select"
-                                  options={subcategory}
-                                  placeholder="Choose"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="add-product-new">
-                          <div className="row">
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <div className="add-newplus">
-                                  <label className="form-label">
-                                    Brand<span className="text-danger ms-1">*</span>
-                                  </label>
-                                </div>
-                                <Select
-                                  className="react-select"
-                                  options={brand}
-                                  placeholder="Choose"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <div className="add-newplus">
-                                  <label className="form-label">
-                                    Unit<span className="text-danger ms-1">*</span>
-                                  </label>
-                                </div>
-                                <Select
-                                  className="react-select"
-                                  options={unit}
-                                  placeholder="Choose"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-lg-6 col-sm-6 col-12">
-                            <div className="mb-3">
-                              <label className="form-label">
-                                Barcode Symbology<span className="text-danger ms-1">*</span>
-                              </label>
-                              <Select
-                                className="react-select"
-                                options={barcodesymbol}
-                                placeholder="Choose"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-6 col-sm-6 col-12">
-                            <div className="mb-3 list position-relative">
-                              <label className="form-label">
-                                Item Code<span className="text-danger ms-1">*</span>
-                              </label>
-                              <input type="text" className="form-control list" />
-                              <button type="submit" className="btn btn-primaryadd">
-                                Generate
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Editor */}
-                        <div className="col-lg-12">
-                          <div className="summer-description-box">
-                            <label className="form-label">Description</label>
-                            <TextEditor />
-                            <p className="fs-14 mt-1">Maximum 60 Words</p>
-                          </div>
-                        </div>
-                        {/* /Editor */}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="accordion-item border mb-4">
-                    <h2 className="accordion-header" id="headingSpacingTwo">
-                      <div
-                        className="accordion-button collapsed bg-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#SpacingTwo"
-                        aria-expanded="true"
-                        aria-controls="SpacingTwo"
-                      >
-                        <div className="d-flex align-items-center justify-content-between flex-fill">
-                          <h5 className="d-flex align-items-center">
-                            <LifeBuoy data-feather="life-buoy" className="text-primary me-2" />
-                            <span>Pricing &amp; Stocks</span>
-                          </h5>
-                        </div>
-                      </div>
-                    </h2>
-                    <div
-                      id="SpacingTwo"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingSpacingTwo"
-                    >
-                      <div className="accordion-body border-top">
-                        <div className="mb-3s">
-                          <label className="form-label">
-                            Product Type<span className="text-danger ms-1">*</span>
-                          </label>
-                          <div className="single-pill-product mb-3">
-                            <ul className="nav nav-pills" id="pills-tab1" role="tablist">
-                              <li className="nav-item" role="presentation">
-                                <span
-                                  className="custom_radio me-4 mb-0 active"
-                                  id="pills-home-tab"
-                                  data-bs-toggle="pill"
-                                  data-bs-target="#pills-home"
-                                  role="tab"
-                                  aria-controls="pills-home"
-                                  aria-selected="true"
-                                >
-                                  <input
-                                    type="radio"
-                                    className="form-control"
-                                    name="payment"
-                                  />
-                                  <span className="checkmark" /> Single Product
-                                </span>
-                              </li>
-                              <li className="nav-item" role="presentation">
-                                <span
-                                  className="custom_radio me-2 mb-0"
-                                  id="pills-profile-tab"
-                                  data-bs-toggle="pill"
-                                  data-bs-target="#pills-profile"
-                                  role="tab"
-                                  aria-controls="pills-profile"
-                                  aria-selected="false"
-                                >
-                                  <input
-                                    type="radio"
-                                    className="form-control"
-                                    name="sign"
-                                  />
-                                  <span className="checkmark" /> Variable Product
-                                </span>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="tab-content" id="pills-tabContent">
-                          <div
-                            className="tab-pane fade show active"
-                            id="pills-home"
-                            role="tabpanel"
-                            aria-labelledby="pills-home-tab"
-                          >
-                            <div className="single-product">
-                              <div className="row">
-                                <div className="col-lg-4 col-sm-6 col-12">
-                                  <div className="mb-3">
-                                    <label className="form-label">
-                                      Quantity<span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <input type="text" className="form-control" />
-                                  </div>
-                                </div>
-                                <div className="col-lg-4 col-sm-6 col-12">
-                                  <div className="mb-3">
-                                    <label className="form-label">
-                                      Price<span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <input type="text" className="form-control" />
-                                  </div>
-                                </div>
-                                <div className="col-lg-4 col-sm-6 col-12">
-                                  <div className="mb-3">
-                                    <label className="form-label">
-                                      Tax Type<span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <Select
-                                      className="react-select"
-                                      options={taxtype}
-                                      placeholder="Select Option"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-lg-4 col-sm-6 col-12">
-                                  <div className="mb-3">
-                                    <label className="form-label">
-                                      Discount Type
-                                      <span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <Select
-                                      className="react-select"
-                                      options={discounttype}
-                                      placeholder="Choose"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-lg-4 col-sm-6 col-12">
-                                  <div className="mb-3">
-                                    <label className="form-label">
-                                      Discount Value
-                                      <span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <input className="form-control" type="text" />
-                                  </div>
-                                </div>
-                                <div className="col-lg-4 col-sm-6 col-12">
-                                  <div className="mb-3">
-                                    <label className="form-label">
-                                      Quantity Alert
-                                      <span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <input type="text" className="form-control" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            className="tab-pane fade"
-                            id="pills-profile"
-                            role="tabpanel"
-                            aria-labelledby="pills-profile-tab"
-                          >
-                            <div className="row select-color-add">
-                              <div className="col-lg-6 col-sm-6 col-12">
-                                <div className="mb-3">
-                                  <label className="form-label">
-                                    Variant Attribute{" "}
-                                    <span className="text-danger ms-1">*</span>
-                                  </label>
-                                  <div className="row">
-                                    <div className="col-lg-10 col-sm-10 col-10">
-                                      <select
-                                        className="form-control variant-select select-option"
-                                        id="colorSelect"
-                                        onChange={() => setProduct(true)}
-                                      >
-                                        <option>Choose</option>
-                                        <option>Color</option>
-                                        <option value="red">Red</option>
-                                        <option value="black">Black</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-lg-2 col-sm-2 col-2 ps-0">
-                                      <div className="add-icon tab">
-                                        <Link href="#"
-                                          className="btn btn-filter"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#add-units"
-                                        >
-                                          <i className="feather feather-plus-circle" />
-                                        </Link>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                {product &&
-                                  <div className={`selected-hide-color ${product2 ? 'd-block' : ''} `} id="input-show">
-                                    <label className="form-label">
-                                      Variant Attribute{" "}
-                                      <span className="text-danger ms-1">*</span>
-                                    </label>
-                                    <div className="row align-items-center">
-                                      <div className="col-lg-10 col-sm-10 col-10">
-                                        <div className="mb-3">
-
-                                          <CommonTagsInput
-                                            value={tags}
-                                            onChange={setTags}
-                                            placeholder="Add new"
-                                            className="input-tags form-control" // Optional custom class
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-lg-2 col-sm-2 col-2 ps-0">
-                                        <div className="mb-3 ">
-                                          <Link
-                                            href="#"
-                                            className="remove-color"
-                                            onClick={() => setProduct2(false)}
-                                          >
-                                            <i className="far fa-trash-alt" />
-                                          </Link>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>}
-
-                              </div>
-                            </div>
-                            {product &&
-                              <div
-                                className="modal-body-table variant-table d-block"
-                                id="variant-table"
-
-                              >
-                                <div className="table-responsive">
-                                  <table className="table">
-                                    <thead>
-                                      <tr>
-                                        <th>Variantion</th>
-                                        <th>Variant Value</th>
-                                        <th>SKU</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th className="no-sort" />
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue="color"
-                                            />
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue="red"
-                                            />
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue={1234}
-                                            />
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <CounterThree  />
-                                        </td>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue={50000}
-                                            />
-                                          </div>
-                                        </td>
-                                        <td className="action-table-data">
-                                          <div className="edit-delete-action">
-                                            <div className="input-block add-lists">
-                                              <label className="checkboxs">
-                                                <input type="checkbox" defaultChecked />
-                                                <span className="checkmarks" />
-                                              </label>
-                                            </div>
-                                            <Link
-                                              className="me-2 p-2"
-                                              href="#"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#add-variation"
-                                            >
-                                              <Plus
-                                                data-feather="plus"
-                                                className="feather-edit"
-                                              />
-                                            </Link>
-                                            <Link
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#delete-modal"
-                                              className="p-2"
-                                              href="#"
-                                            >
-                                              <i
-                                                data-feather="trash-2"
-                                                className="feather-trash-2"
-                                              />
-                                            </Link>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue="color"
-                                            />
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue="black"
-                                            />
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue={2345}
-                                            />
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <CounterThree  />
-                                        </td>
-                                        <td>
-                                          <div className="add-product">
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              defaultValue={50000}
-                                            />
-                                          </div>
-                                        </td>
-                                        <td className="action-table-data">
-                                          <div className="edit-delete-action">
-                                            <div className="input-block add-lists">
-                                              <label className="checkboxs">
-                                                <input type="checkbox" defaultChecked />
-                                                <span className="checkmarks" />
-                                              </label>
-                                            </div>
-                                            <Link
-                                              className="me-2 p-2"
-                                              href="#"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#edit-units"
-                                            >
-                                              <Plus
-                                                data-feather="plus"
-                                                className="feather-edit"
-                                              />
-                                            </Link>
-                                            <Link
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#delete-modal"
-                                              className="p-2"
-                                              href="#"
-                                            >
-                                              <i
-                                                data-feather="trash-2"
-                                                className="feather-trash-2"
-                                              />
-                                            </Link>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-                            }
-
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="accordion-item border mb-4">
-                    <h2 className="accordion-header" id="headingSpacingThree">
-                      <div
-                        className="accordion-button collapsed bg-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#SpacingThree"
-                        aria-expanded="true"
-                        aria-controls="SpacingThree"
-                      >
-                        <div className="d-flex align-items-center justify-content-between flex-fill">
-                          <h5 className="d-flex align-items-center">
-                            <Image data-feather="image" className="text-primary me-2" />
-                            <span>Images</span>
-                          </h5>
-                        </div>
-                      </div>
-                    </h2>
-                    <div
-                      id="SpacingThree"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingSpacingThree"
-                    >
-                      <div className="accordion-body border-top">
-                        <div className="text-editor add-list add">
-                          <div className="col-lg-12">
-                            <div className="add-choosen">
-                              <div className="mb-3">
-                                <div className="image-upload">
-                                  <input type="file" />
-                                  <div className="image-uploads">
-                                    <PlusCircle
-                                      data-feather="plus-circle"
-                                      className="plus-down-add me-0"
-                                    />
-                                    <h4>Add Images</h4>
-                                  </div>
-                                </div>
-                              </div>
-                              {isImageVisible1 && (
-                                <div className="phone-img">
-                                  <img
-                                    src="assets/img/products/phone-add-2.png"
-                                    alt="image"
-                                  />
-                                  <Link href="#">
-                                    <X
-                                      className="x-square-add remove-product"
-                                      onClick={handleRemoveProduct1}
-                                    />
-                                  </Link>
-                                </div>
-                              )}
-                              {isImageVisible && (
-                                <div className="phone-img">
-                                  <img
-                                    src="assets/img/products/phone-add-1.png"
-                                    alt="image"
-                                  />
-                                  <Link href="#">
-                                    <X
-                                      className="x-square-add remove-product"
-                                      onClick={handleRemoveProduct}
-                                    />
-                                  </Link>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="accordion-item border mb-4">
-                    <h2 className="accordion-header" id="headingSpacingFour">
-                      <div
-                        className="accordion-button collapsed bg-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#SpacingFour"
-                        aria-expanded="true"
-                        aria-controls="SpacingFour"
-                      >
-                        <div className="d-flex align-items-center justify-content-between flex-fill">
-                          <h5 className="d-flex align-items-center">
-                            <List data-feather="list" className="text-primary me-2" />
-                            <span>Custom Fields</span>
-                          </h5>
-                        </div>
-                      </div>
-                    </h2>
-                    <div
-                      id="SpacingFour"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingSpacingFour"
-                    >
-                      <div className="accordion-body border-top">
-                        <div>
-                          <div className="p-3 bg-light rounded d-flex align-items-center border mb-3">
-                            <div className=" d-flex align-items-center">
-                              <div className="form-check form-check-inline">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id="warranties"
-                                  defaultValue="option1"
-                                />
-                                <label className="form-check-label" htmlFor="warranties">
-                                  Warranties
-                                </label>
-                              </div>
-                              <div className="form-check form-check-inline">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id="manufacturer"
-                                  defaultValue="option2"
-                                />
-                                <label className="form-check-label" htmlFor="manufacturer">
-                                  Manufacturer
-                                </label>
-                              </div>
-                              <div className="form-check form-check-inline">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id="expiry"
-                                  defaultValue="option2"
-                                />
-                                <label className="form-check-label" htmlFor="expiry">
-                                  Expiry
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <label className="form-label">
-                                  Warranty<span className="text-danger ms-1">*</span>
-                                </label>
-                                <Select
-                                  className="react-select"
-                                  options={warrenty}
-                                  placeholder="Choose"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3 add-product">
-                                <label className="form-label">
-                                  Manufacturer<span className="text-danger ms-1">*</span>
-                                </label>
-                                <input type="text" className="form-control" />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <label className="form-label">
-                                  Manufactured Date<span className="text-danger ms-1">*</span>
-                                </label>
-                                <div className="input-groupicon calender-input">
-                                  <Calendar className="info-img" />
-                                  <DatePicker
-                                    className="form-control datetimepicker"
-                                    placeholder="dd/mm/yyyy"
-                                  />
-
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                              <div className="mb-3">
-                                <label className="form-label">
-                                  Expiry On<span className="text-danger ms-1">*</span>
-                                </label>
-                                <div className="input-groupicon calender-input">
-                                  <Calendar className="info-img" />
-                                  <DatePicker
-                                    className="form-control datetimepicker"
-                                    placeholder="dd/mm/yyyy"
-                                  />
-
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              
+            <div className="col-lg-12 col-sm-12">
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  className="form-control"
+                  {...register("description")}
+                />
+              </div>
             </div>
+
+            {/* Image Upload */}
+            <div className="col-lg-12 col-sm-12">
+              <div className="form-group">
+                <label>Product Images (Up to 5 images)</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={productImages.length >= 5}
+                />
+                <small className="text-muted">
+                  You can add up to 5 images. Select one image at a time. Mark one image as primary.
+                </small>
+
+                {productImages.length > 0 && (
+                  <div className="mt-3">
+                    <div className="d-flex flex-wrap gap-3">
+                      {productImages.map((img, index) => (
+                        <div
+                          key={index}
+                          className="position-relative border rounded p-2"
+                          style={{ width: "200px" }}
+                        >
+                          <div className="position-absolute top-0 end-0 badge bg-light text-dark p-2">
+                            {index + 1} / {productImages.length}
+                          </div>
+                          
+                          <Image
+                            src={img.preview}
+                            alt={`Product preview ${index + 1}`}
+                            width={200}
+                            height={150}
+                            style={{ objectFit: "contain" }}
+                            className={`mb-2 ${
+                              img.isPrimary ? "border border-primary" : ""
+                            }`}
+                          />
+
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Alt text"
+                              value={img.altText}
+                              onChange={(e) =>
+                                updateAltText(index, e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div className="d-flex justify-content-between mt-2">
+                            <button
+                              type="button"
+                              className={`btn btn-sm ${
+                                img.isPrimary
+                                  ? "btn-primary"
+                                  : "btn-outline-primary"
+                              }`}
+                              onClick={() => setPrimaryImage(index)}
+                              disabled={img.isPrimary}
+                            >
+                              {img.isPrimary ? "Primary" : "Set Primary"}
+                            </button>
+
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-danger"
+                              onClick={() => removeImage(index)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {productImages.length >= 5 && (
+                      <div className="alert alert-info mt-2">
+                        Maximum number of images reached (5).
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Dropdowns */}
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Category <span className="text-danger">*</span>
+                </label>
+                <select
+                  className="form-control"
+                  {...register("categoryId", {
+                    required: "Category is required",
+                  })}
+                >
+                  <option value="">Select Category</option>
+                  {categories?.map((cat: Cateogry) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.categoryId && (
+                  <small className="text-danger">
+                    {errors.categoryId.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Brand <span className="text-danger">*</span>
+                </label>
+                <select
+                  className="form-control"
+                  {...register("brandId", { required: "Brand is required" })}
+                >
+                  <option value="">Select Brand</option>
+                  {brands?.map((brand: Brands) => (
+                    <option key={brand.id} value={brand.id}>
+                      {brand.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.brandId && (
+                  <small className="text-danger">
+                    {errors.brandId.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Tax Rate <span className="text-danger">*</span>
+                </label>
+                <select
+                  className="form-control"
+                  {...register("taxRateId", {
+                    required: "Tax rate is required",
+                  })}
+                >
+                  <option value="">Select Tax Rate</option>
+                  {taxRates?.map((tax: TaxRate) => (
+                    <option key={tax.id} value={tax.id}>
+                      {tax.name} ({tax.percentage}%)
+                    </option>
+                  ))}
+                </select>
+                {errors.taxRateId && (
+                  <small className="text-danger">
+                    {errors.taxRateId.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            {/* Pricing */}
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Cost Price <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-control"
+                  {...register("costPrice", {
+                    required: "Cost price is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Cost price must be a positive number",
+                    },
+                  })}
+                />
+                {errors.costPrice && (
+                  <small className="text-danger">
+                    {errors.costPrice.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Sale Price <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-control"
+                  {...register("salePrice", {
+                    required: "Sale price is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: "Sale price must be a positive number",
+                    },
+                  })}
+                />
+                {errors.salePrice && (
+                  <small className="text-danger">
+                    {errors.salePrice.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>RRP</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-control"
+                  {...register("rrp", { valueAsNumber: true })}
+                />
+              </div>
+            </div>
+
+            {/* Other Fields */}
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Unit Of Sale <span className="text-danger">*</span>
+                </label>
+                <select
+                  className="form-control"
+                  defaultValue="each"
+                  {...register("unitOfSale", {
+                    required: "Unit of sale is required",
+                  })}
+                >
+                  <option value="">Select unit of sale</option>
+                  <option value="cards">Cards</option>
+                  <option value="each">Each</option>
+                  <option value="kg">Kilogram (kg)</option>
+                  <option value="litre">Litre</option>
+                  <option value="packet">Packet</option>
+                  <option value="cl">Centiliter (cl)</option>
+                  <option value="cm">Centimeter (cm)</option>
+                  <option value="cup">Cup</option>
+                  <option value="ft">Foot (ft)</option>
+                  <option value="g">Gram (g)</option>
+                  <option value="gal">Gallon (gal)</option>
+                  <option value="halfPint">Half Pint</option>
+                  <option value="in">Inch (in)</option>
+                  <option value="l">Liter (l)</option>
+                  <option value="lb">Pound (lb)</option>
+                  <option value="ml">Milliliter (ml)</option>
+                  <option value="m">Meter (m)</option>
+                  <option value="oz">Ounce (oz)</option>
+                </select>
+                {errors.unitOfSale && (
+                  <small className="text-danger">
+                    {errors.unitOfSale.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Rating</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  {...register("rating", { valueAsNumber: true })}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Warranty (months)</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  {...register("warranty", { valueAsNumber: true })}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Manufacturer</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("manufacturer")}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Manufacture Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  {...register("manufactureDate", {
+                    validate: (value) =>
+                      !value ||
+                      value.trim() === "" ||
+                      new Date(value).toString() !== "Invalid Date" ||
+                      "Invalid date format",
+                  })}
+                />
+                {errors.manufactureDate && (
+                  <small className="text-danger">
+                    {errors.manufactureDate.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Expiry Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  {...register("expiryDate", {
+                    validate: (value) =>
+                      !value ||
+                      value.trim() === "" ||
+                      new Date(value).toString() !== "Invalid Date" ||
+                      "Invalid date format",
+                  })}
+                />
+                {errors.expiryDate && (
+                  <small className="text-danger">
+                    {errors.expiryDate.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>POS Order</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  {...register("posOrder")}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Button Color</label>
+                <input
+                  type="color"
+                  className="form-control"
+                  defaultValue="#0000ff"
+                  {...register("buttonColor")}
+                />
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Order Quantity Limit</label>
+                <input
+                  type="number"
+                  min="1"
+                  defaultValue="100"
+                  className="form-control"
+                  {...register("orderQuantityLimit", {
+                    valueAsNumber: true,
+                    required: "Order Quantity Limit is required",
+                    min: { value: 1, message: "Minimum value is 1" },
+                  })}
+                />
+                {errors.orderQuantityLimit && (
+                  <small className="text-danger">
+                    {errors.orderQuantityLimit.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-sm-12">
+              <div className="form-group">
+                <label>Volume of Sale</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  defaultValue="1.0"
+                  className="form-control"
+                  {...register("volumeOfSale", { valueAsNumber: true })}
+                />
+              </div>
+            </div>
+
+            {/* Checkboxes */}
+            <div className="col-lg-12 col-sm-12">
+              <div className="form-group form-check">
+                <input
+                  type="checkbox"
+                  defaultChecked={true}
+                  {...register("sellOnPos")}
+                />
+                <label className="ml-2">Sell On POS</label>
+              </div>
+              <div className="form-group form-check">
+                <input
+                  type="checkbox"
+                  defaultChecked={true}
+                  {...register("sellOnTill")}
+                />
+                <label className="ml-2">Sell On Till</label>
+              </div>
+              <div className="form-group form-check">
+                <input
+                  type="checkbox"
+                  defaultChecked={false}
+                  {...register("variablePrice")}
+                />
+                <label className="ml-2">Variable Price</label>
+              </div>
+              <div className="form-group form-check">
+                <input
+                  type="checkbox"
+                  defaultChecked={false}
+                  {...register("taxExempt")}
+                />
+                <label className="ml-2">Tax Exempt</label>
+              </div>
+              <div className="form-group form-check">
+                <input
+                  type="checkbox"
+                  defaultChecked={false}
+                  {...register("scannableOnly")}
+                />
+                <label className="ml-2">Scannable Only</label>
+              </div>
+            </div>
+
+            {/* Submit */}
             <div className="col-lg-12">
-              <div className="d-flex align-items-center justify-content-end mb-4">
-                <button type="button" className="btn btn-secondary me-2">
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Add Product
-                </button>
-              </div>
-            </div>
-
-          </form>
-          {/* /add */}
-        </div>
-       <CommonFooter />
-
-      </div>
-      <Addunits />
-      <AddCategory />
-      <AddVariant />
-      <AddBrand />
-      <AddVarientNew />
-      <div className="modal fade" id="delete-modal">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="page-wrapper-new p-0">
-              <div className="content p-5 px-3 text-center">
-                <span className="rounded-circle d-inline-flex p-2 bg-danger-transparent mb-2"><i className="ti ti-trash fs-24 text-danger"></i></span>
-                <h4 className="fs-20 fw-bold mb-2 mt-1">Delete Attribute</h4>
-                <p className="mb-0 fs-16">Are you sure you want to delete Attribute?</p>
-                <div className="modal-footer-btn mt-3 d-flex justify-content-center">
-                  <button type="button" className="btn me-2 btn-secondary fs-13 fw-medium p-2 px-3 shadow-none" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" className="btn btn-primary fs-13 fw-medium p-2 px-3">Yes Delete</button>
-                </div>
-              </div>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={productLoading || uploading}
+              >
+                {productLoading || uploading ? "Saving..." : "Save Product"}
+              </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
-    </>
-    )
+    </div>
+  );
 }

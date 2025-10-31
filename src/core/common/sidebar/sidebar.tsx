@@ -52,7 +52,10 @@ export default function Sidebar() {
 
   useEffect(() => {
     // Update the DOM based on `dataLayout` and `expandMenus`
-    document.body.classList.toggle("expand-menu", expandMenus || dataLayout === "layout-hovered");
+    document.body.classList.toggle(
+      "expand-menu",
+      expandMenus || dataLayout === "layout-hovered"
+    );
   }, [expandMenus, dataLayout]);
 
   return (
@@ -105,7 +108,7 @@ export default function Sidebar() {
                     Menu
                   </Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link border-0" href={route.chat}>
                     Chats
                   </Link>
@@ -114,7 +117,7 @@ export default function Sidebar() {
                   <Link className="nav-link border-0" href={route.email}>
                     Inbox
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -161,7 +164,7 @@ export default function Sidebar() {
                               >
                                 <i className={`ti ti-${title.icon} me-2`}></i>
                                 <span className="custom-active-span">
-                                  {(title?.label)}
+                                  {title?.label}
                                 </span>
                                 {title?.submenu && (
                                   <span className="menu-arrow" />

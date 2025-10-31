@@ -1,42 +1,50 @@
 "use client";
-{/* eslint-disable-next-line @next/next/no-img-element */}
 
 import { all_routes } from "@/data/all_routes";
 import FeatherIcon, { Search } from "feather-icons-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-import { useSelector } from 'react-redux';
-
-import { useDispatch } from 'react-redux';
-import { logout } from '@/lib/redux/slices/authSlice';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 export default function Header() {
   const route = all_routes;
+  const pathname = usePathname();
   const [toggle, SetToggle] = useState(false);
-  const [flagImage, setFlagImage] = useState("assets/img/flags/us-flag.svg");
-  const [pathname, setPathname] = useState(""); // State to store the pathname
+  const [flagImage] = useState("assets/img/flags/us-flag.svg");
   const [expandMenus, setExpandMenus] = useState(false); // Local state for expandMenus
-  const [dataLayout, setDataLayout] = useState("default"); // Local state for dataLayout
+  const [dataLayout] = useState("default"); // Local state for dataLayout
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-const user = useSelector((state: RootState) => state.app.user);
- 
+  const user = useSelector((state: RootState) => state.users.currentUser);
+  const { currentUser } = useCurrentUser();
 
+  // Don't automatically fetch user on header load - only after login
 
   const handlesidebar = (): void => {
     document.body.classList.toggle("mini-sidebar");
     SetToggle((current: boolean) => !current);
   };
 
-  const dispatch = useDispatch();
   const router = useRouter();
 
-  const handleLogout = () => {
-  dispatch(logout()); // 🧠 clear Redux state
-  router.replace('/signin'); // ⛔ back button won't go to dashboard
-};
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+
+    router.replace("/signin");
+  };
   const sidebarOverlay = (): void => {
     document?.querySelector(".main-wrapper")?.classList?.toggle("slide-nav");
     document?.querySelector(".sidebar-overlay")?.classList?.toggle("opened");
@@ -62,19 +70,16 @@ const user = useSelector((state: RootState) => state.app.user);
     document.body.classList.add("expand-menu");
   };
 
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const toggleFullscreen = () => {
     if (!isFullscreen) {
       if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch((err) => {
-        });
+        document.documentElement.requestFullscreen().catch(() => {});
         setIsFullscreen(true);
       }
     } else {
       if (document.exitFullscreen) {
         if (document.fullscreenElement) {
-          document.exitFullscreen().catch((err) => {
-          });
+          document.exitFullscreen().catch(() => {});
         }
         setIsFullscreen(false);
       }
@@ -83,7 +88,7 @@ const user = useSelector((state: RootState) => state.app.user);
 
   return (
     <>
-      <div className="header"style={{backgroundColor: 'skyblue'}}>
+      <div className="header" style={{ backgroundColor: "skyblue" }}>
         {/* Logo */}
         <div className="main-header">
           <div
@@ -99,13 +104,31 @@ const user = useSelector((state: RootState) => state.app.user);
             onMouseOver={expandMenuOpen}
           >
             <Link href="/dashboard" className="logo logo-normal">
-              <img src="assets/img/logo.png" alt="img" />
+              <Image
+                src="/assets/img/logo.png"
+                alt="Logo"
+                width={100}
+                height={40}
+                priority
+              />
             </Link>
             <Link href="/dashboard" className="logo logo-white">
-              <img src="assets/img/logo-white.png" alt="img" />
+              <Image
+                src="/assets/img/logo-white.png"
+                alt="Logo"
+                width={100}
+                height={40}
+                priority
+              />
             </Link>
             <Link href="/dashboard" className="logo-small">
-              <img src="assets/img/logo-small.png" alt="img" />
+              <Image
+                src="/assets/img/logo-small.png"
+                alt="Logo"
+                width={40}
+                height={40}
+                priority
+              />
             </Link>
             <Link
               id="toggle_btn"
@@ -159,10 +182,13 @@ const user = useSelector((state: RootState) => state.app.user);
                     </div>
                     <span className="input-group-text">
                       <kbd className="d-flex align-items-center">
-                        <img
-                          src="assets/img/icons/command.svg"
-                          alt="img"
+                        <Image
+                          src="/assets/img/icons/command.svg"
+                          alt="Command"
+                          width={16}
+                          height={16}
                           className="me-1"
+                          priority
                         />
                         K
                       </kbd>
@@ -182,10 +208,13 @@ const user = useSelector((state: RootState) => state.app.user);
               >
                 <span className="user-info">
                   <span className="user-letter">
-                    <img
-                      src="assets/img/store/store-01.png"
+                    <Image
+                      src="/assets/img/store/store-01.png"
                       alt="Store Logo"
+                      width={120}
+                      height={80}
                       className="img-fluid"
+                      priority
                     />
                   </span>
                   <span className="user-detail">
@@ -195,34 +224,46 @@ const user = useSelector((state: RootState) => state.app.user);
               </Link>
               <div className="dropdown-menu dropdown-menu-right">
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-01.png"
+                  <Image
+                    src="/assets/img/store/store-01.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Freshmart
                 </Link>
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-02.png"
+                  <Image
+                    src="/assets/img/store/store-02.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Grocery Apex
                 </Link>
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-03.png"
+                  <Image
+                    src="/assets/img/store/store-03.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Grocery Bevy
                 </Link>
                 <Link href="#" className="dropdown-item">
-                  <img
-                    src="assets/img/store/store-04.png"
+                  <Image
+                    src="/assets/img/store/store-04.png"
                     alt="Store Logo"
+                    width={120}
+                    height={80}
                     className="img-fluid"
+                    priority
                   />
                   Grocery Eden
                 </Link>
@@ -257,46 +298,46 @@ const user = useSelector((state: RootState) => state.app.user);
                       <p>Product</p>
                     </Link>
                   </div>
-                  <div className="col-md-2">
+                  {/* <div className="col-md-2">
                     <Link href={route.categorylist} className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-shopping-bag" />
                       </span>
                       <p>Purchase</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
+                  </div> */}
+                  {/* <div className="col-md-2">
                     <Link href="{route.online}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-shopping-cart" />
                       </span>
                       <p>Sale</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.expenselist} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.expenselist}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-file-text" />
                       </span>
                       <p>Expense</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.quotationlist} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.quotationlist}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-device-floppy" />
                       </span>
                       <p>Quotation</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.salesreturn} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.salesreturn}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-copy" />
                       </span>
                       <p>Return</p>
                     </Link>
-                  </div>
+                  </div> */}
                   <div className="col-md-2">
                     <Link href={route.users} className="link-item">
                       <span className="link-icon">
@@ -305,38 +346,38 @@ const user = useSelector((state: RootState) => state.app.user);
                       <p>User</p>
                     </Link>
                   </div>
-                  <div className="col-md-2">
+                  {/* <div className="col-md-2">
                     <Link href={route.customer} className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-users" />
                       </span>
                       <p>Customer</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
+                  </div> */}
+                  {/* <div className="col-md-2">
                     <Link href={route.salesreport} className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-shield" />
                       </span>
                       <p>Biller</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.suppliers} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.suppliers}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-user-check" />
                       </span>
                       <p>Supplier</p>
                     </Link>
-                  </div>
-                  <div className="col-md-2">
-                    <Link href={route.stocktransfer} className="link-item">
+                  </div> */}
+                  {/* <div className="col-md-2">
+                    <Link href="{route.stocktransfer}" className="link-item">
                       <span className="link-icon">
                         <i className="ti ti-truck" />
                       </span>
                       <p>Transfer</p>
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </li>
@@ -360,7 +401,13 @@ const user = useSelector((state: RootState) => state.app.user);
               >
                 {/* <i data-feather="globe" /> */}
                 {/* <FeatherIcon icon="globe" /> */}
-                <img src={flagImage} alt="img" height={16} />
+                <Image
+                  src={`/${flagImage}`}
+                  alt="Selected flag"
+                  width={24}
+                  height={16}
+                  priority
+                />
               </Link>
               <div className="dropdown-menu dropdown-menu-right">
                 <Link
@@ -368,10 +415,12 @@ const user = useSelector((state: RootState) => state.app.user);
                   className="dropdown-item active"
                   // onClick={() => changeLanguage("en")}
                 >
-                  <img
-                    src="assets/img/flags/english.svg"
-                    alt="img"
+                  <Image
+                    src="/assets/img/flags/english.svg"
+                    alt="English"
+                    width={24}
                     height={16}
+                    priority
                   />
                   {/* {t("English")} */}
                 </Link>
@@ -380,11 +429,13 @@ const user = useSelector((state: RootState) => state.app.user);
                   className="dropdown-item"
                   // onClick={() => changeLanguage("fr")}
                 >
-                  <img
-                    src="assets/img/flags/arabic.svg"
-                    alt="img"
+                  <Image
+                    src="/assets/img/flags/arabic.svg"
+                    alt="Arabic"
+                    width={24}
                     height={16}
-                  />{" "}
+                    priority
+                  />
                   Arabic
                 </Link>
               </div>
@@ -432,9 +483,12 @@ const user = useSelector((state: RootState) => state.app.user);
                       <Link href={route.activities}>
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-13.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-13.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -452,9 +506,12 @@ const user = useSelector((state: RootState) => state.app.user);
                       <Link href={route.activities}>
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-03.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-03.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -471,9 +528,12 @@ const user = useSelector((state: RootState) => state.app.user);
                       <Link href={route.activities} className="recent-msg">
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-17.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-17.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -490,9 +550,12 @@ const user = useSelector((state: RootState) => state.app.user);
                       <Link href={route.activities} className="recent-msg">
                         <div className="media d-flex">
                           <span className="avatar flex-shrink-0">
-                            <img
-                              alt="Img"
-                              src="assets/img/profiles/avatar-02.jpg"
+                            <Image
+                              alt="Avatar"
+                              src="/assets/img/profiles/avatar-02.jpg"
+                              width={32}
+                              height={32}
+                              priority
                             />
                           </span>
                           <div className="flex-grow-1">
@@ -536,10 +599,13 @@ const user = useSelector((state: RootState) => state.app.user);
               >
                 <span className="user-info p-0">
                   <span className="user-letter">
-                    <img
-                      src="assets/img/profiles/avator1.jpg"
-                      alt="Img"
+                    <Image
+                      src="/assets/img/profiles/avator1.jpg"
+                      alt="Avatar"
+                      width={40}
+                      height={40}
                       className="img-fluid"
+                      priority
                     />
                   </span>
                 </span>
@@ -547,21 +613,38 @@ const user = useSelector((state: RootState) => state.app.user);
               <div className="dropdown-menu menu-drop-user">
                 <div className="profileset d-flex align-items-center">
                   <span className="user-img me-2">
-                    <img src="assets/img/profiles/avator1.jpg" alt="Img" />
+                    <Image
+                      src="/assets/img/profiles/avator1.jpg"
+                      alt="Avatar"
+                      width={40}
+                      height={40}
+                      priority
+                    />
                   </span>
                   <div>
-                    <h6 className="fw-medium">Welcome,  {user?.name || user?.email || 'Guest'}</h6>
-                    <p>Admin</p>
+                    <h6 className="fw-medium">
+                      Welcome,
+                      {currentUser?.username ||
+                        currentUser?.email ||
+                        user?.username ||
+                        user?.email ||
+                        "Guest"}
+                    </h6>
+                    <p>
+                      {currentUser?.status === "ACTIVE"
+                        ? "Active User"
+                        : "Admin"}
+                    </p>
                   </div>
                 </div>
                 <Link className="dropdown-item" href={route.profile}>
                   <i className="ti ti-user-circle me-2" />
                   MyProfile
                 </Link>
-                <Link className="dropdown-item" href={route.salesreport}>
+                {/* <Link className="dropdown-item" href={route.salesreport}>
                   <i className="ti ti-file-text me-2" />
                   Reports
-                </Link>
+                </Link> */}
                 <Link className="dropdown-item" href={route.generalsettings}>
                   <i className="ti ti-settings-2 me-2" />
                   Settings
@@ -571,7 +654,7 @@ const user = useSelector((state: RootState) => state.app.user);
                   <i className="ti ti-logout me-2" />
                   Logout
                 </a>
-              </div> 
+              </div>
             </li>
           </ul>
           {/* /Header Menu */}
