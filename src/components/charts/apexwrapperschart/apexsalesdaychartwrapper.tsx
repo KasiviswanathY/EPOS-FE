@@ -21,7 +21,7 @@ const ApexSalesdayChartWrapper: React.FC = () => {
           show: false,
         },
       },
-      colors: ['skyblue', 'pink'],
+      colors: ['#1D3557', '#56A3A6'],
       responsive: [
         {
           breakpoint: 480,
